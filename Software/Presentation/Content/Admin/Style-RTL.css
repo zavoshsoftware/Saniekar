@@ -1,0 +1,241 @@
+﻿@font-face {
+    font-family: 'Iransans';
+    src: url(/Fonts/IranSans/IRANSansWebFaNum.eot) format('embedded-opentype'),
+         url(/Fonts/IranSans/IRANSansWebFaNum.woff2) format('woff2'),
+         url(/Fonts/IranSans/IRANSansWebFaNum.woff) format('woff'),
+         url(/Fonts/IranSans/IRANSansWebFaNum.ttf) format('truetype');
+}
+body {
+    font-family:Iransans;
+
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: Iransans;
+}
+.panel-heading h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 24px;
+}
+.table
+{
+    margin-top:15px;
+}
+.panel-footer a{
+    text-decoration:underline;
+}
+.login .form-control{
+    width:100%;
+}
+.login .form-group {
+  direction:rtl;
+  text-align:right;
+}
+.login .alert-danger{
+direction:rtl;
+text-align:right;
+}
+
+    .login .alert-danger ul {
+        list-style: none;
+     
+    }
+.panel .table thead > tr > th
+{
+    text-align:right;
+}
+
+.pagination > li {
+    float: right
+}
+    .pagination > li:first-child > a, .pagination > li:first-child > span {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 4px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 4px;
+    }
+
+    .pagination > li:last-child > a, .pagination > li:last-child > span {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 0;
+    }
+ul.pagination {
+    margin-right: 0;
+    margin-left: 0;
+    padding-right: 0;
+    padding-left: 0;
+}
+.hidden{
+    display:none;
+}
+.cellnumber{
+    width:55%;
+    float:right;
+}
+
+.cellnumber-code {
+    width: 10%;
+    float: right;
+    text-align:left;
+    direction:ltr;
+}
+.rtl
+{
+    text-align:right;
+    direction:rtl;
+}
+.recover-form .form-control{
+    display:inline;
+    float:left;
+}
+.recover-form {
+    direction:rtl;
+    text-align:right;
+}
+#recover-type-div {
+    padding:30px 5px;
+
+}
+
+#error-recover, #success-recover {
+    display: none;
+    direction: rtl;
+    text-align: right;
+}
+#recover-code-verification{
+    display:none;
+}
+#myModalContent .panel
+{
+    margin-bottom:0;
+}
+
+.search-input
+{
+    width:35%;
+    display:inline;
+}
+.panel
+{
+    background-color:none;
+}
+/*.sidebar
+{
+    right:0;
+    left:auto
+}
+section.content{
+    margin:100px 315px 0 15px;
+}
+.container-fluid,table,thead,th,
+.sidebar .user-info,.dropdown-menu > li > a,.sidebar .menu .list .header,
+.sidebar .menu .list a,.sidebar .legal .copyright,.sidebar .legal .version
+{
+    text-align:right;
+    direction:rtl;
+}
+.navbar-header
+{
+    float:right;
+}
+.right-sidebar.open
+{
+    left:0;
+}
+
+
+.right-sidebar .nav-tabs li:last-child
+{
+    width:100%;
+}
+
+
+.right-sidebar {
+  
+  left: -300px;
+ }
+.navbar,.sidebar,.sidebar .menu .list .header,.sidebar .menu .list a{
+    font-family:Iransans;
+}
+ 
+.sidebar .user-info .image
+{
+    margin-left:12px;
+    margin-right:0;
+}
+.sidebar .user-info .info-container .user-helper-dropdown
+{
+    right:auto;
+    left:-3px;
+}
+.dropdown-menu > li > a i.material-icons
+{
+    float:right;
+    margin-right:0;
+    margin-left:7px;
+}
+.table-responsive .btn
+{
+    margin-bottom:20px;
+}
+.form-control-input
+{
+    float:right;
+}
+.form-control-label
+{
+    float:right;
+    text-align:left;
+}
+
+.card .header h2 {
+    display: inline;
+    line-height: 29px;
+}
+
+.card .header .btn-back {
+    float: left;
+    padding: 0 5px;
+}
+
+
+.col-lg-offset-2 {
+    margin-right: 16.66666667%;
+    margin-left: 0;
+    direction: rtl;
+    text-align: right;
+}
+
+.alert-dismissable, .alert-dismissible {
+    padding-right:15px;
+    padding-left: 35px;
+}
+.alert-dismissable .close, .alert-dismissible .close {
+    right: auto;
+    left: -21px;
+}
+.close {
+    float: left;
+}
+
+
+[type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+    left: auto;
+    opacity: 1;
+}*/
+
+
+
+#companyDiv {
+    display: none;
+}
+
+.multi-action-list .btn-sm {
+    margin-top: 3px;
+}
+.dl-horizontal dt
+{
+    float:right;
+}

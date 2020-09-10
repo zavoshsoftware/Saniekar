@@ -1,0 +1,35 @@
+﻿@model ViewModels.LoginViewModel
+
+
+
+@if (TempData["WrongPass"] != null)
+{
+    <p class="alert alert-danger" id="wrongEmail">@TempData["WrongPass"]</p>
+}
+@*<h2 class="login_title">ورود</h2>*@
+<p>جهت دسترسی به اطلاعات حساب کاربری خود وارد شوید.</p>
+
+@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-signin" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="field-input">
+        @Html.TextBoxFor(m => m.Username, null, new { @class = "form-control", @placeholder = "نام کاربری" })
+        @Html.ValidationMessageFor(a => a.Username, "", new { @class = "text-danger" })
+    </div>
+    <div class="field-input">
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "کلمه عبور" })
+        @Html.ValidationMessageFor(a => a.Password, "", new { @class = "text-danger" })
+    </div>
+    <div class="field-input">
+        <div class="check-box">
+            @Html.CheckBoxFor(m => m.RememberMe)
+            @Html.LabelFor(m => m.RememberMe)
+        </div>
+        @*<a href="#">فراموشی کلمه عبور</a><br />
+        <a href="/Account/register">ثبت نام</a>*@
+    </div>
+    <div class="field-input">
+        <button class="btn btn-1 mt-20 width100 text-center login-btn">ورود</button>
+    </div>
+}

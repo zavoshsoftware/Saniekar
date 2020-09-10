@@ -1,0 +1,79 @@
+﻿@model ViewModels.TransferAccountViewModel
+
+@{
+    ViewBag.Title = "انتقال وجه ";
+    Layout = "~/Views/Shared/BackEndLayout/_BackEndLayout.cshtml";
+}
+
+<h2>افزودن @Html.DisplayNameFor(model => model)</h2>
+
+@using (Html.BeginForm("TransferAmount", "Accounts",FormMethod.Post, new { enctype = "multipart/form-data" })) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">        
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+         
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                    @Html.EditorFor(model => model.Title)
+
+                @Html.ValidationMessageFor(model => model.Title)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Amount, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                    @Html.EditorFor(model => model.Amount)
+
+                @Html.ValidationMessageFor(model => model.Amount)
+            </div>
+        </div>
+
+       
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FromBranchId, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("FromBranchId", String.Empty)
+                @Html.ValidationMessageFor(model => model.FromBranchId)
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ToBranchId, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("ToBranchId", String.Empty)
+                @Html.ValidationMessageFor(model => model.ToBranchId)
+            </div>
+        </div>
+
+     
+
+	        <div class="form-group">
+		        @Html.LabelFor(model => model.TransferDate, new { @class = "control-label col-md-2" })
+		        <div class="col-md-10">
+			        @Html.EditorFor(model => model.TransferDate)
+
+			        @Html.ValidationMessageFor(model => model.TransferDate)
+		        </div>
+	        </div>
+
+     
+
+        
+        <div class="form-group" id="buttons">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="ایجاد" class="btn btn-primary" />
+            </div>
+        </div>
+        </div>
+</div>
+}
+

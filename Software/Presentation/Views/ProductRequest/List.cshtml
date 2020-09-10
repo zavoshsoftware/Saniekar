@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Models.ProductRequest>
+
+@{
+    ViewBag.Title = "فهرست " + Server.HtmlDecode(Html.DisplyModelPluralName(model => model).ToString());
+}
+
+<h2>@ViewBag.Title</h2>
+
+@(Html.Kendo().Grid(Model)
+        .Name("Grid")
+        .Columns(columns =>
+        {
+        columns.Bound(model => model.Code);
+        columns.Bound(model => model.RequestBranch.Title);
+        columns.Bound(model => model.TotalStr);
+        columns.Bound(model => model.CreationDateStr);
+        columns.Bound(item => @item.Id).Title("دستورات").Filterable(false).Groupable(false)
+                      .Template(@<text>
+                @Html.ActionLink("جزییات", "Detail", new { id = @item.Id }, new { @class = "k-button" })
+                    </text>).Width(200);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Custom().Action("Create", "Branches").Text("افزودن");
+        }
+        )
+        .DataSource(dataSource => dataSource
+                                    .Server()
+
+                                    .Model(model => model.Id(item => item.Id))
+                    )
+)

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Models.Account>
+
+@{
+ViewBag.Title = "فهرست " + Server.HtmlDecode(Html.DisplyModelPluralName(model => model).ToString());
+    
+    Layout = "~/Views/Shared/BackEndLayout/_BackEndLayout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+        @(Html.Kendo().Grid(Model)
+									.Name("Grid")
+									.Columns(columns =>
+									{
+									columns.Bound(model => model.Code);
+									columns.Bound(model => model.Branch.Title);
+									columns.Bound(model => model.Body);
+									columns.Bound(model => model.BedehkarStr);
+									columns.Bound(model => model.BestankarStr);
+									columns.Bound(model => model.RemainStr);
+							 
+		})
+		.ToolBar(toolbar =>
+					{				
+						toolbar.Custom().Action("Create","Accounts").Text("افزودن");                          
+					}
+		)         
+		.DataSource(dataSource => dataSource
+									.Server()
+							
+									.Model(model => model.Id(item => item.Id))
+					)              
+	)

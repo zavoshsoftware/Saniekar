@@ -1,0 +1,202 @@
+﻿<section class="vbox">
+    <section class="w-f scrollable">
+        <div class="slim-scroll" data-height="auto" data-disable-fade-out="true" data-distance="0" data-size="5px" data-color="#333333">
+            <nav class="nav-primary hidden-xs">
+                <ul class="nav">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        var identity = (System.Security.Claims.ClaimsIdentity)User.Identity;
+                        string role = identity.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+                        if (role == "Administrator")
+                        {
+	                        <li id="supportLi" class="menuitem">
+		                        <a href="#">
+			                        <i class="fa fa-bars icon"><b class="bg-info"></b></i><span class="pull-right"><i class="fa fa-angle-down text"></i><i class="fa fa-angle-up text-active"></i></span><span>مدیریت اطلاعات پایه</span>
+		                        </a>
+		                        <ul class="nav lt">
+			                        <li>
+				                        <a href="/productgroups">
+					                        <i class="fa fa-angle-left"></i><span>مدیریت گروه محصولات</span>
+				                        </a>
+			                        </li>
+			                        <li>
+				                        <a href="/products">
+					                        <i class="fa fa-angle-left"></i><span>مدیریت محصولات</span>
+				                        </a>
+			                        </li>
+			                        <li>
+				                        <a href="/ExcelData/import">
+					                        <i class="fa fa-angle-left"></i><span>بارگزاری اکسل</span>
+				                        </a>
+			                        </li>
+			                        <li>
+				                        <a href="/Branches">
+					                        <i class="fa fa-angle-left"></i><span>مدیریت شعب</span>
+				                        </a>
+			                        </li>
+			                        <li>
+				                        <a href="/Suppliers">
+					                        <i class="fa fa-angle-left"></i><span>مدیریت تامین کنندگان</span>
+				                        </a>
+			                        </li>
+
+			                        <li>
+				                        <a href="/Users">
+					                        <i class="fa fa-angle-left"></i><span>مدیریت کاربران</span>
+				                        </a>
+			                        </li>
+			                        <li>
+				                        <a href="/Users/index?userType=customer">
+					                        <i class="fa fa-angle-left"></i><span>مدیریت مشتریان</span>
+				                        </a>
+			                        </li>
+			                        <li>
+				                        <a href="/branches/list">
+					                        <i class="fa fa-angle-left"></i><span>مدیریت موجودی انبار شعب</span>
+				                        </a>
+			                        </li>
+			                        <li>
+				                        <a href="/regions">
+					                        <i class="fa fa-angle-left"></i><span>مدیریت محله های تهران</span>
+				                        </a>
+			                        </li>
+			                        <li>
+				                        <a href="/shipmenttypes">
+					                        <i class="fa fa-angle-left"></i><span>مدیریت وضعیت حمل</span>
+				                        </a>
+			                        </li>
+                                    
+			                        <li>
+				                        <a href="/excel/import">
+					                        <i class="fa fa-angle-left"></i><span>بارگزاری اکسل</span>
+				                        </a>
+			                        </li> 
+			                        <li>
+				                        <a href="/Mattresses">
+					                        <i class="fa fa-angle-left"></i><span>مدیریت تشک ها</span>
+				                        </a>
+			                        </li>
+		                        </ul>
+	                        </li>
+
+
+	                        <li id="supportLi" class="menuitem">
+	                <a href="/branches/ListForAccount">
+		                <i class="fa fa-bars icon"><b class="bg-info"></b></i><span>مدیریت حساب ها</span>
+	                </a>
+														</li>
+
+	                        <li id="supportLi" class="menuitem">
+	                <a href="/branches/ListForFunds">
+		                <i class="fa fa-bars icon"><b class="bg-info"></b></i><span>مدیریت تنخواه</span>
+	                </a>
+														</li>
+	                  
+	                        <li id="supportLi" class="menuitem">
+	                <a href="/Accounts/TransferAmount">
+		                <i class="fa fa-bars icon"><b class="bg-info"></b></i><span>انتقال وجه</span>
+	                </a>
+														</li>
+                        }
+                        if (role == "Administrator" || role == "Factory")
+                        {
+                            <li id="supportLi" class="menuitem">
+                                <a href="#">
+                                    <i class="fa fa-bars icon"><b class="bg-info"></b></i><span class="pull-right"><i class="fa fa-angle-down text"></i><i class="fa fa-angle-up text-active"></i></span><span>ورود کالا</span>
+                                </a>
+                                <ul class="nav lt">
+                                    <li>
+                                        <a href="/InputDocument/form">
+                                            <i class="fa fa-angle-left"></i><span>ثبت رکورد جدید</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/InputDocument/index">
+                                            <i class="fa fa-angle-left"></i><span>تاریخچه</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            if (role == "Factory")
+                            {
+	                            <li id="supportLi" class="menuitem">
+		                            <a href="/ProductRequest/list">
+			                            <i class="fa fa-bars icon"><b class="bg-info"></b></i><span class="pull-right"></span><span>لیست درخواست کالا</span>
+		                            </a>
+	                            </li>
+
+	                            <li>
+		                            <a href="/orders/list">
+			                            <i class="fa fa-angle-left"></i><span>لیست فاکتورهای کارخانه</span>
+		                            </a>
+	                            </li>
+                            }
+
+	                      
+                        }
+                        if (role == "Administrator" || role == "Branch")
+                        {
+                            <li id="supportLi" class="menuitem">
+                                <a href="#">
+                                    <i class="fa fa-bars icon"><b class="bg-info"></b></i><span class="pull-right"><i class="fa fa-angle-down text"></i><i class="fa fa-angle-up text-active"></i></span><span>درخواست کالا</span>
+                                </a>
+                                <ul class="nav lt">
+                                    <li>
+                                        <a href="/ProductRequest/form">
+                                            <i class="fa fa-angle-left"></i><span>ثبت رکورد جدید</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/ProductRequest/index">
+                                            <i class="fa fa-angle-left"></i><span>تاریخچه</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li id="supportLi" class="menuitem">
+                                <a href="#">
+                                    <i class="fa fa-bars icon"><b class="bg-info"></b></i><span class="pull-right"><i class="fa fa-angle-down text"></i><i class="fa fa-angle-up text-active"></i></span><span>فاکتور</span>
+                                </a>
+                                <ul class="nav lt">
+                                    <li>
+                                        <a href="/orders/create">
+                                            <i class="fa fa-angle-left"></i><span>ثبت فاکتور جدید</span>
+                                        </a>
+                                    </li>
+	                                <li>
+		                                <a href="/orders/list">
+			                                <i class="fa fa-angle-left"></i><span>لیست همه فاکتورهای</span>
+		                                </a>
+	                                </li>
+	                                <li>
+		                                <a href="/orders/list?sent=0">
+			                                <i class="fa fa-angle-left"></i><span>لیست فاکتورهای ارسال نشده</span>
+		                                </a>
+	                                </li>
+                                    <li>
+                                        <a href="/orders/list?sent=1">
+                                            <i class="fa fa-angle-left"></i><span>لیست فاکتورهای ارسال شده</span>
+                                        </a>
+	                                </li> 
+																
+                                </ul>
+                            </li>
+	                        <li id="supportLi" class="menuitem">
+		                        <a href="/ProductRequestDetailSuppliers/IndexForApprove">
+			                        <i class="fa fa-bars icon"><b class="bg-info"></b></i><span>فهرست ارسال کالای کارخانه به شعب</span>
+		                        </a>
+	                        </li>
+                        }
+                    }
+                  
+           
+                    
+                    
+                  
+                </ul>
+
+            </nav>
+        </div>
+    </section>
+</section>

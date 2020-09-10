@@ -1,0 +1,38 @@
+﻿@model IEnumerable<ViewModels.ProductRequestRecieveViewModel>
+
+@{
+		ViewBag.Title = "فهرست ارسال کالای کارخانه به شعب";
+
+		Layout = "~/Views/Shared/BackEndLayout/_BackEndLayout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+<h2>@ViewBag.test</h2>
+@(Html.Kendo().Grid(Model)
+				.Name("Grid")
+				.Columns(columns =>
+				{
+				columns.Bound(model => model.ProductTitle);
+				columns.Bound(model => model.ColorTitle);
+				columns.Bound(model => model.MattressTitle);
+				columns.Bound(model => model.CreationDateStr);
+				columns.Bound(model => model.Quantity);
+				columns.Bound(model => model.IsRecieved);
+				columns.Bound(model => model.BranchTitle);
+				columns.Bound(item => @item.Id).Title("دستورات").Filterable(false).Groupable(false)
+											.Template(@<text>
+											@Html.ActionLink("تایید", "Approve", new { id = @item.Id }, new { @class = "k-button" })
+											@Html.ActionLink("عدم تایید", "Notapprove", new { id = @item.Id }, new { @class = "k-button" })
+											</text>).Width(200);
+				})
+				.ToolBar(toolbar =>
+				{
+					toolbar.Custom().Action("Create", "ProductRequestDetailSuppliers").Text("افزودن");
+				}
+				)
+				.DataSource(dataSource => dataSource
+																		.Server()
+
+																		.Model(model => model.Id(item => item.Id))
+										)
+)

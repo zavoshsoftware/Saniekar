@@ -1,0 +1,209 @@
+﻿@model ViewModels.InputDocumentEditViewModel
+
+
+@{
+    ViewBag.Title = "ویرایش";
+    Layout = "~/Views/Shared/BackEndLayout/_BackEndLayout.cshtml";
+}
+
+ 
+<div class="panel panel-primary">
+
+    <div class="panel-heading">
+        <label>@ViewBag.Title</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+
+                <label class="col-md-3">انتخاب شعبه:</label>
+                <div class="col-md-9 ">
+                    @Html.DropDownList("BranchId", (IEnumerable<SelectListItem>)ViewBag.BranchId, "انتخاب شعبه", new { @class = "form-control" })
+                    @*@Html.DropDownList("BranchId",string.Empty)*@
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-md-3">انتخاب تامین کننده:</label>
+                <div class="col-md-9 ">
+                    @Html.DropDownList("SupplierId", (IEnumerable<SelectListItem>)ViewBag.SupplierId, "انتخاب تامین کننده", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label class="col-md-3">شماره فاکتور:</label>
+                <div class="col-md-9 ">
+                    <input type="text" id="orderId" class="form-control" value="@Model.InputDocument.Code" placeholder="شماره فاکتور" />
+                    
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-md-3">تاریخ فاکتور:</label>
+                <div class="col-md-9 ">
+                    @(Html.Kendo().DatePickerFor(m => m.InputDocument.InputDate))
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">انتخاب محصولات</div>
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <label class="col-md-3">انتخاب گروه محصولات:</label>
+                            <div class="col-md-9 ">
+                                <div class="row">
+                                    @Html.DropDownList("ProductGroupId", (IEnumerable<SelectListItem>)ViewBag.ProductGroupId, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <p id="parent-message" class="alert alert-info">رنگ محصول <span id="parentProductTitle"></span> را انتخاب کنید</p>
+                        <div class="row" id="product-list">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">فاکتور</div>
+                    <div class="panel-body">
+                        <table id="factor" class="table table-responsive">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">نام محصول</th>
+                                    <th scope="col">رنگ</th>
+                                    <th scope="col">تعداد</th>
+                                    <th scope="col">قیمت واحد</th>
+                                    <th scope="col">قیمت کل</th>
+                                    <th scope="col">#</th>
+                                    @*<th scope="col">توضیحات</th>*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var detail in Model.InputDocumentDetails)
+                            {
+                                <tr>
+                                    @if (detail.Product.ParentId == null)
+                                    {
+                                        <td>@detail.Product.Title</td>
+
+                                    }
+                                    else
+                                    {
+                                        <td>@detail.Product.Parent.Title</td>
+                                    }
+                                    <td>@detail.Product.Title</td>
+                                    <td class="qtytable"><input id="@(String.Format("{0}{1}", "qty", detail.ProductId))" class="qty" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.Quantity"/> </td>
+                                    <td class="amounttable"><input id="@(String.Format("{0}{1}", "amount", detail.ProductId))" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.AmountStr"/> </td>
+                                    <td id="@(String.Format("{0}{1}", "rowAmount", detail.ProductId))">@detail.RowAmountStr</td>
+                                    <td><i class="fa fa-remove" onclick="removeRow('@detail.ProductId');"></i></td>
+                                </tr>
+                            }
+
+                            </tbody>
+
+                        </table>
+
+
+
+                    </div>
+                    <div class="panel-footer">
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td><input type="button" value="به روز رسانی جمع کل" onclick="updateFactor();" class="btn btn-warning" /></td>
+                            </tr>
+                            <tr>
+                                <td>جمع کل</td>
+                                <td id="total">@Model.InputDocument.SubTotalStr</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    هزینه های اضافه شونده (تومان)
+                                </td>
+                                <td>
+                                    
+                                    <input type="text" class="form-control" id="addedAmount" value="@Model.InputDocument.AddedAmountStr" onKeyUp="return changeTotal()"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    هزینه های کسر شونده (تومان)
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="decreasedAmount" value="@Model.InputDocument.DecreaseAmountStr" onKeyUp="return changeTotal()" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    جمع کل فاکتور (تومان)
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="totalAmount" readonly="readonly" value="@Model.InputDocument.TotalStr" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    توضیحات
+                                </td>
+                                <td>
+                                    <textarea class="form-control" id="desc" placeholder="توضیحات">@Model.InputDocument.Description</textarea>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="button" class="btn btn-success" onclick="edit('input');" value="ثبت ورود کالا" />
+
+                                </td>
+                            </tr>
+                        </table>
+                        <p class="alert alert-success" id="submit-succes">ثبت اطلاعات با موفقیت انجام شد.</p>
+                        <p class="alert alert-danger" id="submit-error"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="panel-footer">
+        </div>*@
+</div>
+
+@section scripts{
+    <script>
+        $('select[name="ProductGroupId"]').change(function() {
+            freezePage();
+            var id = $(this).val();
+
+            $.ajax({
+                type: "GET",
+                url: "/InputDocument/LoadProductByGroupId",
+                contentType: "application/json; charset=utf-8",
+                data: { "id": id },
+                datatype: "json",
+                success: function(data) {
+                    loadProductList(data.Products);
+                },
+                error: function() {
+                    alert("Dynamic content load failed.");
+                }
+            });
+
+            unFreezePage();
+        });
+        $(document).ready(function() {
+            $("#BranchId").val("@Model.InputDocument.BranchId");
+            $("#SupplierId").val("@Model.InputDocument.SupplierId");
+        });
+    </script>
+}

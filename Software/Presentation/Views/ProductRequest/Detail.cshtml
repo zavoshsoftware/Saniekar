@@ -1,0 +1,175 @@
+﻿@model ViewModels.ProductRequestDetailViewModel
+
+@{
+    ViewBag.Title = "جزییات درخواست محصول";
+    Layout = "~/Views/Shared/BackEndLayout/_BackEndLayout.cshtml";
+}
+@using (Html.BeginForm("Detail", "ProductRequest", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.ProductRequest)
+    @Html.HiddenFor(m => m.ProductRequest.RequestDate)
+    @Html.HiddenFor(m => m.ProductRequest.TotalStr)
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            درخواست محصول کد  @Html.DisplayFor(m => m.ProductRequest.Code) شعبه @Model.ProductRequest.RequestBranch.Title
+        </div>
+        <div class="container">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <label class="col-md-3">تاریخ:</label>
+                        <div class="col-md-9 ">
+                            @Model.ProductRequest.RequestDate.ToShortDateString()
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-md-3">جمع کل:</label>
+                        <div class="col-md-9 ">
+                            @Model.ProductRequest.TotalStr
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        @Html.ValidationMessage("moreThanStock")
+                        @Html.ValidationMessage("moreThanRemail")
+
+
+                        <table class="table table-responsive history-table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>عنوان محصول</th>
+                                    <th>رنگ</th>
+                                    <th>تشک</th>
+                                    <th>تعداد کل</th>
+                                    <th>تعداد باقی مانده</th>
+                                    <th>قیمت واحد</th>
+                                    <th>قیمت کل</th>
+                                    <th>موجودی شعبه</th>
+                                    <th>موجودی کارخانه</th>
+                                    <th>تامین</th>
+                                    <th>آرشیو</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @for (int i = 0; i < Model.ProductRequestDetails.Count; i++)
+                                {
+                                    @Html.HiddenFor(m => m.ProductRequestDetails[i].ProductRequestDetailId)
+                                    @Html.HiddenFor(m => m.ProductRequestDetails[i].FactoryStock)
+                                    @Html.HiddenFor(m => m.ProductRequestDetails[i].BranchStock)
+                                    @Html.HiddenFor(m => m.ProductRequestDetails[i].ProductColorTitle)
+                                    @Html.HiddenFor(m => m.ProductRequestDetails[i].ProductTitle)
+                                    @Html.HiddenFor(m => m.ProductRequestDetails[i].Quantity)
+                                    @Html.HiddenFor(m => m.ProductRequestDetails[i].Amount)
+                                    @Html.HiddenFor(m => m.ProductRequestDetails[i].RowAmount)
+                                    @Html.HiddenFor(m => m.ProductRequestDetails[i].Remain)
+
+                                    if (@Model.ProductRequestDetails[i].FactoryStock < @Model.ProductRequestDetails[i].Remain)
+                                    {
+                                        <tr class="danger">
+                                            <td> @Model.ProductRequestDetails[i].ProductTitle</td>
+                                            <td>@Model.ProductRequestDetails[i].ProductColorTitle</td>
+                                            <td>@Model.ProductRequestDetails[i].MattressTitle</td>
+                                            <td>@Model.ProductRequestDetails[i].Quantity</td>
+                                            <td>@Model.ProductRequestDetails[i].Remain</td>
+                                            <td>@Model.ProductRequestDetails[i].Amount</td>
+                                            <td>@Model.ProductRequestDetails[i].RowAmount</td>
+                                            <td>@Model.ProductRequestDetails[i].BranchStock</td>
+                                            <td>@Model.ProductRequestDetails[i].FactoryStock</td>
+	                                        <td>
+		                                        @Html.TextBoxFor(m => Model.ProductRequestDetails[i].SupplyNumber)
+		                                        @Html.HiddenFor(m => m.ProductRequestDetails[i].SupplyNumber)
+
+	                                        </td>
+																					
+																					<td><a class="btn btn-primary" href="/ProductRequestDetailSuppliers/index/@Model.ProductRequestDetails[i].ProductRequestDetailId">آرشیو</a></td>
+                                        </tr>
+                                            }
+
+                                  else if (@Model.ProductRequestDetails[i].FactoryStock == @Model.ProductRequestDetails[i].Remain)
+                                    {
+                                        <tr class="warning">
+	                                        <td> @Model.ProductRequestDetails[i].ProductTitle</td>
+	                                        <td>@Model.ProductRequestDetails[i].ProductColorTitle</td>
+	                                        <td>@Model.ProductRequestDetails[i].MattressTitle</td>
+                                            <td>@Model.ProductRequestDetails[i].Quantity</td>
+                                            <td>@Model.ProductRequestDetails[i].Remain</td>
+                                            <td>@Model.ProductRequestDetails[i].Amount</td>
+                                            <td>@Model.ProductRequestDetails[i].RowAmount</td>
+                                            <td>@Model.ProductRequestDetails[i].BranchStock</td>
+                                            <td>@Model.ProductRequestDetails[i].FactoryStock</td>
+	                                        <td>
+		                                        @Html.TextBoxFor(m => Model.ProductRequestDetails[i].SupplyNumber)
+		                                        @Html.HiddenFor(m => m.ProductRequestDetails[i].SupplyNumber)
+
+	                                        </td>
+	                                        <td><a class="btn btn-primary" href="/ProductRequestDetailSuppliers/index/@Model.ProductRequestDetails[i].ProductRequestDetailId">آرشیو</a></td>
+
+                                        </tr>
+                                    }
+                                  else if (Model.ProductRequestDetails[i].Remain==0)
+                                  {
+                                      <tr class="success">
+	                                      <td> @Model.ProductRequestDetails[i].ProductTitle</td>
+	                                      <td>@Model.ProductRequestDetails[i].ProductColorTitle</td>
+	                                      <td>@Model.ProductRequestDetails[i].MattressTitle</td>
+                                          <td>@Model.ProductRequestDetails[i].Quantity</td>
+                                          <td>@Model.ProductRequestDetails[i].Remain</td>
+                                          <td>@Model.ProductRequestDetails[i].Amount</td>
+                                          <td>@Model.ProductRequestDetails[i].RowAmount</td>
+                                          <td>@Model.ProductRequestDetails[i].BranchStock</td>
+                                          <td>@Model.ProductRequestDetails[i].FactoryStock</td>
+	                                      <td>
+		                                      @Html.TextBoxFor(m => Model.ProductRequestDetails[i].SupplyNumber)
+		                                      @Html.HiddenFor(m => m.ProductRequestDetails[i].SupplyNumber)
+
+	                                      </td>
+	                                        <td><a class="btn btn-primary" href="/ProductRequestDetailSuppliers/index/@Model.ProductRequestDetails[i].ProductRequestDetailId">آرشیو</a></td>
+                                      
+                                      </tr>
+                                  }
+                                           else{
+                                  <tr>   
+	                                  <td> @Model.ProductRequestDetails[i].ProductTitle</td>
+	                                  <td>@Model.ProductRequestDetails[i].ProductColorTitle</td>
+	                                  <td>@Model.ProductRequestDetails[i].MattressTitle</td>
+                                      <td>@Model.ProductRequestDetails[i].Quantity</td>
+                                      <td>@Model.ProductRequestDetails[i].Remain</td>
+                                      <td>@Model.ProductRequestDetails[i].Amount</td>
+                                      <td>@Model.ProductRequestDetails[i].RowAmount</td>
+                                      <td>@Model.ProductRequestDetails[i].BranchStock</td>
+                                      <td>@Model.ProductRequestDetails[i].FactoryStock</td>
+	                                  <td>
+		                                  @Html.TextBoxFor(m => Model.ProductRequestDetails[i].SupplyNumber)
+		                                  @Html.HiddenFor(m => m.ProductRequestDetails[i].SupplyNumber)
+
+	                                  </td>
+																		
+	                                  <td><a class="btn btn-primary" href="/ProductRequestDetailSuppliers/index/@Model.ProductRequestDetails[i].ProductRequestDetailId">آرشیو</a></td>
+
+                                  </tr>
+                            }
+
+                                          
+                                        }
+
+
+                                    </tbody>
+                                </table>
+
+                                <input type="submit" value="ثبت" class="btn btn-success" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+                                    }

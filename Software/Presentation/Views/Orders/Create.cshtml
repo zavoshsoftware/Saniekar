@@ -1,0 +1,347 @@
+﻿@model Models.Order
+@{
+    ViewBag.Title = "ثبت فاکتور جدید";
+    Layout = "~/Views/Shared/BackEndLayout/_BackEndLayout.cshtml";
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <label>@ViewBag.Title</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <label class="col-md-3">انتخاب شعبه*:</label>
+                <div class="col-md-9 ">
+                    @Html.DropDownList("BranchId", (IEnumerable<SelectListItem>)ViewBag.BranchId, "انتخاب شعبه", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-md-3">تاریخ فاکتور:</label>
+                <div class="col-md-9 ">
+                    @(Html.Kendo().DatePickerFor(m => m.OrderDate))
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label class="col-md-3">تلفن همراه*:</label>
+                <div class="col-md-9 ">
+                    <input type="text" id="CellNumber" class="form-control" placeholder="تلفن همراه" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-md-3">تاریخ تحویل:</label>
+                <div class="col-md-9 ">
+                    @(Html.Kendo().DatePickerFor(m => m.RecieveDate))
+                </div>
+            </div>
+        </div>
+   
+        
+        
+        <div class="row">
+            <div class="col-md-6">
+                <label class="col-md-3">نام مشتری*:</label>
+                <div class="col-md-9 ">
+                    <input type="text" id="fullName" class="form-control" placeholder="نام مشتری" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-md-3">تلفن:</label>
+                <div class="col-md-9 ">
+                    <input type="text" id="Phone" class="form-control" placeholder="تلفن" />
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="row">
+            <div class="col-md-6">
+                <label class="col-md-3">آدرس:</label>
+                <div class="col-md-9 ">
+                    <input type="text" id="address" class="form-control" placeholder="آدرس" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-md-3">*نوع حمل:</label>
+                <div class="col-md-9 ">
+                    @Html.DropDownList("ShipmentTypeId", (IEnumerable<SelectListItem>)ViewBag.ShipmentTypeId, "نوع حمل", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="row">
+            <div class="col-md-4">
+                <label class="col-md-3">استان:</label>
+                <div class="col-md-9 ">
+                    @Html.DropDownList("ProvinceId", (IEnumerable<SelectListItem>)ViewBag.ProvinceId, "انتخاب استان", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="col-md-3">شهر:</label>
+                <div class="col-md-9 ">
+                    <select id="CityId" name="CityId" class="form-control"></select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="col-md-3">محله:</label>
+                <div class="col-md-9 ">
+                    <select id="RegionId" name="RegionId" class="form-control"></select>
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-5">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">انتخاب محصولات</div>
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <label class="col-md-3">انتخاب گروه محصولات:</label>
+                            <div class="col-md-9 ">
+                                <div class="row">
+                                    @Html.DropDownList("ProductGroupId", (IEnumerable<SelectListItem>)ViewBag.ProductGroupId, new { @class = "form-control" })
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+                        <p id="parent-message" class="alert alert-info">رنگ محصول <span id="parentProductTitle"></span> را انتخاب کنید</p>
+                        <div class="row" id="product-list">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">فاکتور</div>
+                    <div class="panel-body">
+                        <table id="factor" class="table table-responsive">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">نام محصول</th>
+                                    <th scope="col">رنگ</th>
+                                    <th scope="col">تشک</th>
+                                    <th scope="col">تعداد</th>
+                                    <th scope="col">قیمت واحد</th>
+                                    <th scope="col">قیمت کل</th>
+                                    <th scope="col">#</th>
+                                    @*<th scope="col">توضیحات</th>*@
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+
+                    </div>
+                    <div class="panel-footer">
+                        <table>
+                            @*<tr>
+                                <td></td>
+                                <td><input type="button" value="به روز رسانی جمع کل" onclick="updateFactor();" class="btn btn-warning" /></td>
+                            </tr>*@
+                            <tr>
+                                <td>جمع کل</td>
+                                <td id="total">0</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    هزینه های اضافه شونده (تومان)
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="addedAmount" value="0" onKeyUp="return changeTotalOrder()" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    هزینه های کسر شونده (تومان)
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="decreasedAmount" value="0" onKeyUp="return changeTotalOrder()" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    جمع کل فاکتور (تومان)
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="totalAmount" readonly="readonly" value="0" />
+                                </td>
+                            </tr>
+                            
+                            
+                            <tr>
+                                <td>
+                                    مبلغ پرداختی
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="payment" value="0" onKeyUp="return changeTotalOrder()" />
+                                </td>
+	                            <td>
+		                            @Html.DropDownList("PaymentTypeId", (IEnumerable<SelectListItem>) ViewBag.PaymentTypeId, "نوع پرداخت", new {@class = "form-control"})
+	                            </td>
+                            </tr>
+                            
+                            
+                            <tr>
+                                <td>
+                                   مبلغ باقی مانده
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="remainAmount" readonly="readonly" value="0" />
+                                </td>
+                            </tr>
+                            
+
+                            <tr>
+                                <td>
+                                    توضیحات
+                                </td>
+                                <td>
+                                    <textarea class="form-control" id="desc" placeholder="توضیحات"></textarea>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="button" class="btn btn-success" onclick="finalizeOrder();" value="ثبت فاکتور" />
+
+                                </td>
+                            </tr>
+                        </table>
+                        <p class="alert alert-success" id="submit-succes">ثبت اطلاعات با موفقیت انجام شد.</p>
+                        <p class="alert alert-danger" id="submit-error"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+@section scripts{
+    <script>
+        $('#ProvinceId').on('change',
+            function() {
+                var SelectedValue = $(this).val();
+                if (SelectedValue !== "") {
+                    var procemessage = "<option value='0'> صبرکنید...</option>";
+                    $("#CityId").html(procemessage).show();
+                    $.ajax(
+                        {
+                            url: "/Cities/GetCityByProvince",
+                            data: { id: SelectedValue },
+                            cache: false,
+                            type: "POST",
+                            success: function(data) {
+                                var markup = "<option value='0'>انتخاب شهر</option>";
+                                for (var x = 0; x < data.length; x++) {
+                                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                                }
+                                $("#CityId").html(markup).show();
+                            },
+                            error: function(reponse) {
+                                alert("error : " + reponse);
+                            }
+                        });
+                }
+            });
+
+        $('#CityId').on('change',
+            function() {
+                var selectedValue = $(this).val();
+                if (selectedValue !== "") {
+                    var procemessage = "<option value='0'> صبرکنید...</option>";
+                    $("#RegionId").html(procemessage).show();
+                    $.ajax(
+                        {
+                            url: "/Regions/GetRegionByCity",
+                            data: { id: selectedValue },
+                            cache: false,
+                            type: "POST",
+                            success: function(data) {
+                                var markup = "<option value='0'>انتخاب محله</option>";
+                                for (var x = 0; x < data.length; x++) {
+                                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                                }
+                                $("#RegionId").html(markup).show();
+                            },
+                            error: function(reponse) {
+                                alert("error : " + reponse);
+                            }
+                        });
+                }
+            });
+
+        $("#CellNumber").focus(function() {
+        }).blur(function() {
+        var cellNumber = $("#CellNumber").val();
+
+            $.ajax(
+                {
+                    url: "/Orders/GetUserFullName",
+                    data: { cellNumber: cellNumber },
+                    cache: false,
+                    type: "POST",
+                    success: function(data) {
+											if (data !== 'invalid') {
+												var nameAndAdress = data.split('|');
+
+												$('#fullName').val(nameAndAdress[0]);
+												$('#address').val(nameAndAdress[1]);
+                        }
+                        else
+                            $('#fullName').val('');
+                    },
+                    error: function(reponse) {
+                        alert("خطا : صفحه را مجددا باز کنید");
+                    }
+                });
+            });
+
+
+        $('select[name="ProductGroupId"]').change(function () {
+            freezePage();
+            var id = $(this).val();
+
+            $.ajax({
+                type: "GET",
+                url: "/InputDocument/LoadProductByGroupId",
+                contentType: "application/json; charset=utf-8",
+                data: { "id": id,"type":'customer' },
+                datatype: "json",
+                success: function (data) {
+                    loadProductList(data.Products, 'customer');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+
+            unFreezePage();
+        });
+
+
+        $(document).ready(function() {
+            $('#totalAmount').val(0);
+            $('#decreasedAmount').val(0);
+						$('#addedAmount').val(0);
+						$('#PaymentTypeId').val('c20dcc55-479b-4d29-bb75-c9f9a3f7e7f8');
+        });
+      
+    </script>
+}
