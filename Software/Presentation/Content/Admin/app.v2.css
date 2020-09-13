@@ -12830,3 +12830,29 @@ a:hover .caret-white {
         display: inherit !important;
     }
 }
+.k-selected {
+    background-color: #04c659 !important;
+}
+
+.k-selected2 {
+    background-color: #red !important;
+}
+
+.product-list .col-md-4 {
+    margin-bottom: 10px;
+}
+
+.pro-group-selector {
+    width: 97%;
+}
+
+.product-group-title {
+    padding-top: 10px
+}
+
+
+
+.badge-number {
+    background-color: aqua;
+    padding: 3px;
+}

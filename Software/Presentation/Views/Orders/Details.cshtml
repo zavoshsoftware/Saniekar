@@ -116,6 +116,7 @@
 								<th scope="col">تعداد</th>
 								<th scope="col">قیمت واحد</th>
 								<th scope="col">قیمت کل</th>
+
 								<th scope="col">#</th>
 								@*<th scope="col">توضیحات</th>*@
 							</tr>
@@ -162,8 +163,15 @@
 										@*<td class="amounttable"><input id="@(String.Format("{0}{1}", "amount", detail.ProductId))" onkeyup="return changeRowTotal(this.id, 3)" value="@amount" /> </td>*@
 										<td id="@(String.Format("{0}{1}", "rowAmount", detail.ProductId))">@rowAmount</td>
 									}
-									<td><i class="fa fa-remove" onclick="removeRow('@detail.ProductId');"></i></td>
-								</tr>
+								@{
+									var identity2 = (System.Security.Claims.ClaimsIdentity) User.Identity;
+									string role2 = identity2.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+									if (role2.ToLower() != "factory")
+									{
+										<td><i class="fa fa-remove" onclick="removeRow('@detail.ProductId');"></i></td>
+									}
+								}
+									</tr>
 							}
 							</tbody>
 
@@ -264,6 +272,15 @@
 														</td>
 														<td>
 															<textarea class="form-control" id="factorydesc" placeholder="توضیحات">@Model.Order.FactoryShipmentDesc</textarea>
+														</td>
+													</tr>
+
+													<tr>
+														<td>
+															توضیحات فاکتور
+														</td>
+														<td>
+															<textarea class="form-control" readonly="readonly" id="order-desc" placeholder="توضیحات فاکتور">@Model.Order.Description</textarea>
 														</td>
 													</tr>
 												@{

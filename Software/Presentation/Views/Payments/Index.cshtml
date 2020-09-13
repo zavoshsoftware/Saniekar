@@ -28,7 +28,7 @@ ViewBag.Title = "فهرست پرداختی های سفارش کد "+@ViewBag.cod
               .Columns(columns =>
                   {
         columns.Bound(model => model.PaymentType.Title);
-        columns.Bound(model => model.Amount);
+        columns.Bound(model => model.AmountStr);
         columns.Bound(model => model.IsDeposit);
         columns.Bound(model => model.Code);
         columns.Bound(model => model.IsActive);

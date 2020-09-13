@@ -105,3 +105,7 @@
     color: red;
 }
  
+.badge-danger {
+    background-color: red;
+    margin-left: 3px;
+}

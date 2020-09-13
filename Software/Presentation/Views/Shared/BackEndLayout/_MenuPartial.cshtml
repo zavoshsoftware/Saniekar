@@ -154,37 +154,44 @@
                                 </ul>
                             </li>
 
-                            <li id="supportLi" class="menuitem">
-                                <a href="#">
-                                    <i class="fa fa-bars icon"><b class="bg-info"></b></i><span class="pull-right"><i class="fa fa-angle-down text"></i><i class="fa fa-angle-up text-active"></i></span><span>فاکتور</span>
-                                </a>
-                                <ul class="nav lt">
-                                    <li>
-                                        <a href="/orders/create">
-                                            <i class="fa fa-angle-left"></i><span>ثبت فاکتور جدید</span>
-                                        </a>
-                                    </li>
-	                                <li>
-		                                <a href="/orders/list">
-			                                <i class="fa fa-angle-left"></i><span>لیست همه فاکتورهای</span>
-		                                </a>
-	                                </li>
-	                                <li>
-		                                <a href="/orders/list?sent=0">
-			                                <i class="fa fa-angle-left"></i><span>لیست فاکتورهای ارسال نشده</span>
-		                                </a>
-	                                </li>
-                                    <li>
-                                        <a href="/orders/list?sent=1">
-                                            <i class="fa fa-angle-left"></i><span>لیست فاکتورهای ارسال شده</span>
-                                        </a>
-	                                </li> 
-																
-                                </ul>
-                            </li>
+	                        <li id="supportLi" class="menuitem">
+		                        <a href="#">
+			                        <i class="fa fa-bars icon"><b class="bg-info"></b></i><span class="pull-right"><i class="fa fa-angle-down text"></i><i class="fa fa-angle-up text-active"></i></span><span>فاکتور</span>
+		                        </a>
+		                        <ul class="nav lt">
+			                        <li>
+				                        <a href="/orders/create" target="_blank">
+					                        <i class="fa fa-angle-left"></i><span>ثبت فاکتور جدید</span>
+				                        </a>
+			                        </li> 
+			                        <li>
+				                        <a href="/orders/list?sent=0">
+					                        <i class="fa fa-angle-left"></i><span>لیست فاکتورهای ارسال نشده</span>
+				                        </a>
+			                        </li>
+			                        <li>
+				                        <a href="/orders/list?sent=1">
+					                        <i class="fa fa-angle-left"></i><span>لیست فاکتورهای ارسال شده</span>
+				                        </a>
+			                        </li>
+		                        </ul>
+	                        </li>
+
+	                      
+	                        <li id="supportLi" class="menuitem">
+		                        <a href="/orders/list">
+			                        <i class="fa fa-bars icon"><b class="bg-info"></b></i><span>لیست همه فاکتورهای</span>
+			                        <label class="badge badge-info">@ViewBag.unSentOrder</label>
+			                        <label class="badge badge-danger">@ViewBag.earlyOrder</label>
+		                        </a>
+		                    
+	                        </li>
+													 
 	                        <li id="supportLi" class="menuitem">
 		                        <a href="/ProductRequestDetailSuppliers/IndexForApprove">
-			                        <i class="fa fa-bars icon"><b class="bg-info"></b></i><span>فهرست ارسال کالای کارخانه به شعب</span>
+			                        <i class="fa fa-bars icon"><b class="bg-info"></b></i><span>دریافت کالا از کارخانه</span>
+															<label class="badge badge-danger">@ViewBag.proRecieve</label>
+
 		                        </a>
 	                        </li>
                         }

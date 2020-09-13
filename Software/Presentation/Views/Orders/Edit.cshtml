@@ -7,6 +7,8 @@
 <div class="panel panel-primary">
 	<div class="panel-heading">
 		<label>@ViewBag.Title کد @Model.Order.Code</label>
+		
+		<a href="/orders/list" style="float: left; color: #fff;"><i class="fa fa-2x fa-arrow-left"></i></a>
 	</div>
 	<div class="panel-body">
 		<div class="row">
@@ -103,17 +105,17 @@
 		</div>
 
 		<div class="row">
-			<div class="col-md-5">
+			<div class="col-md-5 product-list">
 
 				<div class="panel panel-primary">
 					<div class="panel-heading">انتخاب محصولات</div>
 					<div class="panel-body">
 						<div class="row">
 
-							<label class="col-md-3">انتخاب گروه محصولات:</label>
+							<label class="col-md-3 product-group-title">انتخاب گروه محصولات:</label>
 							<div class="col-md-9 ">
 								<div class="row">
-									@Html.DropDownList("ProductGroupId", (IEnumerable<SelectListItem>)ViewBag.ProductGroupId, new { @class = "form-control" })
+									@Html.DropDownList("ProductGroupId", (IEnumerable<SelectListItem>)ViewBag.ProductGroupId, new { @class = "form-control pro-group-selector" })
 								</div>
 
 
@@ -256,7 +258,9 @@
 																			@Html.DropDownList("PaymentTypeId", null, "نوع پرداخت", new { @class = "form-control", @disabled = "disabled" })
 																		</td>
 																		<dfn>
-																			این سفارش به جز پرداخت دیگری به جز پیش پرداخت دارد. جهت مدیریت پرداخت های این سفارش اینجا را کلیک کنید
+																			این سفارش به جز پرداخت دیگری به جز پیش پرداخت دارد. جهت مدیریت پرداخت های این سفارش 
+																			<a href="/Payments/index/"@Model.Order.Id>اینجا</a>
+																			 را کلیک کنید
 																		</dfn>
 								}
 							</tr>
@@ -269,6 +273,20 @@
 								<td>
 									<input type="text" class="form-control" id="remainAmount" readonly="readonly" value="@Model.Order.RemainAmountStr" />
 								</td>
+								<td>
+									<select id="ddlSenFrom" class="form-control">
+										@if (Model.Order.ShipmentFromFactory)
+										{
+											<option value="0">ارسال از فروشگاه</option>
+											<option value="1" selected="selected">ارسال از کارخانه</option>
+										}
+										else
+										{
+											<option value="0" selected="selected">ارسال از فروشگاه</option>
+											<option value="1">ارسال از کارخانه</option>
+										}
+									</select>
+								</td>
 							</tr>
 
 
@@ -277,8 +295,13 @@
 									توضیحات
 								</td>
 								<td>
-									<textarea class="form-control" id="desc" placeholder="توضیحات"></textarea>
+									<textarea class="form-control" id="desc" placeholder="توضیحات" >@Model.Order.Description</textarea>
 								</td>
+								
+								<td>
+									<textarea class="form-control" id="factorydesc" placeholder="توضیحات اضافی برای کارخانه">@Model.Order.FactoryShipmentDesc</textarea>
+								</td>
+							
 							</tr>
 
 							<tr>

@@ -12,9 +12,9 @@
         <div class="row">
             <div class="col-md-6">
                 <label class="col-md-3">انتخاب شعبه*:</label>
-                <div class="col-md-9 ">
-                    @Html.DropDownList("BranchId", (IEnumerable<SelectListItem>)ViewBag.BranchId, "انتخاب شعبه", new { @class = "form-control" })
-                </div>
+	            <div class="col-md-9 ">
+								@Html.DropDownList("BranchId", (IEnumerable<SelectListItem>)ViewBag.BranchId, new { @class = "form-control" })
+	            </div>
             </div>
             <div class="col-md-6">
                 <label class="col-md-3">تاریخ فاکتور:</label>
@@ -39,8 +39,6 @@
             </div>
         </div>
    
-        
-        
         <div class="row">
             <div class="col-md-6">
                 <label class="col-md-3">نام مشتری*:</label>
@@ -65,7 +63,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <label class="col-md-3">*نوع حمل:</label>
+                <label class="col-md-3">نوع حمل:</label>
                 <div class="col-md-9 ">
                     @Html.DropDownList("ShipmentTypeId", (IEnumerable<SelectListItem>)ViewBag.ShipmentTypeId, "نوع حمل", new { @class = "form-control" })
                 </div>
@@ -96,27 +94,24 @@
         </div>
         
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-5 product-list">
 
                 <div class="panel panel-primary">
                     <div class="panel-heading">انتخاب محصولات</div>
                     <div class="panel-body">
                         <div class="row">
 
-                            <label class="col-md-3">انتخاب گروه محصولات:</label>
+                            <label class="col-md-3 product-group-title" >انتخاب گروه محصولات:</label>
                             <div class="col-md-9 ">
                                 <div class="row">
-                                    @Html.DropDownList("ProductGroupId", (IEnumerable<SelectListItem>)ViewBag.ProductGroupId, new { @class = "form-control" })
+                                    @Html.DropDownList("ProductGroupId", (IEnumerable<SelectListItem>)ViewBag.ProductGroupId, new { @class = "form-control pro-group-selector" })
                                 </div>
-
-
                             </div>
 
 
                         </div>
                         <p id="parent-message" class="alert alert-info">رنگ محصول <span id="parentProductTitle"></span> را انتخاب کنید</p>
                         <div class="row" id="product-list">
-
                         </div>
 
                     </div>
@@ -198,27 +193,35 @@
                                 <td>
                                    مبلغ باقی مانده
                                 </td>
-                                <td>
-                                    <input type="text" class="form-control" id="remainAmount" readonly="readonly" value="0" />
-                                </td>
+	                            <td>
+		                            <input type="text" class="form-control" id="remainAmount" readonly="readonly" value="0" />
+	                            </td>
+	                            <td>
+		                            <select id="ddlSenFrom" class="form-control">
+			                            <option value="0">ارسال از فروشگاه</option>
+			                            <option value="1">ارسال از کارخانه</option>
+		                            </select>
+	                            </td>
                             </tr>
                             
-
                             <tr>
                                 <td>
                                     توضیحات
                                 </td>
-                                <td>
-                                    <textarea class="form-control" id="desc" placeholder="توضیحات"></textarea>
-                                </td>
+	                            <td>
+		                            <textarea class="form-control" id="desc" placeholder="توضیحات"></textarea>
+	                            </td>
+	                            <td>
+		                            <textarea class="form-control" id="factorydesc" placeholder="توضیحات اضافی برای کارخانه"></textarea>
+	                            </td>
+															
                             </tr>
 
                             <tr>
                                 <td></td>
                                 <td>
                                     <input type="button" class="btn btn-success" onclick="finalizeOrder();" value="ثبت فاکتور" />
-
-                                </td>
+															   </td>
                             </tr>
                         </table>
                         <p class="alert alert-success" id="submit-succes">ثبت اطلاعات با موفقیت انجام شد.</p>

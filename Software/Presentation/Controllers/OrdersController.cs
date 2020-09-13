@@ -8,6 +8,7 @@ using Models;
 using ViewModels;
 using System.Data.Entity;
 using System.Data;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 
 namespace Presentation.Controllers
 {
@@ -78,7 +79,7 @@ namespace Presentation.Controllers
         [AllowAnonymous]
         [HttpPost]
         public ActionResult PostFinalize(string branchId, string orderDate, string recieveDate, string cellNumber, string fullName, string phone, string address, string cityId, string regionId, string addedAmount,
-            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId)
+            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId,string sendFrom,string factorydesc)
         {
             try
             {
@@ -91,7 +92,7 @@ namespace Presentation.Controllers
 
                 Order order = InsertOrder(user, branchId, dtOrderDete, dtRecieveDete, phone, address, cityId, regionId,
                     addedAmount, decreasedAmount, desc, shipmentTypeId, paymentAmount, paymentTypeId,
-                    orderDetails.SubTotal);
+                    orderDetails.SubTotal, sendFrom,  factorydesc);
 
                 InsertToOrderDetail(orderDetails, order.Id);
 
@@ -100,7 +101,7 @@ namespace Presentation.Controllers
 
                 UnitOfWork.Save();
 
-                return Json("true", JsonRequestBehavior.AllowGet);
+                return Json("true-" + order.Code, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -172,7 +173,7 @@ namespace Presentation.Controllers
         }
 
         public Order InsertOrder(User user, string branchId, DateTime orderDate, DateTime recieveDate, string phone, string address, string cityId, string regionId, string addedAmount,
-            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, decimal subTotal)
+            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, decimal subTotal,string sendFrom, string factorydesc)
         {
             decimal additiveAmount = Convert.ToDecimal(addedAmount);
             decimal discountAmount = Convert.ToDecimal(decreasedAmount);
@@ -188,7 +189,13 @@ namespace Presentation.Controllers
 
 
             Guid branchIdGuid = new Guid(branchId);
-            Guid shippmentTypeIdGuid = new Guid(shipmentTypeId);
+
+            Guid? shippmentTypeIdGuid = null;
+
+            if (!string.IsNullOrEmpty(shipmentTypeId))
+             shippmentTypeIdGuid = new Guid(shipmentTypeId);
+
+            bool shipmentFromFactory = sendFrom == "1";
 
             Order order = new Order()
             {
@@ -212,7 +219,8 @@ namespace Presentation.Controllers
                 RemainAmount = remainAmountDecimal,
                 OrderStatusId = UnitOfWork.OrderStatusRepository.Get(current => current.Code == 0).FirstOrDefault().Id,
                 Phone = phone,
-                ShipmentFromFactory = false
+                ShipmentFromFactory = shipmentFromFactory,
+                FactoryShipmentDesc = factorydesc
             };
 
             UnitOfWork.OrderRepository.Insert(order);
@@ -515,8 +523,11 @@ namespace Presentation.Controllers
                     }
                 }
             }
-
-            return View(orders.OrderByDescending(current => current.Code));
+           
+            // return orderList.ToList();
+            return View(orders
+                .OrderByDescending(current => current.OrderStatusId)
+                .ThenBy(current => current.CreationDate));
         }
 
 
@@ -651,7 +662,7 @@ namespace Presentation.Controllers
 
 
         public ActionResult PostEdit(string branchId, string orderDate, string recieveDate, string cellNumber, string fullName, string phone, string address, string cityId, string regionId, string addedAmount,
-            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, string parentId)
+            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, string parentId, string sendFrom, string factorydesc)
         {
             try
             {
@@ -664,7 +675,7 @@ namespace Presentation.Controllers
 
                 EditOrder(order, branchId, orderDate, recieveDate, cellNumber, fullName, phone, address, cityId,
                     regionId, addedAmount, decreasedAmount, desc, shipmentTypeId, paymentAmount, paymentTypeId,
-                    orderDetails.SubTotal);
+                    orderDetails.SubTotal,sendFrom, factorydesc);
                 UnitOfWork.Save();
 
                 DeleteOrderDetails(orderId);
@@ -674,13 +685,59 @@ namespace Presentation.Controllers
 
                 UnitOfWork.Save();
 
-
-
                 return Json("true", JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 return Json("false", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+   public ActionResult CheckInventoryByCode(string code)
+        {
+            try
+            {
+                int orderCode = Convert.ToInt32(code);
+                Order order = UnitOfWork.OrderRepository.Get(c => c.Code == orderCode).FirstOrDefault();
+
+                    bool isInInventory = true;
+                if (order != null)
+                {
+                    List<OrderDetail> orderDetails =
+                        UnitOfWork.OrderDetailRepository.Get(c => c.OrderId == order.Id).ToList();
+
+                    var identity = (System.Security.Claims.ClaimsIdentity) User.Identity;
+
+                    User user = UnitOfWork.UserRepository.Get(current => current.CellNum == identity.Name)
+                        .FirstOrDefault();
+
+
+                    if (user != null)
+                    {
+                        Branch branch = GetUserBranches(user.Id).FirstOrDefault();
+
+                        foreach (OrderDetail orderDetail in orderDetails)
+                        {
+                            Inventory inventory = UnitOfWork.InventoryRepository.Get(c =>
+                                c.BranchId == branch.Id && c.ProductId == orderDetail.ProductId &&
+                                c.ProductColorId == orderDetail.ProductColorId &&
+                                c.MattressId == orderDetail.MattressId).FirstOrDefault();
+
+                            if (inventory == null)
+                            {
+                                isInInventory = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+                return Json(isInInventory, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json("error", JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -699,7 +756,7 @@ namespace Presentation.Controllers
 
         public void EditOrder(Order order, string branchId, string orderDate, string recieveDate, string cellNumber,
             string fullName, string phone, string address, string cityId, string regionId, string addedAmount,
-            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, decimal subTotal)
+            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, decimal subTotal, string sendFrom,string factorydesc)
         {
             User user = GetCurrentUser(cellNumber, fullName);
 
@@ -728,6 +785,9 @@ namespace Presentation.Controllers
                 order.CityId = new Guid(cityId);
                 order.RegionId = GetGuidFromString(regionId);
             }
+
+            bool shipmentFromFactory = sendFrom == "1";
+
             order.AdditiveAmount = additiveAmount;
             order.DiscountAmount = discountAmount;
             order.Description = desc;
@@ -735,7 +795,8 @@ namespace Presentation.Controllers
             order.PaymentAmount = paymentAmountDecimal;
             order.RemainAmount = remainAmountDecimal;
             order.IsPaid = isPaid;
-
+            order.ShipmentFromFactory = shipmentFromFactory;
+            order.FactoryShipmentDesc = factorydesc;
 
             UnitOfWork.OrderRepository.Update(order);
         }

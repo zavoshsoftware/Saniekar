@@ -782,8 +782,9 @@ function finalizeOrder() {
         var shipmentTypeId = $('#ShipmentTypeId').val();
         var paymentTypeId = $('#PaymentTypeId').val();
         var paymentAmount = $('#payment').val();
-
-
+        var sendFrom = $('#ddlSenFrom').val();
+        var factorydesc = $('#factorydesc').val();
+        
         var paymentTypeIsRequired = null;
 
         if (paymentAmount === '0')
@@ -810,17 +811,25 @@ function finalizeOrder() {
                     "cityId": cityId,
                     "regionId": regionId,
                     "paymentTypeId": paymentTypeId,
-                    "paymentAmount": paymentAmount, "cellNumber": cellNumber
+                    "paymentAmount": paymentAmount, "cellNumber": cellNumber,
+                    "sendFrom": sendFrom,
+                    "factorydesc": factorydesc
                 },
                 success: function (data) {
-                    if (data === "true") {
+                    if (data.includes("true")) {
+                        var orderCode = data.split('-')[1];
                         $('#submit-succes').css('display', 'block');
+                        $('#submit-succes').html('فاکتور شماره '+ orderCode+' با موفقیت ثبت گردید.');
                         $('#submit-error').css('display', 'none');
+                        clearForm();
+
                     } else {
                         $('#submit-succes').css('display', 'none');
                         $('#submit-error').css('display', 'block');
                         $('#submit-error').html('خطایی رخ داده است. لطفا دوباره تلاش کنید');
+
                     }
+
                 },
                 error: function () {
                     $('#submit-succes').css('display', 'none');
@@ -836,6 +845,19 @@ function finalizeOrder() {
             $('#submit-error').html('فیلدهای ستاره دار را تکمیل نمایید.');
             if (!paymentTypeIsRequired)
                 $('#submit-error').html('نوع پرداخت را مشخص کنید.');
+
+            if (cellNumber === '') {
+                $('#CellNumber').css('border-color', 'red');
+            }
+            if (branchId === '') {
+                $('#BranchId').css('border-color', 'red');
+            }
+            if (fullName === '') {
+                $('#fullName').css('border-color', 'red');
+            }
+            if (paymentTypeId === '') {
+                $('#PaymentTypeId').css('border-color', 'red');
+            } 
         }
     } else {
         $('#submit-succes').css('display', 'none');
@@ -845,6 +867,24 @@ function finalizeOrder() {
     unFreezePage();
 }
 
+function clearForm() {
+    $('#CellNumber').val('');
+    $('#fullName').val('');
+    $('#address').val('');
+    $('#Phone').val('');
+    $('#ShipmentTypeId').val('');
+    $('#addedAmount').val('0');
+    $('#decreasedAmount').val('0');
+    $('#payment').val('0');
+    $('#remainAmount').val('0');
+    $('#totalAmount').val('0');
+
+    $('#factor tbody').html('');
+    $('#total').html('0');
+    setCookie("basket", '');
+
+    $('.panel-body input').css('border-color', '#d9d9d9');
+}
 
 function changeTotalOrder() {
     $('#totalAmount').val('');
@@ -914,6 +954,8 @@ function postEditOrder() {
         var shipmentTypeId = $('#ShipmentTypeId').val();
         var paymentTypeId = $('#PaymentTypeId').val();
         var paymentAmount = $('#payment').val();
+        var sendFrom = $('#ddlSenFrom').val();
+        var factorydesc = $('#factorydesc').val();
 
 
         var paymentTypeIsRequired = null;
@@ -947,7 +989,9 @@ function postEditOrder() {
                     "paymentTypeId": paymentTypeId,
                     "paymentAmount": paymentAmount,
                     "cellNumber": cellNumber,
-                    "parentId": id
+                    "parentId": id,
+                    "sendFrom": sendFrom,
+                    "factorydesc": factorydesc
                 },
                 success: function (data) {
                     if (data === "true") {

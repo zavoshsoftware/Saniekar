@@ -20,8 +20,11 @@ namespace Infrastructure
         {
             get
             {
-            ViewBag.fullName = Helpers.GetUserInfo.GetUserFullName();
+                ViewBag.fullName = Helpers.GetUserInfo.GetUserFullName();
 
+                ViewBag.unSentOrder = Helpers.GetUserInfo.GetBranchUnSentOrders();
+                ViewBag.earlyOrder = Helpers.GetUserInfo.GetEarlyOrdersCount();
+                ViewBag.proRecieve = Helpers.GetUserInfo.GetBranchRecieveCount();
 
                 if (_unitOfWork == null)
                 {

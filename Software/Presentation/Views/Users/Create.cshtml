@@ -4,6 +4,7 @@
     ViewBag.Title = "افزودن " + Server.HtmlDecode(Html.DisplayNameFor(model => model).ToString());
 }
 
+
 <h2>افزودن @Html.DisplayNameFor(model => model)</h2>
 
 @using (Html.BeginForm("Create", "Users",FormMethod.Post, new { enctype = "multipart/form-data" })) 

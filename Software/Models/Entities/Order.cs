@@ -70,7 +70,7 @@ namespace Models
         public Guid BranchId { get; set; }
 
         [Display(Name = "Title", ResourceType = typeof(Resources.Models.ShipmentType))]
-        public Guid ShipmentTypeId { get; set; }
+        public Guid? ShipmentTypeId { get; set; }
 
         public Guid? RegionId { get; set; }
         public Guid OrderStatusId { get; set; }
@@ -95,7 +95,7 @@ namespace Models
             {
                 HasRequired(p => p.User).WithMany(t => t.Orders).HasForeignKey(p => p.UserId);
                 HasRequired(p => p.OrderStatus).WithMany(t => t.Orders).HasForeignKey(p => p.OrderStatusId);
-                HasRequired(p => p.ShipmentType).WithMany(t => t.Orders).HasForeignKey(p => p.ShipmentTypeId);
+                HasOptional(p => p.ShipmentType).WithMany(t => t.Orders).HasForeignKey(p => p.ShipmentTypeId);
                 HasOptional(p => p.City).WithMany(t => t.Orders).HasForeignKey(p => p.CityId);
                 HasOptional(p => p.Branch).WithMany(t => t.Orders).HasForeignKey(p => p.BranchId);
                 HasOptional(p => p.Region).WithMany(t => t.Orders).HasForeignKey(p => p.RegionId);

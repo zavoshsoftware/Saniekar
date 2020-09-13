@@ -40,5 +40,14 @@ namespace Models
                 HasRequired(p => p.PaymentType).WithMany(t => t.Payments).HasForeignKey(p => p.PaymentTypeId);
             }
         }
+
+
+        [NotMapped]
+        [Display(Name = "Amount", ResourceType = typeof(Resources.Models.Payment))]
+        public string AmountStr
+        {
+            get { return Amount.ToString("N0"); }
+        }
+
     }
 }
