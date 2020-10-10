@@ -10,7 +10,10 @@
 <div class="panel panel-primary">
 
     <div class="panel-heading">
-        <label>@ViewBag.Title</label>
+	    <label>@ViewBag.Title</label>
+			
+	    <a href="/InputDocument/index" style="float: left; color: #fff;"><i class="fa fa-2x fa-arrow-left"></i></a>
+
     </div>
     <div class="panel-body">
         <div class="row">
@@ -47,7 +50,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-5 product-list">
 
                 <div class="panel panel-primary">
                     <div class="panel-heading">انتخاب محصولات</div>
@@ -57,7 +60,7 @@
                             <label class="col-md-3">انتخاب گروه محصولات:</label>
                             <div class="col-md-9 ">
                                 <div class="row">
-                                    @Html.DropDownList("ProductGroupId", (IEnumerable<SelectListItem>)ViewBag.ProductGroupId, new { @class = "form-control" })
+                                    @Html.DropDownList("ProductGroupId", (IEnumerable<SelectListItem>)ViewBag.ProductGroupId, new { @class = "form-control pro-group-selector" })
                                 </div>
                             </div>
                         </div>
@@ -78,6 +81,7 @@
                                 <tr>
                                     <th scope="col">نام محصول</th>
                                     <th scope="col">رنگ</th>
+                                    <th scope="col">تشک</th>
                                     <th scope="col">تعداد</th>
                                     <th scope="col">قیمت واحد</th>
                                     <th scope="col">قیمت کل</th>
@@ -85,28 +89,38 @@
                                     @*<th scope="col">توضیحات</th>*@
                                 </tr>
                             </thead>
-                            <tbody>
-                            @foreach (var detail in Model.InputDocumentDetails)
-                            {
-                                <tr>
-                                    @if (detail.Product.ParentId == null)
-                                    {
-                                        <td>@detail.Product.Title</td>
+	                        <tbody>
+	                        @foreach (var detail in Model.InputDocumentDetails)
+	                        {
+		                        <tr>
 
-                                    }
-                                    else
-                                    {
-                                        <td>@detail.Product.Parent.Title</td>
-                                    }
-                                    <td>@detail.Product.Title</td>
-                                    <td class="qtytable"><input id="@(String.Format("{0}{1}", "qty", detail.ProductId))" class="qty" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.Quantity"/> </td>
-                                    <td class="amounttable"><input id="@(String.Format("{0}{1}", "amount", detail.ProductId))" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.AmountStr"/> </td>
-                                    <td id="@(String.Format("{0}{1}", "rowAmount", detail.ProductId))">@detail.RowAmountStr</td>
-                                    <td><i class="fa fa-remove" onclick="removeRow('@detail.ProductId');"></i></td>
-                                </tr>
-                            }
+			                        <td>@detail.Product.Title</td>
+			                        @if (detail.ProductColorId != null)
+			                        {
+				                        <td>@detail.ProductColor.Title</td>
+			                        }
+			                        else
+			                        {
+				                        <td>-</td>
+			                        }
+			                        @if (detail.MattressId != null)
+			                        {
+				                        <td>@detail.Mattress.Title</td>
+			                        }
+			                        else
+			                        {
+				                        <td>-</td>
+			                        }
 
-                            </tbody>
+			                        <td class="qtytable">@detail.Quantity</td>
+			                        <td class="qtytable">@detail.AmountStr</td>
+			                        <td class="qtytable">@detail.RowAmountStr</td>
+			                        @*		<td class="qtytable"><input id="@(String.Format("{0}{1}", "qty", detail.ProductId))" class="qty" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.Quantity" /> </td>*@
+			                       
+			                        <td><i class="fa fa-remove" onclick="removeRow('@detail.ProductId');"></i></td>
+		                        </tr>
+	                        }
+	                        </tbody>
 
                         </table>
 
@@ -192,7 +206,7 @@
                 data: { "id": id },
                 datatype: "json",
                 success: function(data) {
-                    loadProductList(data.Products);
+                    loadProductList(data.Products,'factory');
                 },
                 error: function() {
                     alert("Dynamic content load failed.");

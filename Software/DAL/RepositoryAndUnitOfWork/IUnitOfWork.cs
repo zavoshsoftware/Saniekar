@@ -36,6 +36,7 @@ namespace DAL
         IMattressRepository MattressRepository { get; }
         IFundRepository FundRepository { get; }
         IFundDetailRepository FundDetailRepository { get; }
+        IProductRequestStatusRepository ProductRequestStatusRepository { get; }
         void Save();
     }
 }

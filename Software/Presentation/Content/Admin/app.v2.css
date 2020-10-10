@@ -9579,7 +9579,7 @@ a:hover .caret-white {
         }
 
     .panel .table td, .panel .table th {
-        padding: 6px 15px;
+        padding: 6px 13px;
         border-top: 1px solid #f1f1f1;
     }
 
@@ -12836,6 +12836,11 @@ a:hover .caret-white {
 
 .k-selected2 {
     background-color: #red !important;
+}
+
+
+.k-selected3 {
+    background-color: #ecd412 !important;
 }
 
 .product-list .col-md-4 {

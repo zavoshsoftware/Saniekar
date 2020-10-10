@@ -822,7 +822,7 @@ function finalizeOrder() {
                         $('#submit-succes').html('فاکتور شماره '+ orderCode+' با موفقیت ثبت گردید.');
                         $('#submit-error').css('display', 'none');
                         clearForm();
-
+                        window.location = "/orders/list";
                     } else {
                         $('#submit-succes').css('display', 'none');
                         $('#submit-error').css('display', 'block');

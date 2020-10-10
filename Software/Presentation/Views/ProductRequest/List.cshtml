@@ -14,6 +14,7 @@
         columns.Bound(model => model.RequestBranch.Title);
         columns.Bound(model => model.TotalStr);
         columns.Bound(model => model.CreationDateStr);
+        columns.Bound(model => model.ProductRequestStatus.Title);
         columns.Bound(item => @item.Id).Title("دستورات").Filterable(false).Groupable(false)
                       .Template(@<text>
                 @Html.ActionLink("جزییات", "Detail", new { id = @item.Id }, new { @class = "k-button" })
@@ -21,7 +22,16 @@
         })
         .ToolBar(toolbar =>
         {
-            toolbar.Custom().Action("Create", "Branches").Text("افزودن");
+
+	        {
+		        var identity = (System.Security.Claims.ClaimsIdentity) User.Identity;
+		        string role = identity.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+
+		        if (role.ToLower() != "factory")
+		        {
+			        toolbar.Custom().Action("Create", "Branches").Text("افزودن");
+		        }
+	        }
         }
         )
         .DataSource(dataSource => dataSource
@@ -30,3 +40,52 @@
                                     .Model(model => model.Id(item => item.Id))
                     )
 )
+
+
+
+<script>
+	$(document).ready(function () {
+		var t = $("#Grid table tbody tr");
+		for (var i = 0; i < t.length; i++) {
+			var y = t[i].children[4].innerText;
+			var code = t[i].children[0].innerText;
+			if (y === "کاملا تامین شده") {
+				//t[i].addClass("k-state-selected");
+				//t[i].bgColor="green";
+				t[i].className = t[i].className + ' k-selected';
+			}
+			else if (y === "قسمتی تامین شده") {
+				t[i].className = t[i].className + ' k-selected3';
+				
+			}
+			//else{
+
+			//	$.ajax({
+			//		type: "Post",
+			//		url: "/Orders/CheckInventoryByCode",
+			//		data: {
+			//			"code": code,
+			//		},
+			//		success: function (data) {
+			//			if (!data.includes("error")) {
+			//				if (data === false) {
+			//					t[i].className = t[i].className + ' k-selected2';
+			//				}
+			//			} else {
+			//				$('#submit-succes').css('display', 'none');
+			//				$('#submit-error').css('display', 'block');
+			//				$('#submit-error').html('خطایی رخ داده است. لطفا دوباره تلاش کنید');
+			//			}
+			//		},
+			//		error: function () {
+			//			$('#submit-succes').css('display', 'none');
+			//			$('#submit-error').css('display', 'block');
+			//			$('#submit-error').html('خطایی رخ داده است. لطفا دوباره تلاش کنید');
+			//		}
+			//	});
+
+			// }
+		}
+	});
+
+</script>

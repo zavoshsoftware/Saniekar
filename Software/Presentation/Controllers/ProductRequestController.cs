@@ -221,7 +221,8 @@ namespace Presentation.Controllers
                 RequestSupplierId = new Guid(supplierId),
                 Code = codeGenerator.ReturnProductRequestCode(),
                 RequestDate = Convert.ToDateTime(inputDate),
-                Description = desc
+                Description = desc,
+                ProductRequestStatusId = UnitOfWork.ProductRequestStatusRepository.Get(current => current.Code == 1).FirstOrDefault().Id
             };
 
             UnitOfWork.ProductRequestRepository.Insert(productRequest);
@@ -588,23 +589,53 @@ namespace Presentation.Controllers
 
                 }
             }
+
+            Guid productRequestStatusId = new Guid("D78873A3-8C13-4B38-B90E-BFD45126531E");
+
+            foreach (ProductRequestDetailItem detail in productRequestDetailViewModel.ProductRequestDetails)
+            {
+                if (detail.SupplyNumber == 0)
+                {
+                    productRequestStatusId = new Guid("D78873A3-8C13-4B38-B90E-BFD45126531E");
+                    break;
+                }
+                if (detail.SupplyNumber > 0 && detail.SupplyNumber < detail.Quantity)
+                {
+                    productRequestStatusId = new Guid("BD733498-49DA-4597-B32F-F055A00A86A8");
+                    break;
+                }
+                else if (detail.SupplyNumber > 0 && detail.SupplyNumber == detail.Quantity)
+                {
+                    productRequestStatusId = new Guid("4E0268B2-8885-44B7-A622-9285B4886192");
+                }
+            }
+
+            ProductRequestDetail oProductRequestDetail =
+                UnitOfWork.ProductRequestDetailRepository.GetById(productRequestDetailViewModel.ProductRequestDetails
+                    .FirstOrDefault().ProductRequestDetailId);
+
+            ProductRequest oProductRequest =
+                UnitOfWork.ProductRequestRepository.GetById(oProductRequestDetail.ProductRequestId);
+
+            if (oProductRequest != null)
+            {
+                oProductRequest.ProductRequestStatusId = productRequestStatusId;
+                UnitOfWork.ProductRequestRepository.Update(oProductRequest);
+                UnitOfWork.Save();
+            }
             return RedirectToAction("List");
         }
 
         public void InsertOrUpdateSupplier(Guid factoryId, Guid productRequestDetailId, int quantity, Guid recieverBranchId)
         {
-            //ProductRequestDetailSupplier oProductRequestDetailSupplier = UnitOfWork
-            //    .ProductRequestDetailSupplierRepository.Get(current =>
-            //        current.BranchId == factoryId && current.ProductRequestDetailId == productRequestDetailId)
-            //    .FirstOrDefault();
 
             ProductRequestDetail productRequestDetail =
                 UnitOfWork.ProductRequestDetailRepository.GetById(productRequestDetailId);
 
             productRequestDetail.TotalSupplied = productRequestDetail.TotalSupplied + quantity;
+
             UnitOfWork.ProductRequestDetailRepository.Update(productRequestDetail);
-
-
+             
             Inventory inventory = UnitOfWork.InventoryRepository.Get(current =>
                     current.BranchId == factoryId && current.ProductId == productRequestDetail.ProductId)
                 .FirstOrDefault();
@@ -614,8 +645,7 @@ namespace Presentation.Controllers
                 inventory.Stock = inventory.Stock - quantity;
                 UnitOfWork.InventoryRepository.Update(inventory);
             }
-            //if (oProductRequestDetailSupplier == null)
-            //{
+
             ProductRequestDetailSupplier productRequestDetailSupplier = new ProductRequestDetailSupplier()
             {
                 BranchId = recieverBranchId,
@@ -626,20 +656,13 @@ namespace Presentation.Controllers
             UnitOfWork.ProductRequestDetailSupplierRepository.Insert(productRequestDetailSupplier);
 
 
-            //}
-            //else
-            //{
-            //    int oldQuantity = oProductRequestDetailSupplier.Quantity;
-            //    oProductRequestDetailSupplier.Quantity = quantity;
-            //    UnitOfWork.ProductRequestDetailSupplierRepository.Update(oProductRequestDetailSupplier);
 
-
-            //}
 
             UnitOfWork.Save();
 
         }
 
+    
         public Guid? GetFactoryBranchId()
         {
             Guid? factoryId = null;

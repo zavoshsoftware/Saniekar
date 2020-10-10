@@ -49,6 +49,7 @@ namespace Models
             {
                 HasOptional(p => p.RequestBranch).WithMany(j => j.BranchProductRequests).HasForeignKey(p => p.RequestBranchId).WillCascadeOnDelete(false);
                 HasOptional(p => p.RequestSupplier).WithMany(j => j.SupplierProductRequests).HasForeignKey(p => p.RequestSupplierId).WillCascadeOnDelete(false);
+                HasOptional(p => p.ProductRequestStatus).WithMany(j => j.ProductRequests).HasForeignKey(p => p.ProductRequestStatusId);
             }
         }
 
@@ -69,5 +70,9 @@ namespace Models
 
             }
         }
+
+        [Display(Name = "وضعیت درخواست")]
+        public Guid? ProductRequestStatusId { get; set; }
+        public virtual ProductRequestStatus ProductRequestStatus { get; set; }
     }
 }

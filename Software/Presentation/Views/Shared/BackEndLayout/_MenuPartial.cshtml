@@ -16,7 +16,7 @@
 		                        <ul class="nav lt">
 			                        <li>
 				                        <a href="/productgroups">
-					                        <i class="fa fa-angle-left"></i><span>مدیریت گروه محصولات</span>
+					                        <i class="fa fa-angle-left"></i><span>مدیریت دسته بندی محصولات</span>
 				                        </a>
 			                        </li>
 			                        <li>
@@ -121,15 +121,22 @@
                             {
 	                            <li id="supportLi" class="menuitem">
 		                            <a href="/ProductRequest/list">
-			                            <i class="fa fa-bars icon"><b class="bg-info"></b></i><span class="pull-right"></span><span>لیست درخواست کالا</span>
+			                            <i class="fa fa-bars icon"><b class="bg-info">
+				                            
+			                            </b></i><span class="pull-right"></span><span>لیست درخواست کالا</span>
+																	<label class="badge badge-danger">@ViewBag.productRequestFactory</label>
 		                            </a>
 	                            </li>
 
-	                            <li>
+	                            <li id="supportLi" class="menuitem">
 		                            <a href="/orders/list">
-			                            <i class="fa fa-angle-left"></i><span>لیست فاکتورهای کارخانه</span>
+			                            <i class="fa fa-bars icon"><b class="bg-info">
+				                            
+			                            </b></i><span class="pull-right"></span><span>لیست فاکتورهای کارخانه</span>
+			                            <label class="badge badge-danger">@ViewBag.orderByFactory</label>
 		                            </a>
 	                            </li>
+ 
                             }
 
 	                      
@@ -180,8 +187,8 @@
 	                      
 	                        <li id="supportLi" class="menuitem">
 		                        <a href="/orders/list">
-			                        <i class="fa fa-bars icon"><b class="bg-info"></b></i><span>لیست همه فاکتورهای</span>
-			                        <label class="badge badge-info">@ViewBag.unSentOrder</label>
+			                        <i class="fa fa-bars icon"><b class="bg-info"></b></i><span>لیست همه فاکتورها</span>
+			                        <label class="badge badge-info" >@ViewBag.unSentOrder</label>
 			                        <label class="badge badge-danger">@ViewBag.earlyOrder</label>
 		                        </a>
 		                    
@@ -207,3 +214,11 @@
         </div>
     </section>
 </section>
+
+
+<script>
+	$(document).ready(function() {
+
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+</script>

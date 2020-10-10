@@ -25,6 +25,8 @@ namespace Infrastructure
                 ViewBag.unSentOrder = Helpers.GetUserInfo.GetBranchUnSentOrders();
                 ViewBag.earlyOrder = Helpers.GetUserInfo.GetEarlyOrdersCount();
                 ViewBag.proRecieve = Helpers.GetUserInfo.GetBranchRecieveCount();
+                ViewBag.orderByFactory = Helpers.GetUserInfo.GetFactoryOrderCount();
+                ViewBag.productRequestFactory = Helpers.GetUserInfo.GetFactoryProductRequestCount();
 
                 if (_unitOfWork == null)
                 {

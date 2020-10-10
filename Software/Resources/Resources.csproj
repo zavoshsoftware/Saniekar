@@ -90,6 +90,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Product.resx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProductRequestStatus.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProductRequestStatus.resx</DependentUpon>
+    </Compile>
     <Compile Include="Models\Role.Designer.cs" />
     <Compile Include="Models\ShipmentType.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -133,6 +138,10 @@
     <EmbeddedResource Include="Models\Product.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Product1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Models\ProductRequestStatus.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ProductRequestStatus.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Models\Role.resx" />
     <EmbeddedResource Include="Models\ShipmentType.resx">

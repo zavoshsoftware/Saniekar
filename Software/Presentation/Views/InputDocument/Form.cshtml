@@ -1,4 +1,4 @@
-﻿@model ViewModels.InputDocumentViewModel
+﻿@model Models.InputDocument
 @{
     ViewBag.Title = "فرم ورود کالا";
 }
@@ -14,7 +14,7 @@
                 
                 <label class="col-md-3">انتخاب شعبه:</label>
                 <div class="col-md-9 ">
-                    @Html.DropDownList("BranchId", (IEnumerable<SelectListItem>)ViewBag.BranchId, "انتخاب شعبه", new { @class = "form-control" })
+                    @Html.DropDownList("BranchId", (IEnumerable<SelectListItem>)ViewBag.BranchId,  new { @class = "form-control" })
                 </div>
             </div>
             <div class="col-md-6">
@@ -42,7 +42,7 @@
         </div>
         
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-5 product-list">
                 
                 <div class="panel panel-primary">
                     <div class="panel-heading">انتخاب محصولات</div>
@@ -52,12 +52,9 @@
                                 <label class="col-md-3">انتخاب گروه محصولات:</label>
                                 <div class="col-md-9 ">
                                     <div class="row">
-                                        @Html.DropDownList("ProductGroupId", (IEnumerable<SelectListItem>) ViewBag.ProductGroupId, new {@class = "form-control"})
+                                        @Html.DropDownList("ProductGroupId", (IEnumerable<SelectListItem>) ViewBag.ProductGroupId, new {@class = "form-control pro-group-selector" })
                                     </div>
-                                  
-                                
                                 </div>
-                            
                    
                         </div>
                         <p id="parent-message" class="alert alert-info">رنگ محصول <span id="parentProductTitle"></span> را انتخاب کنید</p>
@@ -97,10 +94,10 @@
                     </div>
                     <div class="panel-footer">
                         <table>
-                            <tr>
+                            @*<tr>
                                 <td></td>
                                 <td><input type="button" value="به روز رسانی جمع کل" onclick="updateFactor();" class="btn btn-warning"/></td>
-                            </tr>
+                            </tr>*@
                             <tr>
                                 <td>جمع کل</td>
                                 <td id="total">0</td>

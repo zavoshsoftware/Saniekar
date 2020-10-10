@@ -101,6 +101,7 @@
     <Compile Include="Entities\ProductRequest.cs" />
     <Compile Include="Entities\ProductRequestDetail.cs" />
     <Compile Include="Entities\ProductRequestDetailSupplier.cs" />
+    <Compile Include="Entities\ProductRequestStatus.cs" />
     <Compile Include="Entities\Province.cs" />
     <Compile Include="Entities\Region.cs" />
     <Compile Include="Entities\Role.cs" />
@@ -244,6 +245,10 @@
     <Compile Include="Migrations\202009131020253_V34.Designer.cs">
       <DependentUpon>202009131020253_V34.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009160627276_V35.cs" />
+    <Compile Include="Migrations\202009160627276_V35.Designer.cs">
+      <DependentUpon>202009160627276_V35.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -359,6 +364,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009131020253_V34.resx">
       <DependentUpon>202009131020253_V34.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009160627276_V35.resx">
+      <DependentUpon>202009160627276_V35.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

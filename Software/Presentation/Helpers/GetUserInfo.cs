@@ -36,8 +36,8 @@ namespace Helpers
 
             if (user != null)
             {
-            
-                BranchUser  branchUser =db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id&&current.IsDeleted==false);
+
+                BranchUser branchUser = db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id && current.IsDeleted == false);
 
                 if (branchUser != null)
                 {
@@ -52,7 +52,7 @@ namespace Helpers
             return -1;
         }
 
-    public static int GetBranchRecieveCount()
+        public static int GetBranchRecieveCount()
         {
             DatabaseContext db = new DatabaseContext();
 
@@ -62,12 +62,12 @@ namespace Helpers
 
             if (user != null)
             {
-            
-                BranchUser  branchUser =db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id&&current.IsDeleted==false);
+
+                BranchUser branchUser = db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id && current.IsDeleted == false);
 
                 if (branchUser != null)
                 {
-                    int count = db.ProductRequestDetailSuppliers.Count(c => c.BranchId == branchUser.BranchId && c.IsReceived!=true);
+                    int count = db.ProductRequestDetailSuppliers.Count(c => c.BranchId == branchUser.BranchId && c.IsReceived != true);
 
                     return count;
                 }
@@ -100,6 +100,67 @@ namespace Helpers
                         c.BranchId == branchUser.BranchId && c.OrderStatus.Code < 4 && c.RecieveDate <= earlyDate);
 
                     return orderCounts;
+                }
+                return 0;
+
+            }
+
+            return -1;
+        }
+
+
+        public static int GetFactoryOrderCount()
+        {
+            DatabaseContext db = new DatabaseContext();
+
+            var identity = (System.Security.Claims.ClaimsIdentity)HttpContext.Current.User.Identity;
+
+            User user = db.Users.FirstOrDefault(current => current.CellNum == identity.Name);
+
+            if (user != null)
+            {
+
+                BranchUser branchUser = db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id && current.IsDeleted == false);
+
+                if (branchUser != null)
+                {
+                    Guid sentStatusId = new Guid("18C1B32B-23F5-4F1F-B426-275214535F38");
+
+                    int count = db.Orders.Count(c => c.ShipmentFromFactory && c.OrderStatusId != sentStatusId && c.IsDeleted == false);
+
+                    return count;
+                }
+                return 0;
+
+            }
+
+            return -1;
+        }
+
+
+
+        public static int GetFactoryProductRequestCount()
+        {
+            DatabaseContext db = new DatabaseContext();
+
+            var identity = (System.Security.Claims.ClaimsIdentity)HttpContext.Current.User.Identity;
+
+            User user = db.Users.FirstOrDefault(current => current.CellNum == identity.Name);
+
+            if (user != null)
+            {
+
+                BranchUser branchUser = db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id && current.IsDeleted == false);
+
+                if (branchUser != null)
+                {
+                    Guid completeRequestStatusId = new Guid("4E0268B2-8885-44B7-A622-9285B4886192");
+
+                    int count = db.ProductRequests.Count(c =>
+                        c.RequestSupplierId == branchUser.BranchId && c.ProductRequestStatusId!=completeRequestStatusId &&
+                        c.IsDeleted == false);
+                    
+                    return count;
                 }
                 return 0;
 

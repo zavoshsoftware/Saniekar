@@ -38,5 +38,6 @@ namespace Models
         public DbSet<Mattress> Mattresses { get; set; }
         public DbSet<Fund> Funds { get; set; }
         public DbSet<FundDetail> FundDetails { get; set; }
+        public DbSet<ProductRequestStatus> ProductRequestStatuses { get; set; }
     }
 }

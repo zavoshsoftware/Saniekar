@@ -60,6 +60,7 @@
     <Compile Include="RepositoryAndUnitOfWork\IUnitOfWork.cs" />
     <Compile Include="RepositoryAndUnitOfWork\Repository.cs" />
     <Compile Include="RepositoryAndUnitOfWork\UnitOfWork.cs" />
+    <Compile Include="RepositoryClasses\ProductRequestStatusRepository.cs" />
     <Compile Include="RepositoryClasses\FundRepository.cs" />
     <Compile Include="RepositoryClasses\FundDetailRepository.cs" />
     <Compile Include="RepositoryClasses\MattressRepository.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="RepositoryClasses\ProvinceRepository.cs" />
     <Compile Include="RepositoryClasses\RoleRepository.cs" />
     <Compile Include="RepositoryClasses\UserRepository.cs" />
+    <Compile Include="RepositoryInterfaces\IProductRequestStatusRepository.cs" />
     <Compile Include="RepositoryInterfaces\IFundDetailRepository.cs" />
     <Compile Include="RepositoryInterfaces\IFundRepository.cs" />
     <Compile Include="RepositoryInterfaces\IMattressRepository.cs" />

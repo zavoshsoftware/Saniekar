@@ -47,7 +47,27 @@ namespace Presentation.Controllers
 
             ViewBag.ProductGroupId = new SelectList(UnitOfWork.ProductGroupRepository.Get(), "Id", "Title");
             Deletecookie();
-            return View();
+
+            InputDocument inputDoc = new InputDocument() { InputDate = GetPersianDateTime(DateTime.Now) };
+
+            return View(inputDoc);
+        }
+
+
+        public DateTime GetPersianDateTime(DateTime date)
+        {
+            System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
+            string year = pc.GetYear(date).ToString().PadLeft(4, '0');
+            string month = pc.GetMonth(date).ToString().PadLeft(2, '0');
+            string day = pc.GetDayOfMonth(date).ToString().PadLeft(2, '0');
+            string stringDate = String.Format("{2}/{1}/{0}", year, month, day) + " " + date.ToString("HH:mm:ss");
+
+            //  var value = "1396/11/27";
+            // Convert to Miladi
+            DateTime dt = DateTime.Parse(stringDate, new System.Globalization.CultureInfo("fa-IR"));
+            // Get Utc Date
+            return dt.ToUniversalTime();
+
         }
 
         public List<Branch> GetUserBranches(Guid userId)
@@ -636,24 +656,34 @@ namespace Presentation.Controllers
             ViewBag.ProductGroupId = new SelectList(UnitOfWork.ProductGroupRepository.Get(), "Id", "Title");
 
 
+            Deletecookie();
 
             InputDocumentEditViewModel model = new InputDocumentEditViewModel();
+
+            List<string> basket = new List<string>();
+
 
             List<InputDocumentDetail> inputDocumentDetails = UnitOfWork.InputDocumentDetailRepository
                 .Get(current => current.InputDocumentId == id).ToList();
 
-            Deletecookie();
-            List<string> basket = new List<string>();
-            foreach (InputDocumentDetail inputDocumentDetail in inputDocumentDetails)
+             
+            string mattress = "nomatterss";
+            string color = "nocolor";
+
+            foreach (InputDocumentDetail orderDetail in inputDocumentDetails)
             {
-                for (int i = 0; i < inputDocumentDetail.Quantity; i++)
-                {
-                    basket.Add(inputDocumentDetail.ProductId.ToString());
-                }
+
+                if (orderDetail.MattressId != null)
+                    mattress = orderDetail.MattressId.ToString();
+
+                if (orderDetail.ProductColorId != null)
+                    color = orderDetail.ProductColorId.ToString();
+
+                basket.Add(orderDetail.ProductId.ToString() + "^" + orderDetail.Quantity + "^" + color + "^" +
+                           mattress);
             }
 
             SetCookie(basket.ToArray());
-
 
             if (inputDocument != null)
             {

@@ -497,6 +497,20 @@ namespace DAL
                 return (_fundDetailRepository);
             }
         }
+
+        private IProductRequestStatusRepository _productRequestStatusRepository;
+        public IProductRequestStatusRepository ProductRequestStatusRepository
+        {
+            get
+            {
+                if (_productRequestStatusRepository == null)
+                {
+                    _productRequestStatusRepository =
+                        new ProductRequestStatusRepository(DatabaseContext);
+                }
+                return (_productRequestStatusRepository);
+            }
+        }
         #endregion Inserting custom Respositories
     }
 }
