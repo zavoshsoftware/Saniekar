@@ -8,6 +8,8 @@ using Models;
 using ViewModels;
 using System.Data.Entity;
 using System.Data;
+using System.IO;
+using System.Net;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
 
 namespace Presentation.Controllers
@@ -79,7 +81,7 @@ namespace Presentation.Controllers
         [AllowAnonymous]
         [HttpPost]
         public ActionResult PostFinalize(string branchId, string orderDate, string recieveDate, string cellNumber, string fullName, string phone, string address, string cityId, string regionId, string addedAmount,
-            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId,string sendFrom,string factorydesc)
+            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, string sendFrom, string factorydesc, string file)
         {
             try
             {
@@ -92,7 +94,7 @@ namespace Presentation.Controllers
 
                 Order order = InsertOrder(user, branchId, dtOrderDete, dtRecieveDete, phone, address, cityId, regionId,
                     addedAmount, decreasedAmount, desc, shipmentTypeId, paymentAmount, paymentTypeId,
-                    orderDetails.SubTotal, sendFrom,  factorydesc);
+                    orderDetails.SubTotal, sendFrom, factorydesc, file);
 
                 InsertToOrderDetail(orderDetails, order.Id);
 
@@ -108,6 +110,41 @@ namespace Presentation.Controllers
                 return Json("false", JsonRequestBehavior.AllowGet);
             }
         }
+
+
+        public JsonResult UploadFile()
+        {
+            // check if the user selected a file to upload
+            if (Request.Files.Count > 0)
+            {
+                try
+                {
+                    HttpFileCollectionBase files = Request.Files;
+
+                    HttpPostedFileBase file = files[0];
+
+                    string fileName = Path.GetFileName(file.FileName);
+                    string newFilename = Guid.NewGuid().ToString().Replace("-", string.Empty)
+                                         + Path.GetExtension(fileName);
+
+                    // create the uploads folder if it doesn't exist
+                    Directory.CreateDirectory(Server.MapPath("/uploads/attachment/"));
+                    string path = Path.Combine(Server.MapPath("/uploads/attachment/"), newFilename);
+
+                    // save the file
+                    file.SaveAs(path);
+                    return Json("true_/uploads/attachment/" + newFilename);
+                }
+
+                catch (Exception e)
+                {
+                    return Json("error" + e.Message);
+                }
+            }
+
+            return Json("no files were selected !");
+        }
+
         CodeGenerator codeGenerator = new CodeGenerator();
 
         public void InsertToAccount(decimal totalAmount, decimal paymentAmount, Guid branchId, Guid userId, int orderCode)
@@ -173,7 +210,7 @@ namespace Presentation.Controllers
         }
 
         public Order InsertOrder(User user, string branchId, DateTime orderDate, DateTime recieveDate, string phone, string address, string cityId, string regionId, string addedAmount,
-            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, decimal subTotal,string sendFrom, string factorydesc)
+            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, decimal subTotal, string sendFrom, string factorydesc, string fileUrl)
         {
             decimal additiveAmount = Convert.ToDecimal(addedAmount);
             decimal discountAmount = Convert.ToDecimal(decreasedAmount);
@@ -193,7 +230,7 @@ namespace Presentation.Controllers
             Guid? shippmentTypeIdGuid = null;
 
             if (!string.IsNullOrEmpty(shipmentTypeId))
-             shippmentTypeIdGuid = new Guid(shipmentTypeId);
+                shippmentTypeIdGuid = new Guid(shipmentTypeId);
 
             bool shipmentFromFactory = sendFrom == "1";
 
@@ -220,7 +257,8 @@ namespace Presentation.Controllers
                 OrderStatusId = UnitOfWork.OrderStatusRepository.Get(current => current.Code == 0).FirstOrDefault().Id,
                 Phone = phone,
                 ShipmentFromFactory = shipmentFromFactory,
-                FactoryShipmentDesc = factorydesc
+                FactoryShipmentDesc = factorydesc,
+                Attachment = fileUrl
             };
 
             UnitOfWork.OrderRepository.Insert(order);
@@ -523,13 +561,43 @@ namespace Presentation.Controllers
                     }
                 }
             }
-           
+
             // return orderList.ToList();
             return View(orders
                 .OrderByDescending(current => current.OrderStatusId)
                 .ThenBy(current => current.CreationDate));
         }
 
+        public ActionResult Cancele(Guid id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Order order = UnitOfWork.OrderRepository.GetById(id);
+
+            if (order == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(order);
+        }
+
+        [HttpPost, ActionName("Cancele")]
+        [ValidateAntiForgeryToken]
+        public ActionResult CanceleConfirmed(Guid id)
+        {
+            Order order = UnitOfWork.OrderRepository.GetById(id);
+
+            order.OrderStatusId = UnitOfWork.OrderStatusRepository.Get(c => c.Code == 5).FirstOrDefault().Id;
+
+            UnitOfWork.OrderRepository.Update(order);
+
+            UnitOfWork.Save();
+
+            return RedirectToAction("List");
+        }
 
         public ActionResult Edit(Guid id)
         {
@@ -552,6 +620,7 @@ namespace Presentation.Controllers
                 }
                 else
                 {
+
                     var identity = (System.Security.Claims.ClaimsIdentity)User.Identity;
 
                     User user = UnitOfWork.UserRepository.Get(current => current.CellNum == identity.Name)
@@ -564,7 +633,6 @@ namespace Presentation.Controllers
                         ViewBag.BranchId = new SelectList(branches, "Id", "Title", order.BranchId);
                     }
                 }
-
 
                 if (order.CityId != null)
                 {
@@ -617,7 +685,6 @@ namespace Presentation.Controllers
 
                 foreach (OrderDetail orderDetail in orderDetails)
                 {
-
                     if (orderDetail.MattressId != null)
                         mattress = orderDetail.MattressId.ToString();
 
@@ -626,10 +693,11 @@ namespace Presentation.Controllers
 
                     basket.Add(orderDetail.ProductId.ToString() + "^" + orderDetail.Quantity + "^" + color + "^" +
                                mattress);
-
                 }
 
                 SetCookie(basket.ToArray());
+
+                UpdateCheckByRole(role, order);
 
                 OrderEditViewModel orderEdit = new OrderEditViewModel()
                 {
@@ -637,8 +705,10 @@ namespace Presentation.Controllers
                     OrderDetails = orderDetails,
                     HasPayment = OrderHasPayment(id)
                 };
+
                 return View(orderEdit);
             }
+
             return RedirectToAction("login", "Account");
         }
 
@@ -660,9 +730,25 @@ namespace Presentation.Controllers
             return null;
         }
 
+        public void UpdateCheckByRole(string role, Order order)
+        {
+            if (role == "Factory")
+            {
+                order.CheckByFactory = true;
+                UnitOfWork.OrderRepository.Update(order);
+                UnitOfWork.Save();
+            }
+            else if (role == "Branch")
+            {
+                order.CheckByStore = true;
+                UnitOfWork.OrderRepository.Update(order);
+                UnitOfWork.Save();
+            }
+
+        }
 
         public ActionResult PostEdit(string branchId, string orderDate, string recieveDate, string cellNumber, string fullName, string phone, string address, string cityId, string regionId, string addedAmount,
-            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, string parentId, string sendFrom, string factorydesc)
+            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, string parentId, string sendFrom, string factorydesc, string file)
         {
             try
             {
@@ -675,7 +761,7 @@ namespace Presentation.Controllers
 
                 EditOrder(order, branchId, orderDate, recieveDate, cellNumber, fullName, phone, address, cityId,
                     regionId, addedAmount, decreasedAmount, desc, shipmentTypeId, paymentAmount, paymentTypeId,
-                    orderDetails.SubTotal,sendFrom, factorydesc);
+                    orderDetails.SubTotal, sendFrom, factorydesc, file);
                 UnitOfWork.Save();
 
                 DeleteOrderDetails(orderId);
@@ -693,20 +779,20 @@ namespace Presentation.Controllers
             }
         }
 
-   public ActionResult CheckInventoryByCode(string code)
+        public ActionResult CheckInventoryByCode(string code)
         {
             try
             {
                 int orderCode = Convert.ToInt32(code);
                 Order order = UnitOfWork.OrderRepository.Get(c => c.Code == orderCode).FirstOrDefault();
 
-                    bool isInInventory = true;
+                bool isInInventory = true;
                 if (order != null)
                 {
                     List<OrderDetail> orderDetails =
                         UnitOfWork.OrderDetailRepository.Get(c => c.OrderId == order.Id).ToList();
 
-                    var identity = (System.Security.Claims.ClaimsIdentity) User.Identity;
+                    var identity = (System.Security.Claims.ClaimsIdentity)User.Identity;
 
                     User user = UnitOfWork.UserRepository.Get(current => current.CellNum == identity.Name)
                         .FirstOrDefault();
@@ -756,7 +842,7 @@ namespace Presentation.Controllers
 
         public void EditOrder(Order order, string branchId, string orderDate, string recieveDate, string cellNumber,
             string fullName, string phone, string address, string cityId, string regionId, string addedAmount,
-            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, decimal subTotal, string sendFrom,string factorydesc)
+            string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, decimal subTotal, string sendFrom, string factorydesc, string file)
         {
             User user = GetCurrentUser(cellNumber, fullName);
 
@@ -769,6 +855,8 @@ namespace Presentation.Controllers
             decimal remainAmountDecimal = totalAmount - paymentAmountDecimal;
 
             bool isPaid = totalAmount == paymentAmountDecimal;
+            order.IsEdit = true;
+
 
             order.BranchId = new Guid(branchId);
 
@@ -791,12 +879,20 @@ namespace Presentation.Controllers
             order.AdditiveAmount = additiveAmount;
             order.DiscountAmount = discountAmount;
             order.Description = desc;
-            order.ShipmentTypeId = new Guid(shipmentTypeId);
+
+            if (!string.IsNullOrEmpty(shipmentTypeId))
+                order.ShipmentTypeId = new Guid(shipmentTypeId);
+
             order.PaymentAmount = paymentAmountDecimal;
             order.RemainAmount = remainAmountDecimal;
             order.IsPaid = isPaid;
             order.ShipmentFromFactory = shipmentFromFactory;
             order.FactoryShipmentDesc = factorydesc;
+
+            if (!string.IsNullOrEmpty(file))
+            {
+                order.Attachment = file;
+            }
 
             UnitOfWork.OrderRepository.Update(order);
         }
@@ -924,6 +1020,7 @@ namespace Presentation.Controllers
                 }
 
                 SetCookie(basket.ToArray());
+                UpdateCheckByRole(role, order);
 
                 OrderEditViewModel orderEdit = new OrderEditViewModel()
                 {

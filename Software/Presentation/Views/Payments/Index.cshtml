@@ -42,7 +42,8 @@ ViewBag.Title = "فهرست پرداختی های سفارش کد "+@ViewBag.cod
 		.ToolBar(toolbar =>
 					{				
 						toolbar.Custom().Action("Create","Payments").Text("افزودن");                          
-						toolbar.Custom().Action("list","orders").Text("بازگشت به لیست فاکتورها");                          
+						toolbar.Custom().Action("list","orders",null).Text("بازگشت به لیست فاکتورها");                          
+						toolbar.Custom().Action("details","orders").Text("مشاهده جزییات فاکتور");                          
 					}
 		)         
 		.DataSource(dataSource => dataSource

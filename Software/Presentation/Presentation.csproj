@@ -553,8 +553,10 @@
     <Content Include="fonts\glyphicons\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\avatar_default.jpg" />
+    <Content Include="Images\check.png" />
     <Content Include="Images\loading.gif" />
     <Content Include="Images\logo.png" />
+    <Content Include="Images\remove.png" />
     <Content Include="Scripts\Admin\app.v2.js" />
     <Content Include="Scripts\Admin\app.v2.min.js" />
     <Content Include="Scripts\Admin\custom.js" />
@@ -829,7 +831,9 @@
     <Compile Include="Controllers\FundsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InventoriesController.cs" />
+    <Compile Include="Controllers\InventoryDetailTypesController.cs" />
     <Compile Include="Controllers\MattressesController.cs" />
+    <Compile Include="Controllers\OrderDetailsController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\ProductColorsController.cs" />
@@ -851,12 +855,14 @@
     <Compile Include="Helpers\DataAnnotations.cs" />
     <Compile Include="Helpers\GetUserInfo.cs" />
     <Compile Include="Helpers\HtmlHelpers.cs" />
+    <Compile Include="Helpers\InventoryDetailHelper.cs" />
     <Compile Include="Helpers\PersianCulture.cs" />
     <Compile Include="Infrastructure\BaseController.cs" />
     <Compile Include="Infrastructure\BaseControllerWithUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\BasketViewModel.cs" />
+    <Compile Include="ViewModels\InventoryListViewModel.cs" />
     <Compile Include="ViewModels\OrderEditViewModel.cs" />
     <Compile Include="ViewModels\OrderInsertViewModel.cs" />
     <Compile Include="ViewModels\ProductRequestRecieveViewModel.cs" />
@@ -1119,6 +1125,13 @@
     <Content Include="Views\FundDetails\Index.cshtml" />
     <Content Include="Views\Branches\ListForFunds.cshtml" />
     <Content Include="Views\ProductRequestDetailSuppliers\IndexForApprove.cshtml" />
+    <Content Include="Views\OrderDetails\List.cshtml" />
+    <Content Include="Views\Orders\Cancele.cshtml" />
+    <Content Include="Views\InventoryDetailTypes\Create.cshtml" />
+    <Content Include="Views\InventoryDetailTypes\Delete.cshtml" />
+    <Content Include="Views\InventoryDetailTypes\Details.cshtml" />
+    <Content Include="Views\InventoryDetailTypes\Edit.cshtml" />
+    <Content Include="Views\InventoryDetailTypes\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1129,6 +1142,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Uploads\attachment\" />
     <Folder Include="Uploads\paymentAttachment\" />
     <Folder Include="Uploads\Product\" />
     <Folder Include="Views\Cities\" />

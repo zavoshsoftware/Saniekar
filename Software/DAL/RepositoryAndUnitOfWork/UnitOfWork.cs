@@ -511,6 +511,34 @@ namespace DAL
                 return (_productRequestStatusRepository);
             }
         }
+        private IInventoryDetailTypeRepository _inventoryDetailTypeRepository;
+        public IInventoryDetailTypeRepository InventoryDetailTypeRepository
+        {
+            get
+            {
+                if (_inventoryDetailTypeRepository == null)
+                {
+                    _inventoryDetailTypeRepository =
+                        new InventoryDetailTypeRepository(DatabaseContext);
+                }
+                return (_inventoryDetailTypeRepository);
+            }
+        }
+
+
+        private IInventoryDetailRepository _inventoryDetailRepository;
+        public IInventoryDetailRepository InventoryDetailRepository
+        {
+            get
+            {
+                if (_inventoryDetailRepository == null)
+                {
+                    _inventoryDetailRepository =
+                        new InventoryDetailRepository(DatabaseContext);
+                }
+                return (_inventoryDetailRepository);
+            }
+        }
         #endregion Inserting custom Respositories
     }
 }

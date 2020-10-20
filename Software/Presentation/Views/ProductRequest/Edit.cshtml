@@ -121,14 +121,14 @@
                     </div>
                     <div class="panel-footer">
                         <table>
-                            <tr>
+                            @*<tr>
                                 <td></td>
                                 <td><input type="button" value="به روز رسانی جمع کل" onclick="updateFactor();" class="btn btn-warning" /></td>
                             </tr>
                             <tr>
                                 <td>جمع کل</td>
                                 <td id="total">@Model.ProductRequest.TotalStr</td>
-                            </tr>
+                            </tr>*@
                      
 
                             <tr>
@@ -173,7 +173,7 @@
                 data: { "id": id },
                 datatype: "json",
                 success: function(data) {
-                    loadProductList(data.Products);
+	                loadProductListWithoutAmounts(data.Products, 'store');
                 },
                 error: function() {
                     alert("Dynamic content load failed.");

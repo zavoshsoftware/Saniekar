@@ -137,6 +137,14 @@
 		                            </a>
 	                            </li>
  
+
+	                            <li id="supportLi" class="menuitem">
+		                            <a href="/orderdetails/list">
+			                            <i class="fa fa-bars icon"><b class="bg-info">
+				                            
+			                            </b></i><span class="pull-right"></span><span>لیست تامین کارخانه</span>
+		                            </a>
+	                            </li>
                             }
 
 	                      
@@ -197,10 +205,22 @@
 	                        <li id="supportLi" class="menuitem">
 		                        <a href="/ProductRequestDetailSuppliers/IndexForApprove">
 			                        <i class="fa fa-bars icon"><b class="bg-info"></b></i><span>دریافت کالا از کارخانه</span>
-															<label class="badge badge-danger">@ViewBag.proRecieve</label>
+			                        <label class="badge badge-danger">@ViewBag.proRecieve</label>
 
 		                        </a>
 	                        </li>
+
+	                        if (role == "Branch")
+	                        {
+		                        
+		                        <li id="supportLi" class="menuitem">
+			                        <a href="/orderdetails/list">
+				                        <i class="fa fa-bars icon"><b class="bg-info">
+				                            
+				                        </b></i><span class="pull-right"></span><span>لیست تامین فروشگاه</span>
+			                        </a>
+		                        </li>
+	                        }
                         }
                     }
                   

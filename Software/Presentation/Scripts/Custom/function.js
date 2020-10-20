@@ -604,6 +604,8 @@ function finalizeInputDoc(type) {
                         if (data === "true") {
                             $('#submit-succes').css('display', 'block');
                             $('#submit-error').css('display', 'none');
+                            setCookie('basket', null);
+
                         } else {
                             $('#submit-succes').css('display', 'none');
                             $('#submit-error').css('display', 'block');
@@ -632,6 +634,8 @@ function finalizeInputDoc(type) {
                         if (data === "true") {
                             $('#submit-succes').css('display', 'block');
                             $('#submit-error').css('display', 'none');
+                            setCookie('basket', null);
+
                         } else {
                             $('#submit-succes').css('display', 'none');
                             $('#submit-error').css('display', 'block');
@@ -793,6 +797,8 @@ function finalizeOrder() {
         else if (paymentAmount !== '0' && paymentTypeId)
             paymentTypeIsRequired = "true";
 
+        var img = getCookie('image');
+
         if (branchId && cellNumber && fullName && paymentTypeIsRequired && paymentTypeId) {
             $.ajax({
                 type: "Post",
@@ -813,7 +819,8 @@ function finalizeOrder() {
                     "paymentTypeId": paymentTypeId,
                     "paymentAmount": paymentAmount, "cellNumber": cellNumber,
                     "sendFrom": sendFrom,
-                    "factorydesc": factorydesc
+                    "factorydesc": factorydesc,
+                    "file": img
                 },
                 success: function (data) {
                     if (data.includes("true")) {
@@ -865,6 +872,37 @@ function finalizeOrder() {
         $('#submit-error').html('محصولی انتخاب نشده است.');
     }
     unFreezePage();
+}
+
+function uploadFile() {
+    if (window.FormData == undefined)
+        alert("Error: FormData is undefined");
+    else {
+        var fileUpload = $("#FileUpload1").get(0);
+        var files = fileUpload.files;
+
+        var fileData = new FormData();
+
+        fileData.append(files[0].name, files[0]);
+
+        $.ajax({
+            url: '/Orders/UploadFile',
+            type: 'post',
+            datatype: 'json',
+            contentType: false,
+            processData: false,
+            async: false,
+            data: fileData,
+            success: function (response) {
+                if (response.includes("true")) {
+                    setCookie('image', response.split('_')[1]);
+                    alert('فایل مورد نظر با موفقیت بارگزاری شد');
+                } else {
+                    alert(response);
+                }
+            }
+        });
+    }
 }
 
 function clearForm() {
@@ -957,6 +995,7 @@ function postEditOrder() {
         var sendFrom = $('#ddlSenFrom').val();
         var factorydesc = $('#factorydesc').val();
 
+        var img = getCookie('image');
 
         var paymentTypeIsRequired = null;
 
@@ -969,7 +1008,7 @@ function postEditOrder() {
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
 
-        if (branchId && cellNumber && fullName && paymentTypeIsRequired &&  paymentTypeId) {
+        if (branchId && cellNumber && fullName && paymentTypeIsRequired) {
             $.ajax({
                 type: "Post",
                 url: "/Orders/PostEdit",
@@ -991,7 +1030,9 @@ function postEditOrder() {
                     "cellNumber": cellNumber,
                     "parentId": id,
                     "sendFrom": sendFrom,
-                    "factorydesc": factorydesc
+                    "factorydesc": factorydesc,
+                    "file": img
+
                 },
                 success: function (data) {
                     if (data === "true") {

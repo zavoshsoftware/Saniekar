@@ -60,7 +60,10 @@ namespace Presentation.Controllers
                                 DecimalConvertor(row.Cell(5).Value.ToString()),
                                 DecimalConvertor(row.Cell(6).Value.ToString()),
                                 DecimalConvertor(row.Cell(7).Value.ToString()),
-                                DecimalConvertor(row.Cell(8).Value.ToString()));
+                                DecimalConvertor(row.Cell(8).Value.ToString()),
+                                DecimalConvertor(row.Cell(9).Value.ToString()),
+                                DecimalConvertor(row.Cell(10).Value.ToString()),
+                                ConvertMattresVal(row.Cell(11).Value.ToString()));
                             i++;
                         }
 
@@ -81,6 +84,13 @@ namespace Presentation.Controllers
             return View();
         }
 
+        public bool ConvertMattresVal(string hasMattres)
+        {
+            if (hasMattres.ToLower() == "y")
+                return true;
+
+            return false;
+        }
         public decimal DecimalConvertor(string amount)
         {
             try
@@ -96,14 +106,11 @@ namespace Presentation.Controllers
             }
         }
 
-        public void UpdateRow(string parentCode, string childTitle, decimal customerAmount, decimal storeAmount, decimal factoryAmount, decimal colorAdditiveAmount)
+        public void UpdateRow(string parentCode, string childTitle, decimal customerAmount, decimal storeAmount, decimal factoryAmount, decimal colorAdditiveAmount, decimal colorAdditiveStoreeAmount, decimal colorAdditiveFactoryAmount,bool hasMattress)
         {
             Product product = UnitOfWork.ProductRepository.Get(current => current.Code == parentCode).FirstOrDefault();
 
-            if (parentCode == "1001008")
-            {
-                int aaaa = 2;
-            }
+
             if (product != null)
             {
                 if (string.IsNullOrEmpty(childTitle))
@@ -111,6 +118,7 @@ namespace Presentation.Controllers
                     product.Amount = customerAmount;
                     product.StoreAmount = storeAmount;
                     product.FactoryAmount = factoryAmount;
+                    product.HasMattress = hasMattress;
 
                     UnitOfWork.ProductRepository.Update(product);
                     UnitOfWork.Save();
@@ -122,6 +130,8 @@ namespace Presentation.Controllers
                     product.StoreAmount = storeAmount;
                     product.FactoryAmount = factoryAmount;
                     product.Amount = customerAmount;
+                    product.HasMattress = hasMattress;
+                    UnitOfWork.ProductRepository.Update(product);
 
                     ProductColor productColor = UnitOfWork.ProductColorRepository
                         .Get(current => current.ProductId == product.Id && current.Title == childTitle).FirstOrDefault();
@@ -129,6 +139,9 @@ namespace Presentation.Controllers
                     if (productColor != null)
                     {
                         productColor.Amount = colorAdditiveAmount;
+                        productColor.FactoryAmount = colorAdditiveFactoryAmount;
+                        productColor.StoreAmount = colorAdditiveStoreeAmount;
+
                         UnitOfWork.ProductColorRepository.Update(productColor);
                     }
                     else
@@ -141,7 +154,9 @@ namespace Presentation.Controllers
                             Amount = colorAdditiveAmount,
                             IsDeleted = false,
                             IsActive = true,
-                        };
+                            FactoryAmount = colorAdditiveFactoryAmount,
+                            StoreAmount = colorAdditiveStoreeAmount,
+                    };
 
                         UnitOfWork.ProductColorRepository.Insert(newChildProduct);
 

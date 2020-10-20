@@ -107,6 +107,9 @@ namespace Presentation.Controllers
 
             order.RemainAmount = order.RemainAmount - payment;
 
+            if (order.PaymentAmount == order.RemainAmount)
+                order.IsPaid = true;
+
             UnitOfWork.OrderRepository.Update(order);
 
             return true;

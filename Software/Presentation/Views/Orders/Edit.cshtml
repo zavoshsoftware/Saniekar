@@ -7,7 +7,7 @@
 <div class="panel panel-primary">
 	<div class="panel-heading">
 		<label>@ViewBag.Title کد @Model.Order.Code</label>
-		
+
 		<a href="/orders/list" style="float: left; color: #fff;"><i class="fa fa-2x fa-arrow-left"></i></a>
 	</div>
 	<div class="panel-body">
@@ -150,49 +150,49 @@
 								</tr>
 							</thead>
 							<tbody>
-							@foreach (var detail in Model.OrderDetails)
-							{
-								<tr>
+								@foreach (var detail in Model.OrderDetails)
+								{
+										<tr>
 
-									<td>@detail.Product.Title</td>
-									@if (detail.ProductColorId != null)
-									{
-										<td>@detail.ProductColor.Title</td>
-									}
-									else
-									{
-										<td>-</td>
-									}
-									@if (detail.MattressId != null)
-									{
-										<td>@detail.Mattress.Title</td>
-									}
-									else
-									{
-										<td>-</td>
-									}
+											<td>@detail.Product.Title</td>
+											@if (detail.ProductColorId != null)
+											{
+													<td>@detail.ProductColor.Title</td>
+}
+											else
+											{
+													<td>-</td>
+}
+											@if (detail.MattressId != null)
+											{
+													<td>@detail.Mattress.Title</td>
+}
+											else
+											{
+													<td>-</td>
+}
 
-									<td class="qtytable">@detail.Quantity</td>
-							@*		<td class="qtytable"><input id="@(String.Format("{0}{1}", "qty", detail.ProductId))" class="qty" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.Quantity" /> </td>*@
-									@if (detail.ProductColorId == null)
-									{
-										<td class="amounttable">@detail.AmountStr </td>
-										@*<td class="amounttable"><input id="@(String.Format("{0}{1}", "amount", detail.ProductId))" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.AmountStr" /> </td>*@
-										<td id="@(String.Format("{0}{1}", "rowAmount", detail.ProductId))">@detail.RowAmountStr</td>
-									}
-									else
-									{
-										decimal amountDecimal = detail.Amount + detail.ProductColor.Amount;
-										string rowAmount = (amountDecimal * detail.Quantity).ToString("n0") + " تومان";
+											<td class="qtytable">@detail.Quantity</td>
+											@*		<td class="qtytable"><input id="@(String.Format("{0}{1}", "qty", detail.ProductId))" class="qty" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.Quantity" /> </td>*@
+											@if (detail.ProductColorId == null)
+											{
+													<td class="amounttable">@detail.AmountStr </td>
+													@*<td class="amounttable"><input id="@(String.Format("{0}{1}", "amount", detail.ProductId))" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.AmountStr" /> </td>*@
+													<td id="@(String.Format("{0}{1}", "rowAmount", detail.ProductId))">@detail.RowAmountStr</td>
+}
+											else
+											{
+												decimal amountDecimal = detail.Amount;
+												string rowAmount = (amountDecimal * detail.Quantity).ToString("n0") + " تومان";
 
-										string amount = amountDecimal.ToString("n0") + " تومان";
-										<td class="amounttable">@amount</td>
-										@*<td class="amounttable"><input id="@(String.Format("{0}{1}", "amount", detail.ProductId))" onkeyup="return changeRowTotal(this.id, 3)" value="@amount" /> </td>*@
-										<td id="@(String.Format("{0}{1}", "rowAmount", detail.ProductId))">@rowAmount</td>
-									}
-									<td><i class="fa fa-remove" onclick="removeRow('@detail.ProductId');"></i></td>
-								</tr>
-							}
+												string amount = amountDecimal.ToString("n0") + " تومان";
+													<td class="amounttable">@amount</td>
+													@*<td class="amounttable"><input id="@(String.Format("{0}{1}", "amount", detail.ProductId))" onkeyup="return changeRowTotal(this.id, 3)" value="@amount" /> </td>*@
+													<td id="@(String.Format("{0}{1}", "rowAmount", detail.ProductId))">@rowAmount</td>
+}
+											<td><i class="fa fa-remove" onclick="removeRow('@detail.ProductId');"></i></td>
+										</tr>
+								}
 							</tbody>
 
 						</table>
@@ -202,7 +202,7 @@
 					</div>
 					<div class="panel-footer">
 						<table>
-							
+
 							<tr>
 								<td>جمع کل</td>
 								<td id="total">@Model.Order.SubAmountStr</td>
@@ -241,9 +241,9 @@
 										<td>
 											<input type="text" class="form-control" id="payment" value="@Model.Order.PaymentAmountStr" onKeyUp="return changeTotalOrder()" />
 										</td>
-																		<td>
-																			@Html.DropDownList("PaymentTypeId", null, "نوع پرداخت", new { @class = "form-control" })
-																		</td>
+										<td>
+											@Html.DropDownList("PaymentTypeId", null, "نوع پرداخت", new { @class = "form-control" })
+										</td>
 								}
 
 								else
@@ -254,13 +254,13 @@
 										<td>
 											<input type="text" class="form-control" id="payment" value="@Model.Order.PaymentAmountStr" onKeyUp="return changeTotalOrder()" readonly="readonly" />
 										</td>
-																		<td>
-																			@Html.DropDownList("PaymentTypeId", null, "نوع پرداخت", new { @class = "form-control", @disabled = "disabled" })
-																		</td>
+										<td>
+											@Html.DropDownList("PaymentTypeId", null, "نوع پرداخت", new { @class = "form-control", @disabled = "disabled" })
+										</td>
 																		<dfn>
-																			این سفارش به جز پرداخت دیگری به جز پیش پرداخت دارد. جهت مدیریت پرداخت های این سفارش 
-																			<a href="/Payments/index/"@Model.Order.Id>اینجا</a>
-																			 را کلیک کنید
+																			این سفارش به جز پرداخت دیگری به جز پیش پرداخت دارد. جهت مدیریت پرداخت های این سفارش
+																			<a href="/Payments/index/" @Model.Order.Id>اینجا</a>
+																			را کلیک کنید
 																		</dfn>
 								}
 							</tr>
@@ -277,14 +277,14 @@
 									<select id="ddlSenFrom" class="form-control">
 										@if (Model.Order.ShipmentFromFactory)
 										{
-											<option value="0">ارسال از فروشگاه</option>
-											<option value="1" selected="selected">ارسال از کارخانه</option>
-										}
+												<option value="0">ارسال از فروشگاه</option>
+												<option value="1" selected="selected">ارسال از کارخانه</option>
+}
 										else
 										{
-											<option value="0" selected="selected">ارسال از فروشگاه</option>
-											<option value="1">ارسال از کارخانه</option>
-										}
+												<option value="0" selected="selected">ارسال از فروشگاه</option>
+												<option value="1">ارسال از کارخانه</option>
+}
 									</select>
 								</td>
 							</tr>
@@ -295,13 +295,29 @@
 									توضیحات
 								</td>
 								<td>
-									<textarea class="form-control" id="desc" placeholder="توضیحات" >@Model.Order.Description</textarea>
+									<textarea class="form-control" id="desc" placeholder="توضیحات">@Model.Order.Description</textarea>
 								</td>
-								
+
 								<td>
 									<textarea class="form-control" id="factorydesc" placeholder="توضیحات اضافی برای کارخانه">@Model.Order.FactoryShipmentDesc</textarea>
 								</td>
-							
+
+							</tr>
+							<tr>
+								<td>
+									ضمیمه
+									@if (!string.IsNullOrEmpty(Model.Order.Attachment))
+									{
+											<a href="@Model.Order.Attachment" class="btn btn-info" target="_blank"> <i class="fa fa-download"></i>  </a>
+									}
+
+								</td>
+								<td>
+									<input type="file" id="FileUpload1" />
+								</td>
+								<td>
+									<button type="button" id="btnUpload" class="btn btn-dark" onclick="uploadFile();"> <i class="fa fa-upload"></i> بارگزاری </button>
+								</td>
 							</tr>
 
 							<tr>
@@ -424,7 +440,9 @@
 		});
 
 
-
+		$(document).ready(function() {
+			setCookie('image', null);
+		});
 
 	</script>
 }

@@ -26,6 +26,29 @@ namespace Models
             get { return Amount.ToString("N0") + " تومان"; }
         }
 
+        [Display(Name="مبلغ اضافه شونده به قیمت فروشگاه")]
+        [Column(TypeName = "Money")]
+        public decimal StoreAmount { get; set; }
+
+
+        [NotMapped]
+        public string StoreAmountStr
+        {
+            get { return StoreAmount.ToString("N0") + " تومان"; }
+        }
+
+
+        [Display(Name="مبلغ اضافه شونده به قیمت کارخانه")]
+        [Column(TypeName = "Money")]
+        public decimal FactoryAmount { get; set; }
+
+
+        [NotMapped]
+        public string FactoryAmountStr
+        {
+            get { return FactoryAmount.ToString("N0") + " تومان"; }
+        }
+
 
         [Display(Name="محصول")]
         public Guid ProductId { get; set; }

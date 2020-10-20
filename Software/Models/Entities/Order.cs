@@ -89,6 +89,9 @@ namespace Models
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
 
+        [Display(Name="ضمیمه")]
+        public string Attachment { get; set; }
+
         internal class configuration : EntityTypeConfiguration<Order>
         {
             public configuration()
@@ -185,6 +188,14 @@ namespace Models
 
         [Display(Name="توضیحات برای کارخانه")]
         public string FactoryShipmentDesc { get; set; }
- 
+
+        [Display(Name="فاکتور ویرایش شده")]
+        public bool IsEdit { get; set; }
+
+        [Display(Name="تغییرات توسط مغازه بررسی شد")]
+        public bool CheckByStore { get; set; }
+
+        [Display(Name="تغییرات توسط کارخانه بررسی شد")]
+        public bool CheckByFactory { get; set; }
     }
 }

@@ -37,6 +37,8 @@ namespace DAL
         IFundRepository FundRepository { get; }
         IFundDetailRepository FundDetailRepository { get; }
         IProductRequestStatusRepository ProductRequestStatusRepository { get; }
+        IInventoryDetailRepository InventoryDetailRepository { get; }
+        IInventoryDetailTypeRepository InventoryDetailTypeRepository { get; }
         void Save();
     }
 }

@@ -270,7 +270,7 @@ namespace Presentation.Controllers
                     if (colorId != null)
                     {
                         ProductColor productColor = UnitOfWork.ProductColorRepository.GetById(colorId.Value);
-                        amount = _amountCalculator.GetAmountByType(oProduct, "store") + productColor.Amount;
+                        amount = _amountCalculator.GetAmountByType(oProduct, "store") + productColor.StoreAmount;
                     }
 
                     decimal rowAmount = qty * amount;
@@ -400,16 +400,24 @@ namespace Presentation.Controllers
             List<ProductRequestDetail> ProductRequestDetails = UnitOfWork.ProductRequestDetailRepository
                 .Get(current => current.ProductRequestId == id).ToList();
 
+
+            string mattress = "nomatterss";
+            string color = "nocolor";
+
             Deletecookie();
             List<string> basket = new List<string>();
             foreach (ProductRequestDetail productRequestDetail in ProductRequestDetails)
             {
-                for (int i = 0; i < productRequestDetail.Quantity; i++)
-                {
-                    basket.Add(productRequestDetail.ProductId.ToString());
-                }
-            }
+                if (productRequestDetail.MattressId != null)
+                    mattress = productRequestDetail.MattressId.ToString();
 
+                if (productRequestDetail.ProductColorId != null)
+                    color = productRequestDetail.ProductColorId.ToString();
+
+                basket.Add(productRequestDetail.ProductId.ToString() + "^" + productRequestDetail.Quantity + "^" + color + "^" +
+                           mattress);
+            }
+             
             SetCookie(basket.ToArray());
 
 

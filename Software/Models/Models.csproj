@@ -81,6 +81,8 @@
     <Compile Include="DatabaseContextInitializerBeforeTheFirstRelease.cs" />
     <Compile Include="Entities\FundDetail.cs" />
     <Compile Include="Entities\Fund.cs" />
+    <Compile Include="Entities\InventoryDetailType.cs" />
+    <Compile Include="Entities\InventoryDetail.cs" />
     <Compile Include="Entities\Mattress.cs" />
     <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\BaseEntity.cs" />
@@ -249,6 +251,26 @@
     <Compile Include="Migrations\202009160627276_V35.Designer.cs">
       <DependentUpon>202009160627276_V35.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010101759320_V36.cs" />
+    <Compile Include="Migrations\202010101759320_V36.Designer.cs">
+      <DependentUpon>202010101759320_V36.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202010111133582_V37.cs" />
+    <Compile Include="Migrations\202010111133582_V37.Designer.cs">
+      <DependentUpon>202010111133582_V37.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202010141609419_V38.cs" />
+    <Compile Include="Migrations\202010141609419_V38.Designer.cs">
+      <DependentUpon>202010141609419_V38.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202010201537253_V39.cs" />
+    <Compile Include="Migrations\202010201537253_V39.Designer.cs">
+      <DependentUpon>202010201537253_V39.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202010201623018_V40.cs" />
+    <Compile Include="Migrations\202010201623018_V40.Designer.cs">
+      <DependentUpon>202010201623018_V40.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -367,6 +389,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009160627276_V35.resx">
       <DependentUpon>202009160627276_V35.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010101759320_V36.resx">
+      <DependentUpon>202010101759320_V36.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010111133582_V37.resx">
+      <DependentUpon>202010111133582_V37.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010141609419_V38.resx">
+      <DependentUpon>202010141609419_V38.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010201537253_V39.resx">
+      <DependentUpon>202010201537253_V39.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010201623018_V40.resx">
+      <DependentUpon>202010201623018_V40.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

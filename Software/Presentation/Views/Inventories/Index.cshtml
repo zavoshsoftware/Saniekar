@@ -1,8 +1,6 @@
-﻿@model IEnumerable<Models.Inventory>
+﻿@model IEnumerable<ViewModels.InventoryListViewModel>
 
 @{
-ViewBag.Title = "فهرست " + Server.HtmlDecode(Html.DisplyModelPluralName(model => model).ToString());
-    
     Layout = "~/Views/Shared/BackEndLayout/_BackEndLayout.cshtml";
 }
 
@@ -12,24 +10,29 @@ ViewBag.Title = "فهرست " + Server.HtmlDecode(Html.DisplyModelPluralName(mod
               .Name("Grid")
               .Columns(columns =>
                   {
-        columns.Bound(model => model.Branch.Title);
-        columns.Bound(model => model.Product.Title);
-        columns.Bound(model => model.ProductColor.Title);
-        columns.Bound(model => model.Mattress.Title);
-        columns.Bound(model => model.Stock);
-        columns.Bound(model => model.OrderPoint);
-        columns.Bound(model => model.IsActive);
+        columns.Bound(model => model.Title);
+        columns.Bound(model => model.ColorTitle);
+        columns.Bound(model => model.MattressTitle);
+        columns.Bound(model => model.Quantity);
 					columns.Bound(item => @item.Id).Title("دستورات").Filterable(false).Groupable(false)
-							.Template(@<text>
-									@Html.ActionLink("ویرایش", "Edit", new {id = @item.Id}, new {@class = "k-button"})
-									@Html.ActionLink("حذف", "Delete", new {id = @item.Id}, new {@class = "k-button"})
-									</text>).Width(200);  
+						.Template(@<text>
+							          @if (item.HasDetail)
+												{
+														@Html.ActionLink("کاردکس", "Edit", new { id = @item.Id }, new { @class = "k-button" })
+												}
+												else
+												{
+								          @Html.ActionLink("ویرایش", "Edit", new {id = @item.Id}, new {@class = "k-button"})
+								          @Html.ActionLink("حذف", "Delete", new {id = @item.Id}, new {@class = "k-button"})
+							          }
+							    
+						           </text>).Width(200);  
 		})
 		.ToolBar(toolbar =>
 					{				
-						toolbar.Custom().Action("Create","Inventories").Text("افزودن");                          
+						toolbar.Custom().Action("Create","Inventories").Text("افزودن محصول");                          
 					}
-		)         
+		)   .Filterable().Sortable()     
 		.DataSource(dataSource => dataSource
 									.Server()
 									.Model(model => model.Id(item => item.Id))

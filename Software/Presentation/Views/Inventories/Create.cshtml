@@ -15,10 +15,19 @@
 			@Html.ValidationSummary(true)
 
 			@Html.ValidationMessage("duplicate")
+			@Html.ValidationMessage("requiredMattress")
 
 			<div class="form-group">
+				
 				<div class="form-group">
-					@Html.LabelFor(model => model.ProductId, new { @class = "control-label col-md-2" })
+					<label class = "control-label col-md-2">گروه محصول</label>
+					<div class="col-md-10">
+						@Html.DropDownList("ProductGroupId", String.Empty)
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.ProductId, new {@class = "control-label col-md-2"})
 					<div class="col-md-10">
 						@Html.DropDownList("ProductId", String.Empty)
 						@Html.ValidationMessageFor(model => model.ProductId)
@@ -26,7 +35,7 @@
 				</div>
 
 				<div class="form-group">
-					@Html.LabelFor(model => model.MattressId, new { @class = "control-label col-md-2" })
+					@Html.LabelFor(model => model.MattressId, new {@class = "control-label col-md-2"})
 					<div class="col-md-10">
 						@Html.DropDownList("MattressId", String.Empty)
 						@Html.ValidationMessageFor(model => model.MattressId)
@@ -34,7 +43,7 @@
 				</div>
 
 				<div class="form-group">
-					@Html.LabelFor(model => model.ProductColorId, new { @class = "control-label col-md-2" })
+					@Html.LabelFor(model => model.ProductColorId, new {@class = "control-label col-md-2"})
 					<div class="col-md-10">
 						@Html.DropDownList("ProductColorId", String.Empty)
 						@Html.ValidationMessageFor(model => model.ProductColorId)
@@ -42,7 +51,7 @@
 				</div>
 
 				<div class="form-group">
-					@Html.LabelFor(model => model.Stock, new { @class = "control-label col-md-2" })
+					@Html.LabelFor(model => model.Stock, new {@class = "control-label col-md-2"})
 					<div class="col-md-10">
 						@Html.EditorFor(model => model.Stock)
 
@@ -51,7 +60,7 @@
 				</div>
 
 				<div class="form-group">
-					@Html.LabelFor(model => model.OrderPoint, new { @class = "control-label col-md-2" })
+					@Html.LabelFor(model => model.OrderPoint, new {@class = "control-label col-md-2"})
 					<div class="col-md-10">
 						@Html.EditorFor(model => model.OrderPoint)
 
@@ -71,7 +80,7 @@
 				</div>
 
 				<div class="form-group">
-					@Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+					@Html.LabelFor(model => model.Description, new {@class = "control-label col-md-2"})
 					<div class="col-md-10">
 						@Html.EditorFor(model => model.Description)
 
@@ -81,8 +90,8 @@
 
 				<div class="form-group" id="buttons">
 					<div class="col-md-offset-2 col-md-10">
-						<input type="submit" value="ایجاد" class="btn btn-primary" />
-						@Html.ActionLink("بازگشت به فهرست", "Index", new { id = ViewBag.BranchId })
+						<input type="submit" value="ایجاد" class="btn btn-primary"/>
+						@Html.ActionLink("بازگشت به فهرست", "Index", new {id = ViewBag.BranchId})
 					</div>
 				</div>
 			</div>
@@ -93,6 +102,8 @@
 	<script>
 		$(document).ready(function () {
 			$('#ProductColorId').attr("disabled", true); 
+			$('#ProductId').attr("disabled", true); 
+			$('#MattressId').attr("disabled", true); 
 		});
 
 		$('#ProductId').on('change',
@@ -114,6 +125,52 @@
 								}
 								$("#ProductColorId").html(markup).show();
 								$('#ProductColorId').attr("disabled", false); 
+
+							},
+							error: function(reponse) {
+								alert("error : " + reponse);
+							}
+						});
+
+
+					$.ajax(
+						{
+							url: "/inventories/CheckHasMattress",
+							data: { id: SelectedValue },
+							cache: false,
+							type: "POST",
+							success: function(data) {
+							 if(data===true)
+								 $('#MattressId').attr("disabled", false); 
+								else
+									$('#MattressId').attr("disabled", true); 
+							},
+							error: function(reponse) {
+								alert("error : " + reponse);
+							}
+						});
+				}
+			});
+
+		$('#ProductGroupId').on('change',
+			function() {
+				var SelectedValue = $(this).val();
+				if (SelectedValue !== "") {
+					var procemessage = "<option value='0'> صبرکنید...</option>";
+					$("#ProductId").html(procemessage).show();
+					$.ajax(
+						{
+							url: "/inventories/GetProductByProductGroupId",
+							data: { id: SelectedValue },
+							cache: false,
+							type: "POST",
+							success: function(data) {
+								var markup = "<option value='0'>انتخاب محصول</option>";
+								for (var x = 0; x < data.length; x++) {
+									markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+								}
+								$("#ProductId").html(markup).show();
+								$('#ProductId').attr("disabled", false); 
 
 							},
 							error: function(reponse) {

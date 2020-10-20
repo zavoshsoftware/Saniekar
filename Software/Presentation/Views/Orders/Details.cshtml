@@ -114,11 +114,18 @@
 								<th scope="col">رنگ</th>
 								<th scope="col">تشک</th>
 								<th scope="col">تعداد</th>
-								<th scope="col">قیمت واحد</th>
-								<th scope="col">قیمت کل</th>
-
-								<th scope="col">#</th>
-								@*<th scope="col">توضیحات</th>*@
+							@{
+								var identity3 = (System.Security.Claims.ClaimsIdentity) User.Identity;
+								string role3 = identity3.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+								if (role3.ToLower() != "factory")
+								{
+									<th scope="col">قیمت واحد</th>
+									<th scope="col">قیمت کل</th>
+									<th scope="col">#</th>
+								}
+							}
+							
+						 
 							</tr>
 							</thead>
 							<tbody>
@@ -146,8 +153,12 @@
 									}
 
 									<td class="qtytable">@detail.Quantity</td>
-								@*	<td class="qtytable"><input id="@(String.Format("{0}{1}", "qty", detail.ProductId))" class="qty" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.Quantity" /></td>*@ 
-									@if (detail.ProductColorId == null)
+									@{
+										var identity2 = (System.Security.Claims.ClaimsIdentity) User.Identity;
+										string role2 = identity2.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+										if (role2.ToLower() != "factory")
+										{
+									 if (detail.ProductColorId == null)
 									{
 										<td class="amounttable">@detail.AmountStr </td>
 										@*<td class="amounttable"><input id="@(String.Format("{0}{1}", "amount", detail.ProductId))" onkeyup="return changeRowTotal(this.id, 3)" value="@detail.AmountStr" /> </td>*@
@@ -163,11 +174,7 @@
 										@*<td class="amounttable"><input id="@(String.Format("{0}{1}", "amount", detail.ProductId))" onkeyup="return changeRowTotal(this.id, 3)" value="@amount" /> </td>*@
 										<td id="@(String.Format("{0}{1}", "rowAmount", detail.ProductId))">@rowAmount</td>
 									}
-								@{
-									var identity2 = (System.Security.Claims.ClaimsIdentity) User.Identity;
-									string role2 = identity2.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
-									if (role2.ToLower() != "factory")
-									{
+							
 										<td><i class="fa fa-remove" onclick="removeRow('@detail.ProductId');"></i></td>
 									}
 								}
@@ -185,10 +192,14 @@
 
 							<div class="col-md-6">
 								<table>
-									<tr>
-										<td></td>
-										<td><input type="button" value="به روز رسانی جمع کل" onclick="updateFactor();" class="btn btn-warning" /></td>
-									</tr>
+							 
+								@{
+									var identity4 = (System.Security.Claims.ClaimsIdentity) User.Identity;
+									string role4 = identity4.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+									if (role4.ToLower() != "factory")
+									{
+
+									
 									<tr>
 										<td>جمع کل</td>
 										<td id="total">@Model.Order.SubAmountStr</td>
@@ -232,6 +243,8 @@
 										</td>
 									</tr>
 
+										}
+								}
 
 									<tr>
 										<td>
@@ -243,14 +256,7 @@
 									</tr>
 
 
-									<tr>
-										<td>
-											توضیحات
-										</td>
-										<td>
-											<textarea class="form-control" id="desc" placeholder="توضیحات"></textarea>
-										</td>
-									</tr>
+							 
 
 								</table>
 								<p class="alert alert-success" id="submit-succes">ثبت اطلاعات با موفقیت انجام شد.</p>
@@ -262,7 +268,7 @@
 
 							
 									<div class="panel panel-primary">
-										<div class="panel-heading">ارسال همه یا بخشی از سفارش از کارخانه</div>
+										<div class="panel-heading">توضیحات</div>
 										<div class="panel-body">
 									
 												<table>
@@ -271,7 +277,7 @@
 															توضیحات برای کارخانه
 														</td>
 														<td>
-															<textarea class="form-control" id="factorydesc" placeholder="توضیحات">@Model.Order.FactoryShipmentDesc</textarea>
+															<textarea class="form-control" readonly="readonly" id="factorydesc" placeholder="توضیحات">@Model.Order.FactoryShipmentDesc</textarea>
 														</td>
 													</tr>
 
@@ -282,8 +288,15 @@
 														<td>
 															<textarea class="form-control" readonly="readonly" id="order-desc" placeholder="توضیحات فاکتور">@Model.Order.Description</textarea>
 														</td>
+													</tr>	<tr>
+														<td>
+															وضعیت سفارش
+														</td>
+														<td>
+@Model.Order.OrderStatus.Title
+														</td>
 													</tr>
-												@{
+												@*@{
 													var identity = (System.Security.Claims.ClaimsIdentity) User.Identity;
 													string role = identity.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
 													if (role.ToLower() != "factory")
@@ -295,7 +308,7 @@
 															</td>
 														</tr>
 													}
-												}
+												}*@
 												</table>
 
 												<p class="alert alert-success" id="submitsendFactoru-succes">درخواست شما برای کارخانه ارسال شد.</p>

@@ -216,6 +216,19 @@
 	                            </td>
 															
                             </tr>
+															<tr>
+                                <td>
+																		ضمیمه
+	                                </td>
+	                            <td>
+		                            <input type="file" id="FileUpload1" />  
+	                            </td>
+																<td>
+																	<button type="button" id="btnUpload" class="btn btn-dark" onclick="uploadFile();" > <i class="fa fa-upload"></i> بارگزاری </button>
+				
+																</td>
+															
+                            </tr>
 
                             <tr>
                                 <td></td>
@@ -237,114 +250,117 @@
 
 
 @section scripts{
-    <script>
-        $('#ProvinceId').on('change',
-            function() {
-                var SelectedValue = $(this).val();
-                if (SelectedValue !== "") {
-                    var procemessage = "<option value='0'> صبرکنید...</option>";
-                    $("#CityId").html(procemessage).show();
-                    $.ajax(
-                        {
-                            url: "/Cities/GetCityByProvince",
-                            data: { id: SelectedValue },
-                            cache: false,
-                            type: "POST",
-                            success: function(data) {
-                                var markup = "<option value='0'>انتخاب شهر</option>";
-                                for (var x = 0; x < data.length; x++) {
-                                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
-                                }
-                                $("#CityId").html(markup).show();
-                            },
-                            error: function(reponse) {
-                                alert("error : " + reponse);
-                            }
-                        });
-                }
-            });
 
-        $('#CityId').on('change',
-            function() {
-                var selectedValue = $(this).val();
-                if (selectedValue !== "") {
-                    var procemessage = "<option value='0'> صبرکنید...</option>";
-                    $("#RegionId").html(procemessage).show();
-                    $.ajax(
-                        {
-                            url: "/Regions/GetRegionByCity",
-                            data: { id: selectedValue },
-                            cache: false,
-                            type: "POST",
-                            success: function(data) {
-                                var markup = "<option value='0'>انتخاب محله</option>";
-                                for (var x = 0; x < data.length; x++) {
-                                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
-                                }
-                                $("#RegionId").html(markup).show();
-                            },
-                            error: function(reponse) {
-                                alert("error : " + reponse);
-                            }
-                        });
-                }
-            });
+	<script>
 
-        $("#CellNumber").focus(function() {
-        }).blur(function() {
-        var cellNumber = $("#CellNumber").val();
+		$(document).ready(function () {
+			 
+			$('#totalAmount').val(0);
+			$('#decreasedAmount').val(0);
+			$('#addedAmount').val(0);
+			$('#PaymentTypeId').val('c20dcc55-479b-4d29-bb75-c9f9a3f7e7f8');
+		 setCookie('image', null);
+		});
+		
+		$('#ProvinceId').on('change',
+			function() {
+				var SelectedValue = $(this).val();
+				if (SelectedValue !== "") {
+					var procemessage = "<option value='0'> صبرکنید...</option>";
+					$("#CityId").html(procemessage).show();
+					$.ajax(
+						{
+							url: "/Cities/GetCityByProvince",
+							data: { id: SelectedValue },
+							cache: false,
+							type: "POST",
+							success: function(data) {
+								var markup = "<option value='0'>انتخاب شهر</option>";
+								for (var x = 0; x < data.length; x++) {
+									markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+								}
+								$("#CityId").html(markup).show();
+							},
+							error: function(reponse) {
+								alert("error : " + reponse);
+							}
+						});
+				}
+			});
 
-            $.ajax(
-                {
-                    url: "/Orders/GetUserFullName",
-                    data: { cellNumber: cellNumber },
-                    cache: false,
-                    type: "POST",
-                    success: function(data) {
-											if (data !== 'invalid') {
-												var nameAndAdress = data.split('|');
+		$('#CityId').on('change',
+			function() {
+				var selectedValue = $(this).val();
+				if (selectedValue !== "") {
+					var procemessage = "<option value='0'> صبرکنید...</option>";
+					$("#RegionId").html(procemessage).show();
+					$.ajax(
+						{
+							url: "/Regions/GetRegionByCity",
+							data: { id: selectedValue },
+							cache: false,
+							type: "POST",
+							success: function(data) {
+								var markup = "<option value='0'>انتخاب محله</option>";
+								for (var x = 0; x < data.length; x++) {
+									markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+								}
+								$("#RegionId").html(markup).show();
+							},
+							error: function(reponse) {
+								alert("error : " + reponse);
+							}
+						});
+				}
+			});
 
-												$('#fullName').val(nameAndAdress[0]);
-												$('#address').val(nameAndAdress[1]);
-                        }
-                        else
-                            $('#fullName').val('');
-                    },
-                    error: function(reponse) {
-                        alert("خطا : صفحه را مجددا باز کنید");
-                    }
-                });
-            });
+		$("#CellNumber").focus(function() {
+		}).blur(function() {
+			var cellNumber = $("#CellNumber").val();
 
+			$.ajax(
+				{
+					url: "/Orders/GetUserFullName",
+					data: { cellNumber: cellNumber },
+					cache: false,
+					type: "POST",
+					success: function(data) {
+						if (data !== 'invalid') {
+							var nameAndAdress = data.split('|');
 
-        $('select[name="ProductGroupId"]').change(function () {
-            freezePage();
-            var id = $(this).val();
-
-            $.ajax({
-                type: "GET",
-                url: "/InputDocument/LoadProductByGroupId",
-                contentType: "application/json; charset=utf-8",
-                data: { "id": id,"type":'customer' },
-                datatype: "json",
-                success: function (data) {
-                    loadProductList(data.Products, 'customer');
-                },
-                error: function () {
-                    alert("Dynamic content load failed.");
-                }
-            });
-
-            unFreezePage();
-        });
+							$('#fullName').val(nameAndAdress[0]);
+							$('#address').val(nameAndAdress[1]);
+						} else
+							$('#fullName').val('');
+					},
+					error: function(reponse) {
+						alert("خطا : صفحه را مجددا باز کنید");
+					}
+				});
+		});
 
 
-        $(document).ready(function() {
-            $('#totalAmount').val(0);
-            $('#decreasedAmount').val(0);
-						$('#addedAmount').val(0);
-						$('#PaymentTypeId').val('c20dcc55-479b-4d29-bb75-c9f9a3f7e7f8');
-        });
-      
-    </script>
+		$('select[name="ProductGroupId"]').change(function() {
+			freezePage();
+			var id = $(this).val();
+
+			$.ajax({
+				type: "GET",
+				url: "/InputDocument/LoadProductByGroupId",
+				contentType: "application/json; charset=utf-8",
+				data: { "id": id, "type": 'customer' },
+				datatype: "json",
+				success: function(data) {
+					loadProductList(data.Products, 'customer');
+				},
+				error: function() {
+					alert("Dynamic content load failed.");
+				}
+			});
+
+			unFreezePage();
+		});
+
+
+	</script>
 }

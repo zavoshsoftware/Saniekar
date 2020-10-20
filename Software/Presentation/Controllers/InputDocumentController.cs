@@ -187,7 +187,7 @@ namespace Presentation.Controllers
 
                     Product product = UnitOfWork.ProductRepository.GetById(id);
 
-                    string[] colorInfo = GetColorInfo(selectedColor);
+                    string[] colorInfo = GetColorInfo(selectedColor,type);
                     decimal colorAmount = Convert.ToDecimal(colorInfo[1]);
 
                     decimal amount = _amountCalculator.GetAmountByType(product, type)+ colorAmount;
@@ -231,7 +231,7 @@ namespace Presentation.Controllers
         }
 
 
-        public string[] GetColorInfo(string idString)
+        public string[] GetColorInfo(string idString,string type)
         {
             string[] colorInfo;
             if (idString != "nocolor")
@@ -240,8 +240,15 @@ namespace Presentation.Controllers
 
                 ProductColor productColor = UnitOfWork.ProductColorRepository.GetById(id);
 
+                decimal amount = productColor.Amount;
+
+                if (type == "store")
+                    amount= productColor.StoreAmount;
+                else if(type== "factory")
+                    amount = productColor.FactoryAmount;
+
                 if (productColor != null)
-                    colorInfo = new[] { productColor.Title, productColor.Amount.ToString() };
+                    colorInfo = new[] { productColor.Title, amount.ToString() };
                 else
                     colorInfo = new[] { "", "0" };
             }
@@ -523,14 +530,11 @@ namespace Presentation.Controllers
                 if (oProduct != null)
                 {
                     decimal amount = _amountCalculator.GetAmountByType(oProduct, type);
-
-                   
-
-
+                     
                     if (colorId != null)
                     {
                         ProductColor productColor = UnitOfWork.ProductColorRepository.GetById(colorId.Value);
-                        amount = _amountCalculator.GetAmountByType(oProduct, type) + productColor.Amount;
+                        amount = _amountCalculator.GetAmountByType(oProduct, type) + productColor.FactoryAmount;
                     }
 
                     decimal rowAmount = qty * amount;

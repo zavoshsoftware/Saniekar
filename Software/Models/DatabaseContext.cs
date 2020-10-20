@@ -39,5 +39,7 @@ namespace Models
         public DbSet<Fund> Funds { get; set; }
         public DbSet<FundDetail> FundDetails { get; set; }
         public DbSet<ProductRequestStatus> ProductRequestStatuses { get; set; }
+        public DbSet<InventoryDetailType> InventoryDetailTypes { get; set; }
+        public DbSet<InventoryDetail> InventoryDetails { get; set; }
     }
 }
