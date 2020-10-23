@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,10 @@ namespace Models
 {
     public class Inventory : BaseEntity
     {
+        public Inventory()
+        {
+            InventoryDetails=new List<InventoryDetail>();
+        }
         [Display(Name = "ProductId", ResourceType = typeof(Resources.Models.Inventory))]
         public Guid ProductId { get; set; }
 
@@ -34,7 +39,18 @@ namespace Models
         public Guid? MattressId { get; set; }
         public virtual Mattress Mattress { get; set; }
 
-        //[NotMapped]
-        //public Guid ProductGroupId { get; set; }
+        public virtual ICollection<InventoryDetail> InventoryDetails { get; set; }
+
+
+        internal class configuration : EntityTypeConfiguration<Inventory>
+        {
+            public configuration()
+            {
+                HasRequired(p => p.Product).WithMany(t => t.Inventories).HasForeignKey(p => p.ProductId);
+                HasRequired(p => p.Branch).WithMany(t => t.Inventories).HasForeignKey(p => p.BranchId);
+                HasOptional(p => p.ProductColor).WithMany(t => t.Inventories).HasForeignKey(p => p.ProductColorId);
+                HasOptional(p => p.Mattress).WithMany(t => t.Inventories).HasForeignKey(p => p.MattressId);
+            }
+        }
     }
 }

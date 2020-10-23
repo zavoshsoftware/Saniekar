@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Models.InventoryDetail>
+
+@{
+ViewBag.Title = "فهرست " + Server.HtmlDecode(Html.DisplyModelPluralName(model => model).ToString());
+    
+}
+
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		کاردکس محصول
+	</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<label class="col-md-2">شعبه:</label>
+					<div class="col-md-10">@ViewBag.branch</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<label class="col-md-2">محصول</label>
+					<div class="col-md-10">@ViewBag.productTitle</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<label class="col-md-2">رنگ</label>
+					<div class="col-md-10">@ViewBag.productColor</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<label class="col-md-2">تشک</label>
+					<div class="col-md-10">@ViewBag.mattressTitle</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+        @(Html.Kendo().Grid(Model)
+              .Name("Grid")
+              .Columns(columns =>
+                  {
+        columns.Bound(model => model.InventoryDetailType.Title);
+        columns.Bound(model => model.Title);
+        columns.Bound(model => model.Quantity);
+        columns.Bound(model => model.Remain);
+        columns.Bound(model => model.CreationDate);
+		})
+		.DataSource(dataSource => dataSource
+									.Server()
+									.Model(model => model.Id(item => item.Id))
+					)              
+	)

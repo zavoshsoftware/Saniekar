@@ -15,6 +15,7 @@ namespace Models
             InventoryDetails=new List<InventoryDetail>();
         }
         [StringLength(50)]
+        [Display(Name="نوع رکورد")]
         public string Title { get; set; }
 
         [StringLength(50)]

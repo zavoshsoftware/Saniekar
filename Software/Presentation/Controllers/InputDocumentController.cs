@@ -134,26 +134,6 @@ namespace Presentation.Controllers
 
         #endregion
 
-
-        //[AllowAnonymous]
-        //public ActionResult LoadProductChilderen(string id,string type)
-        //{
-        //    Guid parentId = new Guid(id);
-
-        //    List<Product> products = UnitOfWork.ProductRepository
-        //        .Get(current => current.IsActive/* && current.ParentId == parentId*/).ToList();
-
-        //    if (products.Any())
-        //    {
-        //        ProductInputViewModel productInput = GetProductList(products, parentId, type);
-
-        //        return Json(productInput, JsonRequestBehavior.AllowGet);
-        //    }
-        //    else
-        //        return Json("noChild", JsonRequestBehavior.AllowGet);
-
-        //}
-
         public ProductInputViewModel GetProductList(List<Product> products, string type)
         {
 
@@ -187,10 +167,10 @@ namespace Presentation.Controllers
 
                     Product product = UnitOfWork.ProductRepository.GetById(id);
 
-                    string[] colorInfo = GetColorInfo(selectedColor,type);
+                    string[] colorInfo = GetColorInfo(selectedColor, type);
                     decimal colorAmount = Convert.ToDecimal(colorInfo[1]);
 
-                    decimal amount = _amountCalculator.GetAmountByType(product, type)+ colorAmount;
+                    decimal amount = _amountCalculator.GetAmountByType(product, type) + colorAmount;
 
                     decimal rowAmount = amount * Convert.ToInt32(productItems[1]);
 
@@ -205,7 +185,7 @@ namespace Presentation.Controllers
                         //    parentTitle = UnitOfWork.ProductRepository.GetById(product.ParentId.Value).Title;
                         //else
                         //    parentTitle = product.Title;
-                       
+
 
 
 
@@ -231,7 +211,7 @@ namespace Presentation.Controllers
         }
 
 
-        public string[] GetColorInfo(string idString,string type)
+        public string[] GetColorInfo(string idString, string type)
         {
             string[] colorInfo;
             if (idString != "nocolor")
@@ -243,8 +223,8 @@ namespace Presentation.Controllers
                 decimal amount = productColor.Amount;
 
                 if (type == "store")
-                    amount= productColor.StoreAmount;
-                else if(type== "factory")
+                    amount = productColor.StoreAmount;
+                else if (type == "factory")
                     amount = productColor.FactoryAmount;
 
                 if (productColor != null)
@@ -466,6 +446,87 @@ namespace Presentation.Controllers
             }
         }
 
+        public void InsertDocumentDetail(OrderInsertViewModel orderInsert, InputDocument inputDocument)
+        {
+            List<InputDocumentInsertViewModel> products = orderInsert.OrderDetails;
+            foreach (InputDocumentInsertViewModel product in products)
+            {
+                InputDocumentDetail inputDocumentDetail = new InputDocumentDetail()
+                {
+                    ProductId = product.ProductId,
+                    Quantity = product.Quantity,
+                    RowAmount = product.RowAmount,
+                    InputDocumentId = inputDocument.Id,
+                    Amount = product.Amount,
+                    ProductColorId = product.ColorId,
+                    MattressId = product.MattressId
+                };
+                UnitOfWork.InputDocumentDetailRepository.Insert(inputDocumentDetail);
+
+
+
+                Inventory inventory = GetInventory(product.ProductId, inputDocument.BranchId, product.ColorId, product.MattressId);
+                int remain = 0;
+
+                if (inventory == null)
+                {
+                    inventory = InsertToInventory(product.ProductId, inputDocument.BranchId, product.ColorId, product.MattressId, product.Quantity);
+                    UnitOfWork.InventoryRepository.Insert(inventory);
+                }
+                else
+                {
+                    remain = inventory.Stock;
+                    inventory.Stock += product.Quantity;
+                    UnitOfWork.InventoryRepository.Update(inventory);
+                }
+                UnitOfWork.Save();
+
+
+
+                InventoryDetail inventoryDetail = InsertToInventoryDetail(inventory,product.Quantity, inputDocument.Id,
+                    Convert.ToInt32(inputDocument.Code),
+                    product.ProductId,
+                    product.ColorId, product.MattressId, inputDocument.BranchId,remain);
+
+                UnitOfWork.InventoryDetailRepository.Insert(inventoryDetail);
+
+            }
+        }
+
+        public InventoryDetail InsertToInventoryDetail(Inventory inventory, int quantity, Guid entityId, int code, Guid productId, Guid? productColorId, Guid? mattressId, Guid branchId,int remain)
+        {
+            InventoryDetailHelper helper = new InventoryDetailHelper();
+
+            InventoryDetail inventoryDetail = helper.Insert(inventory.Id, "input", quantity, remain, code, entityId);
+
+            return inventoryDetail;
+        }
+
+        public Inventory GetInventory(Guid productId, Guid branchId, Guid? productColorId, Guid? mattressId)
+        {
+            Inventory inventory = UnitOfWork.InventoryRepository.Get(c =>
+                 c.ProductId == productId && c.MattressId == mattressId && c.ProductColorId == productColorId &&
+                 c.BranchId == branchId).FirstOrDefault();
+
+            return inventory;
+        }
+        public Inventory InsertToInventory(Guid productId, Guid branchId, Guid? productColorId, Guid? mattressId, int quantity)
+        {
+            Inventory inventory = new Inventory()
+            {
+                MattressId = mattressId,
+                ProductColorId = productColorId,
+                ProductId = productId,
+                BranchId = branchId,
+                IsActive = true,
+                OrderPoint = 1,
+                Stock = quantity
+            };
+
+          
+
+            return inventory;
+        }
         public DateTime GetGrDate(DateTime datetime)
         {
             System.Globalization.PersianCalendar c = new System.Globalization.PersianCalendar();
@@ -506,7 +567,7 @@ namespace Presentation.Controllers
 
                 Guid id = new Guid(productFeatures[0]);
 
-             //   InputDocumentInsertViewModel idiv = productList.FirstOrDefault(current => current.ProductId == id);
+                //   InputDocumentInsertViewModel idiv = productList.FirstOrDefault(current => current.ProductId == id);
 
                 Product oProduct = UnitOfWork.ProductRepository.GetById(id);
 
@@ -530,7 +591,7 @@ namespace Presentation.Controllers
                 if (oProduct != null)
                 {
                     decimal amount = _amountCalculator.GetAmountByType(oProduct, type);
-                     
+
                     if (colorId != null)
                     {
                         ProductColor productColor = UnitOfWork.ProductColorRepository.GetById(colorId.Value);
@@ -571,26 +632,7 @@ namespace Presentation.Controllers
             return orderDetails;
         }
 
-        public void InsertDocumentDetail(OrderInsertViewModel orderInsert, InputDocument inputDocument)
-        {
-            List<InputDocumentInsertViewModel> products = orderInsert.OrderDetails;
-            foreach (InputDocumentInsertViewModel product in products)
-            {
-                InputDocumentDetail inputDocumentDetail = new InputDocumentDetail()
-                {
-                    ProductId = product.ProductId,
-                    Quantity = product.Quantity,
-                    RowAmount = product.RowAmount,
-                    InputDocumentId = inputDocument.Id,
-                    Amount = product.Amount,
-                    ProductColorId = product.ColorId,
-                    MattressId = product.MattressId
-                };
- 
-
-                UnitOfWork.InputDocumentDetailRepository.Insert(inputDocumentDetail);
-            }
-        }
+      
 
         public ActionResult Index()
         {
@@ -670,7 +712,7 @@ namespace Presentation.Controllers
             List<InputDocumentDetail> inputDocumentDetails = UnitOfWork.InputDocumentDetailRepository
                 .Get(current => current.InputDocumentId == id).ToList();
 
-             
+
             string mattress = "nomatterss";
             string color = "nocolor";
 

@@ -23,7 +23,7 @@ namespace Helpers
                     InventoryId = inventoryId,
                     IsActive = true,
                     Quantity = quantity,
-                    Remail = oldRemain + quantity,
+                    Remain = oldRemain + quantity,
                     Title = GetInventoryDetailTitle(entityCode, inventoryDetailType.Title),
                     EntityId = entityId
                 };

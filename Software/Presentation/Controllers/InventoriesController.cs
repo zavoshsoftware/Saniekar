@@ -22,13 +22,13 @@ namespace Presentation.Controllers
             List<Inventory> inventories = UnitOfWork.InventoryRepository.Get(c => c.BranchId == id)
                 .OrderByDescending(i => i.CreationDate).ToList();
 
-            List<InventoryListViewModel> list=new List<InventoryListViewModel>();
+            List<InventoryListViewModel> list = new List<InventoryListViewModel>();
 
             foreach (Inventory inventory in inventories)
             {
-                int detailCount = UnitOfWork.InventoryDetailRepository.Get(c => c.InventoryId == inventory.Id).Count();
+                int detailCount = UnitOfWork.InventoryDetailRepository.Get(c => c.InventoryId == inventory.Id && c.InventoryDetailType.Name != "start").Count();
 
-                bool hasDetail = detailCount > 1;
+                bool hasDetail = detailCount > 0;
 
                 string mattress = "-";
                 if (inventory.MattressId != null)
@@ -89,7 +89,7 @@ namespace Presentation.Controllers
                     UnitOfWork.InventoryRepository.Insert(inventory);
 
                     InventoryDetailHelper inventoryDetailHelper = new InventoryDetailHelper();
-                 InventoryDetail inventoryDetail=   inventoryDetailHelper.Insert(inventory.Id, "start", inventory.Stock, 0, null, null);
+                    InventoryDetail inventoryDetail = inventoryDetailHelper.Insert(inventory.Id, "start", inventory.Stock, 0, null, null);
 
                     UnitOfWork.InventoryDetailRepository.Insert(inventoryDetail);
                     UnitOfWork.Save();
