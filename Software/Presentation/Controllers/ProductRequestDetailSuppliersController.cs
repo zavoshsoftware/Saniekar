@@ -275,6 +275,9 @@ namespace Presentation.Controllers
                 ProductRequestDetail prd =
                     UnitOfWork.ProductRequestDetailRepository.GetById(prds.ProductRequestDetailId);
 
+
+                #region Accounting
+
                 Product product = UnitOfWork.ProductRepository.GetById(prd.ProductId);
 
                 decimal amount = product.Amount.Value;
@@ -287,7 +290,40 @@ namespace Presentation.Controllers
 
                 ProductRequest productRequest = UnitOfWork.ProductRequestRepository.GetById(prd.ProductRequestId);
 
-                InsertToAccount(amount, productRequest.RequestBranchId.Value, productRequest.Code,id);
+                InsertToAccount(amount, productRequest.RequestBranchId.Value, productRequest.Code, id);
+
+                #endregion
+
+
+                #region Inventory
+
+                Inventory inventory = GetInventory(prd.ProductId, productRequest.RequestBranchId.Value, prd.ProductColorId, prd.MattressId);
+                int remain = 0;
+
+                if (inventory == null)
+                {
+                    inventory = InsertToInventory(prd.ProductId, productRequest.RequestBranchId.Value, prd.ProductColorId, prd.MattressId, prds.Quantity);
+                    UnitOfWork.InventoryRepository.Insert(inventory);
+                }
+                else
+                {
+                    remain = inventory.Stock;
+                    inventory.Stock += prds.Quantity;
+                    UnitOfWork.InventoryRepository.Update(inventory);
+                }
+                //UnitOfWork.Save();
+
+
+                InventoryDetail inventoryDetail = InsertToInventoryDetail(inventory, prds.Quantity,
+                    productRequest.Id,
+                    Convert.ToInt32(productRequest.Code),
+                    product.Id,
+                    prd.ProductColorId, prd.MattressId, productRequest.RequestBranchId.Value, remain);
+
+                UnitOfWork.InventoryDetailRepository.Insert(inventoryDetail);
+
+                #endregion
+
 
                 UnitOfWork.Save();
             }
@@ -310,6 +346,42 @@ namespace Presentation.Controllers
                 {
                     UnitOfWork.AccountRepository.Delete(account);
                 }
+
+
+                #region Inventory
+
+                ProductRequestDetail prd =
+                    UnitOfWork.ProductRequestDetailRepository.GetById(prds.ProductRequestDetailId);
+
+
+                Inventory inventory = GetInventory(prd.ProductId, prd.ProductRequest.RequestSupplierId.Value, prd.ProductColorId, prd.MattressId);
+                int remain = 0;
+
+                if (inventory == null)
+                {
+                    inventory = InsertToInventory(prd.ProductId, prd.ProductRequest.RequestSupplierId.Value, prd.ProductColorId, prd.MattressId, prds.Quantity);
+                    UnitOfWork.InventoryRepository.Insert(inventory);
+                }
+                else
+                {
+                    remain = inventory.Stock;
+                    inventory.Stock += prds.Quantity;
+                    UnitOfWork.InventoryRepository.Update(inventory);
+                }
+                //UnitOfWork.Save();
+
+
+                InventoryDetail inventoryDetail = InsertToInventoryDetailForReturn(inventory, prds.Quantity,
+                    prd.ProductRequestId,
+                    Convert.ToInt32(prd.ProductRequest.Code),
+                    prd.ProductId,
+                    prd.ProductColorId, prd.MattressId, prd.ProductRequest.RequestSupplierId.Value, remain);
+
+                UnitOfWork.InventoryDetailRepository.Insert(inventoryDetail);
+
+                #endregion
+
+
                 UnitOfWork.Save();
             }
 
@@ -356,5 +428,81 @@ namespace Presentation.Controllers
             
 
         }
+
+
+
+        #region InventoryUpdate
+
+        public InventoryDetail InsertToInventoryDetail(Inventory inventory, int quantity, Guid entityId, int code, Guid productId, Guid? productColorId, Guid? mattressId, Guid branchId, int remain)
+        {
+            InventoryDetailHelper helper = new InventoryDetailHelper();
+
+            InventoryDetail inventoryDetail = helper.Insert(inventory.Id, "productrequest", quantity, remain, code, entityId);
+
+            return inventoryDetail;
+        }
+
+        public InventoryDetail InsertToInventoryDetailForReturn(Inventory inventory, int quantity, Guid entityId, int code, Guid productId, Guid? productColorId, Guid? mattressId, Guid branchId, int remain)
+        {
+            InventoryDetailHelper helper = new InventoryDetailHelper();
+
+            InventoryDetail inventoryDetail = helper.Insert(inventory.Id, "productrequestreturn", quantity, remain, code, entityId);
+
+            return inventoryDetail;
+        }
+
+        public Inventory GetInventory(Guid productId, Guid branchId, Guid? productColorId, Guid? mattressId)
+        {
+            Inventory inventory = UnitOfWork.InventoryRepository.Get(c =>
+                c.ProductId == productId && c.MattressId == mattressId && c.ProductColorId == productColorId &&
+                c.BranchId == branchId).FirstOrDefault();
+
+            return inventory;
+        }
+        public Inventory InsertToInventory(Guid productId, Guid branchId, Guid? productColorId, Guid? mattressId, int quantity)
+        {
+            Inventory inventory = new Inventory()
+            {
+                MattressId = mattressId,
+                ProductColorId = productColorId,
+                ProductId = productId,
+                BranchId = branchId,
+                IsActive = true,
+                OrderPoint = 1,
+                Stock = quantity
+            };
+
+
+
+            return inventory;
+        }
+        public void DeleteInventoryDetails(Guid entityId)
+        {
+            List<InventoryDetail> inventoryDetails =
+                UnitOfWork.InventoryDetailRepository.Get(c => c.EntityId == entityId).ToList();
+
+            int qty = 0;
+
+            foreach (InventoryDetail inventoryDetail in inventoryDetails)
+            {
+                UnitOfWork.InventoryDetailRepository.Delete(inventoryDetail);
+                qty += inventoryDetail.Quantity;
+            }
+
+            if (inventoryDetails.Any())
+            {
+                Inventory inventory =
+                    UnitOfWork.InventoryRepository.GetById(inventoryDetails.FirstOrDefault().InventoryId);
+
+                if (inventory != null)
+                {
+                    inventory.Stock -= qty;
+                    UnitOfWork.InventoryRepository.Update(inventory);
+                }
+            }
+        }
+
+
+        #endregion
     }
 }

@@ -482,7 +482,6 @@ namespace Presentation.Controllers
                 UnitOfWork.Save();
 
 
-
                 InventoryDetail inventoryDetail = InsertToInventoryDetail(inventory,product.Quantity, inputDocument.Id,
                     Convert.ToInt32(inputDocument.Code),
                     product.ProductId,
@@ -493,40 +492,7 @@ namespace Presentation.Controllers
             }
         }
 
-        public InventoryDetail InsertToInventoryDetail(Inventory inventory, int quantity, Guid entityId, int code, Guid productId, Guid? productColorId, Guid? mattressId, Guid branchId,int remain)
-        {
-            InventoryDetailHelper helper = new InventoryDetailHelper();
-
-            InventoryDetail inventoryDetail = helper.Insert(inventory.Id, "input", quantity, remain, code, entityId);
-
-            return inventoryDetail;
-        }
-
-        public Inventory GetInventory(Guid productId, Guid branchId, Guid? productColorId, Guid? mattressId)
-        {
-            Inventory inventory = UnitOfWork.InventoryRepository.Get(c =>
-                 c.ProductId == productId && c.MattressId == mattressId && c.ProductColorId == productColorId &&
-                 c.BranchId == branchId).FirstOrDefault();
-
-            return inventory;
-        }
-        public Inventory InsertToInventory(Guid productId, Guid branchId, Guid? productColorId, Guid? mattressId, int quantity)
-        {
-            Inventory inventory = new Inventory()
-            {
-                MattressId = mattressId,
-                ProductColorId = productColorId,
-                ProductId = productId,
-                BranchId = branchId,
-                IsActive = true,
-                OrderPoint = 1,
-                Stock = quantity
-            };
-
-          
-
-            return inventory;
-        }
+       
         public DateTime GetGrDate(DateTime datetime)
         {
             System.Globalization.PersianCalendar c = new System.Globalization.PersianCalendar();
@@ -758,6 +724,8 @@ namespace Presentation.Controllers
 
                 DeleteInputDocumentDetails(inputDocument.Id);
 
+                DeleteInventoryDetails(inputDocumentId);
+
                 InsertDocumentDetail(GetProductIdByCookie(inputDocument, "factory"), inputDocument);
 
                 UnitOfWork.Save();
@@ -769,6 +737,7 @@ namespace Presentation.Controllers
                 return Json("false", JsonRequestBehavior.AllowGet);
             }
         }
+
 
 
         public void EditInputDoc(InputDocument inputDocument, string branchId, string supplierId, string orderId, string inputDate, string addedAmount,
@@ -797,5 +766,71 @@ namespace Presentation.Controllers
             }
 
         }
+
+
+        #region InventoryUpdate
+
+        public InventoryDetail InsertToInventoryDetail(Inventory inventory, int quantity, Guid entityId, int code, Guid productId, Guid? productColorId, Guid? mattressId, Guid branchId, int remain)
+        {
+            InventoryDetailHelper helper = new InventoryDetailHelper();
+
+            InventoryDetail inventoryDetail = helper.Insert(inventory.Id, "input", quantity, remain, code, entityId);
+
+            return inventoryDetail;
+        }
+
+        public Inventory GetInventory(Guid productId, Guid branchId, Guid? productColorId, Guid? mattressId)
+        {
+            Inventory inventory = UnitOfWork.InventoryRepository.Get(c =>
+                c.ProductId == productId && c.MattressId == mattressId && c.ProductColorId == productColorId &&
+                c.BranchId == branchId).FirstOrDefault();
+
+            return inventory;
+        }
+        public Inventory InsertToInventory(Guid productId, Guid branchId, Guid? productColorId, Guid? mattressId, int quantity)
+        {
+            Inventory inventory = new Inventory()
+            {
+                MattressId = mattressId,
+                ProductColorId = productColorId,
+                ProductId = productId,
+                BranchId = branchId,
+                IsActive = true,
+                OrderPoint = 1,
+                Stock = quantity
+            };
+
+
+
+            return inventory;
+        }
+        public void DeleteInventoryDetails(Guid entityId)
+        {
+            List<InventoryDetail> inventoryDetails =
+                UnitOfWork.InventoryDetailRepository.Get(c => c.EntityId == entityId).ToList();
+
+            int qty = 0;
+
+            foreach (InventoryDetail inventoryDetail in inventoryDetails)
+            {
+                UnitOfWork.InventoryDetailRepository.Delete(inventoryDetail);
+                qty += inventoryDetail.Quantity;
+            }
+
+            if (inventoryDetails.Any())
+            {
+                Inventory inventory =
+                    UnitOfWork.InventoryRepository.GetById(inventoryDetails.FirstOrDefault().InventoryId);
+
+                if (inventory != null)
+                {
+                    inventory.Stock -= qty;
+                    UnitOfWork.InventoryRepository.Update(inventory);
+                }
+            }
+        }
+
+
+        #endregion
     }
 }

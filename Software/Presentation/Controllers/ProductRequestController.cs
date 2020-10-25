@@ -552,6 +552,7 @@ namespace Presentation.Controllers
 
                     ProductRequestDetail productRequestDetail =
                         UnitOfWork.ProductRequestDetailRepository.GetById(productRequestId);
+
                     ProductRequest productRequest =
                         UnitOfWork.ProductRequestRepository.GetById(productRequestDetail.ProductRequestId);
 
@@ -592,7 +593,16 @@ namespace Presentation.Controllers
                         UnitOfWork.ProductRequestRepository.GetById(productRequestDetail.ProductRequestId);
 
                     if (factoryId != null && productRequest != null)
-                        InsertOrUpdateSupplier(factoryId.Value, detail.ProductRequestDetailId, detail.SupplyNumber, productRequest.RequestBranchId.Value);
+                        InsertOrUpdateSupplier(factoryId.Value, detail.ProductRequestDetailId, detail.SupplyNumber, productRequest.RequestBranchId.Value, productRequest);
+
+
+
+
+
+                    
+
+
+                
 
 
                 }
@@ -634,7 +644,7 @@ namespace Presentation.Controllers
             return RedirectToAction("List");
         }
 
-        public void InsertOrUpdateSupplier(Guid factoryId, Guid productRequestDetailId, int quantity, Guid recieverBranchId)
+        public void InsertOrUpdateSupplier(Guid factoryId, Guid productRequestDetailId, int quantity, Guid recieverBranchId,ProductRequest productRequest)
         {
 
             ProductRequestDetail productRequestDetail =
@@ -650,8 +660,24 @@ namespace Presentation.Controllers
 
             if (inventory != null)
             {
-                inventory.Stock = inventory.Stock - quantity;
+                int oldRemain = inventory.Stock;
+                int remain= oldRemain - quantity;
+                inventory.Stock = remain;
                 UnitOfWork.InventoryRepository.Update(inventory);
+
+
+                InventoryDetail inventoryDetail = InsertToInventoryDetail(
+                    inventory,
+                    -(quantity),
+                    productRequestDetail.ProductRequestId,
+                    Convert.ToInt32(productRequest.Code),
+                    productRequestDetail.ProductId,
+                    productRequestDetail.ProductColorId,
+                    productRequestDetail.MattressId,
+                    productRequest.RequestSupplierId.Value,
+                    oldRemain);
+
+                UnitOfWork.InventoryDetailRepository.Insert(inventoryDetail);
             }
 
             ProductRequestDetailSupplier productRequestDetailSupplier = new ProductRequestDetailSupplier()
@@ -758,5 +784,19 @@ namespace Presentation.Controllers
             else return 0;
 
         }
+
+
+        #region InventoryUpdate
+
+        public InventoryDetail InsertToInventoryDetail(Inventory inventory, int quantity, Guid entityId, int code, Guid productId, Guid? productColorId, Guid? mattressId, Guid branchId, int oldRemain)
+        {
+            InventoryDetailHelper helper = new InventoryDetailHelper();
+
+            InventoryDetail inventoryDetail = helper.Insert(inventory.Id, "productrequest", quantity, oldRemain, code, entityId);
+
+            return inventoryDetail;
+        }
+      
+        #endregion
     }
 }

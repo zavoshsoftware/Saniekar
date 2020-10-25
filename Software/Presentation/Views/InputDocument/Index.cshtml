@@ -10,7 +10,9 @@
         .Name("Grid")
         .Columns(columns =>
         {
-        columns.Bound(model => model.Branch.Title);
+
+        columns.Bound(model => model.Code);
+        columns.Bound(model => model.Supplier.Title);
         columns.Bound(model => model.TotalStr);
         columns.Bound(model => model.CreationDateStr);
         columns.Bound(item => @item.Id).Title("دستورات").Filterable(false).Groupable(false)
