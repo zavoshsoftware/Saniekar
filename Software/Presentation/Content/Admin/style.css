@@ -90,7 +90,8 @@
     width: 115px;
 }
 
-#submit-succes, #submit-error, #submitsendFactoru-succes, #submitsendFactoru-error {
+#submit-succes, #submit-error, #submitsendFactoru-succes, #submitsendFactoru-error,
+#sendOrder-succes, #sendOrder-error {
     display: none;
     direction: rtl;
     text-align: right;

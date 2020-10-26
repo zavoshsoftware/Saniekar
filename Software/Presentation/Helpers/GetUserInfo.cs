@@ -37,11 +37,10 @@ namespace Helpers
             if (user != null)
             {
 
-                BranchUser branchUser = db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id && current.IsDeleted == false);
-
-                if (branchUser != null)
+             
+                if (user.BranchId != null)
                 {
-                    int orderCounts = db.Orders.Count(c => c.BranchId == branchUser.BranchId && c.OrderStatus.Code < 4);
+                    int orderCounts = db.Orders.Count(c => c.BranchId == user.BranchId && c.OrderStatus.Code < 4);
 
                     return orderCounts;
                 }
@@ -62,12 +61,9 @@ namespace Helpers
 
             if (user != null)
             {
-
-                BranchUser branchUser = db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id && current.IsDeleted == false);
-
-                if (branchUser != null)
+                if (user.BranchId != null)
                 {
-                    int count = db.ProductRequestDetailSuppliers.Count(c => c.BranchId == branchUser.BranchId && c.IsReceived != true);
+                    int count = db.ProductRequestDetailSuppliers.Count(c => c.BranchId == user.BranchId && c.IsReceived != true);
 
                     return count;
                 }
@@ -91,13 +87,12 @@ namespace Helpers
 
                 DateTime earlyDate = DateTime.Today.AddDays(-2);
 
-                BranchUser branchUser = db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id && current.IsDeleted == false);
-
-                if (branchUser != null)
+              
+                if (user.BranchId != null)
                 {
 
                     int orderCounts = db.Orders.Count(c =>
-                        c.BranchId == branchUser.BranchId && c.OrderStatus.Code < 4 && c.RecieveDate <= earlyDate);
+                        c.BranchId == user.BranchId && c.OrderStatus.Code < 4 && c.RecieveDate <= earlyDate);
 
                     return orderCounts;
                 }
@@ -120,9 +115,7 @@ namespace Helpers
             if (user != null)
             {
 
-                BranchUser branchUser = db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id && current.IsDeleted == false);
-
-                if (branchUser != null)
+                 if (user.BranchId != null)
                 {
                     Guid sentStatusId = new Guid("18C1B32B-23F5-4F1F-B426-275214535F38");
 
@@ -149,15 +142,12 @@ namespace Helpers
 
             if (user != null)
             {
-
-                BranchUser branchUser = db.BranchUsers.FirstOrDefault(current => current.UserId == user.Id && current.IsDeleted == false);
-
-                if (branchUser != null)
+                if (user.BranchId != null)
                 {
                     Guid completeRequestStatusId = new Guid("4E0268B2-8885-44B7-A622-9285B4886192");
 
                     int count = db.ProductRequests.Count(c =>
-                        c.RequestSupplierId == branchUser.BranchId && c.ProductRequestStatusId!=completeRequestStatusId &&
+                        c.RequestSupplierId == user.BranchId && c.ProductRequestStatusId!=completeRequestStatusId &&
                         c.IsDeleted == false);
                     
                     return count;

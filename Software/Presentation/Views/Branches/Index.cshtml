@@ -20,7 +20,7 @@ ViewBag.Title = "فهرست " + Server.HtmlDecode(Html.DisplyModelPluralName(mod
 							.Template(@<text>
 									@Html.ActionLink("ویرایش", "Edit", new {id = @item.Id}, new {@class = "k-button"})
 									@Html.ActionLink("حذف", "Delete", new {id = @item.Id}, new {@class = "k-button"})
-									@Html.ActionLink("مدیریت کاربران شعبه", "index","BranchUsers", new {id = @item.Id}, new {@class = "k-button"})
+									@*@Html.ActionLink("مدیریت کاربران شعبه", "index","BranchUsers", new {id = @item.Id}, new {@class = "k-button"})*@
 									</text>).Width(200);  
 		})
 		.ToolBar(toolbar =>

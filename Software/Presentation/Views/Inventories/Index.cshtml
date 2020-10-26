@@ -22,19 +22,23 @@
 												}
 												else
 												{
-								          @Html.ActionLink("ویرایش", "Edit", new {id = @item.Id}, new {@class = "k-button"})
-								          @Html.ActionLink("حذف", "Delete", new {id = @item.Id}, new {@class = "k-button"})
+													@Html.ActionLink("کاردکس", "index","InventoryDetails", new { id = @item.Id }, new { @class = "k-button" })
+
+													@Html.ActionLink("حذف", "Delete", new {id = @item.Id}, new {@class = "k-button"})
 							          }
 							    
-						           </text>).Width(200);  
-		})
+						           </text>).Width(200);
+									})
 		.ToolBar(toolbar =>
-					{				
-						toolbar.Custom().Action("Create","Inventories").Text("افزودن محصول");                          
-					}
-		)   .Filterable().Sortable()     
+		{
+			if (ViewBag.roleName == "Administrator")
+			{
+				toolbar.Custom().Action("Create", "Inventories").Text("افزودن محصول");
+			}
+		}
+	          )   .Filterable().Sortable()
 		.DataSource(dataSource => dataSource
 									.Server()
 									.Model(model => model.Id(item => item.Id))
-					)              
+					)
 	)

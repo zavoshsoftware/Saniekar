@@ -77,7 +77,6 @@
     <Compile Include="RepositoryClasses\BranchProductRepository.cs" />
     <Compile Include="RepositoryClasses\ProductRequestDetailRepository.cs" />
     <Compile Include="RepositoryClasses\ProductRequestRepository.cs" />
-    <Compile Include="RepositoryClasses\BranchUserRepository.cs" />
     <Compile Include="RepositoryClasses\PaymentRepository.cs" />
     <Compile Include="RepositoryClasses\PaymentTypeRepository.cs" />
     <Compile Include="RepositoryClasses\ProductGroupRepository.cs" />
@@ -108,7 +107,6 @@
     <Compile Include="RepositoryInterfaces\IBranchProductRepository.cs" />
     <Compile Include="RepositoryInterfaces\IProductRequestDetailRepository.cs" />
     <Compile Include="RepositoryInterfaces\IProductRequestRepository.cs" />
-    <Compile Include="RepositoryInterfaces\IBranchUserRepository.cs" />
     <Compile Include="RepositoryInterfaces\IPaymentRepository.cs" />
     <Compile Include="RepositoryInterfaces\IPaymentTypeRepository.cs" />
     <Compile Include="RepositoryInterfaces\IProductGroupRepository.cs" />

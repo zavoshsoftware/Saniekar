@@ -824,7 +824,6 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\BranchesController.cs" />
-    <Compile Include="Controllers\BranchUsersController.cs" />
     <Compile Include="Controllers\CitiesController.cs" />
     <Compile Include="Controllers\ExcelDataController.cs" />
     <Compile Include="Controllers\FundDetailsController.cs" />
@@ -863,6 +862,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\BasketViewModel.cs" />
+    <Compile Include="ViewModels\InventoryDetailEditViewModel.cs" />
     <Compile Include="ViewModels\InventoryListViewModel.cs" />
     <Compile Include="ViewModels\OrderEditViewModel.cs" />
     <Compile Include="ViewModels\OrderInsertViewModel.cs" />
@@ -1055,10 +1055,6 @@
     <Content Include="Views\Users\Details.cshtml" />
     <Content Include="Views\Users\Edit.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
-    <Content Include="Views\BranchUsers\Create.cshtml" />
-    <Content Include="Views\BranchUsers\Delete.cshtml" />
-    <Content Include="Views\BranchUsers\Edit.cshtml" />
-    <Content Include="Views\BranchUsers\Index.cshtml" />
     <Content Include="Views\InputDocument\Form.cshtml" />
     <Content Include="Views\ChildProducts\Create.cshtml" />
     <Content Include="Views\ChildProducts\Delete.cshtml" />

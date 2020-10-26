@@ -56,7 +56,8 @@ namespace Presentation.Controllers
                         foreach (var row in WorkSheet.RowsUsed())
                         {
 
-                            UpdateRow(row.Cell(1).Value.ToString(), row.Cell(4).Value.ToString(),
+                            UpdateRow(row.Cell(1).Value.ToString(), 
+                                row.Cell(4).Value.ToString(),
                                 DecimalConvertor(row.Cell(5).Value.ToString()),
                                 DecimalConvertor(row.Cell(6).Value.ToString()),
                                 DecimalConvertor(row.Cell(7).Value.ToString()),
@@ -134,7 +135,8 @@ namespace Presentation.Controllers
                     UnitOfWork.ProductRepository.Update(product);
 
                     ProductColor productColor = UnitOfWork.ProductColorRepository
-                        .Get(current => current.ProductId == product.Id && current.Title == childTitle).FirstOrDefault();
+                        .Get(current => current.ProductId == product.Id && current.Title == childTitle)
+                        .FirstOrDefault();
 
                     if (productColor != null)
                     {
@@ -156,7 +158,7 @@ namespace Presentation.Controllers
                             IsActive = true,
                             FactoryAmount = colorAdditiveFactoryAmount,
                             StoreAmount = colorAdditiveStoreeAmount,
-                    };
+                        };
 
                         UnitOfWork.ProductColorRepository.Insert(newChildProduct);
 
@@ -165,6 +167,13 @@ namespace Presentation.Controllers
                     UnitOfWork.Save();
                 }
             }
+            //else
+            //{
+            //    Product oProduct=new Product()
+            //    {
+            //        Title = 
+            //    };
+            //}
         }
     }
 }

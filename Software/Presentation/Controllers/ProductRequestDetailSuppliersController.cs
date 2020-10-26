@@ -156,19 +156,16 @@ namespace Presentation.Controllers
         }
 
 
-        public List<Branch> GetUserBranches(Guid userId)
+        public List<Branch> GetUserBranches(User user)
         {
             List<Branch> branches = new List<Branch>();
-            List<BranchUser> branchUsers = UnitOfWork.BranchUserRepository
-                .Get(current => current.UserId == userId).ToList();
 
-            foreach (BranchUser branchUser in branchUsers)
+            if (user.BranchId != null)
             {
-                branches.Add(branchUser.Branch);
+                branches = UnitOfWork.BranchRepository.Get(c => c.Id == user.BranchId).ToList();
             }
 
             return branches;
-
         }
 
         public ActionResult IndexForApprove()
@@ -185,7 +182,7 @@ namespace Presentation.Controllers
 
                 if (user != null)
                 {
-                  Branch branch = GetUserBranches(user.Id).FirstOrDefault();
+                  Branch branch = GetUserBranches(user).FirstOrDefault();
 
                     if (branch != null)
                     {

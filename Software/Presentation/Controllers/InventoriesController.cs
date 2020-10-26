@@ -11,15 +11,34 @@ namespace Presentation.Controllers
 {
     public class InventoriesController : Infrastructure.BaseControllerWithUnitOfWork
     {
-        public ActionResult Index(Guid id)
+        public ActionResult Index(Guid? id)
         {
-            Branch branch = UnitOfWork.BranchRepository.GetById(id);
+            Guid? branchId = null;
+            if (id != null)
+            {
+                branchId = id.Value;
+            }
+            else
+            {
+                var identity = (System.Security.Claims.ClaimsIdentity)User.Identity;
+
+                ViewBag.roleName = identity.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+
+                User user = UnitOfWork.UserRepository.Get(current => current.CellNum == identity.Name)
+                    .FirstOrDefault();
+
+                if (user != null)
+                    if (user.BranchId != null)
+                        branchId = user.BranchId.Value;
+            }
+
+            Branch branch = UnitOfWork.BranchRepository.GetById(branchId.Value);
 
             if (branch != null)
                 ViewBag.Title = "موجودی انبار " + branch.Title;
 
 
-            List<Inventory> inventories = UnitOfWork.InventoryRepository.Get(c => c.BranchId == id)
+            List<Inventory> inventories = UnitOfWork.InventoryRepository.Get(c => c.BranchId == branchId)
                 .OrderByDescending(i => i.CreationDate).ToList();
 
             List<InventoryListViewModel> list = new List<InventoryListViewModel>();
@@ -86,6 +105,7 @@ namespace Presentation.Controllers
                 else
                 {
                     inventory.BranchId = id;
+                    inventory.IsActive = true;
                     UnitOfWork.InventoryRepository.Insert(inventory);
 
                     InventoryDetailHelper inventoryDetailHelper = new InventoryDetailHelper();

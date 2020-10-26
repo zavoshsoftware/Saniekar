@@ -10,7 +10,8 @@
 @using (Html.BeginForm("Create", "Users",FormMethod.Post, new { enctype = "multipart/form-data" })) 
 {
     @Html.AntiForgeryToken()
-    
+			@Html.ValidationMessage("duplicate")
+	
     <div class="form-horizontal">        
         @Html.ValidationSummary(true)
 
@@ -42,11 +43,19 @@
             </div>
         </div>
  
-        <div class="form-group">
-            @Html.LabelFor(model => model.RoleId, new { @class = "control-label col-md-2" })
+	        <div class="form-group">
+		        @Html.LabelFor(model => model.RoleId, new { @class = "control-label col-md-2" })
+		        <div class="col-md-10">
+			        @Html.DropDownList("RoleId", String.Empty)
+			        @Html.ValidationMessageFor(model => model.RoleId)
+		        </div>
+	        </div>
+
+   <div class="form-group">
+            @Html.LabelFor(model => model.BranchId, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("RoleId", String.Empty)
-                @Html.ValidationMessageFor(model => model.RoleId)
+                @Html.DropDownList("BranchId", String.Empty)
+                @Html.ValidationMessageFor(model => model.BranchId)
             </div>
         </div>
 

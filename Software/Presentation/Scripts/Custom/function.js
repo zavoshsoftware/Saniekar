@@ -1105,3 +1105,35 @@ function SendOrderToFactory(type) {
 
     unFreezePage();
 }
+
+function sendOrder() {
+
+    var code = $('#order-code').html();
+
+    $.ajax({
+        type: "Post",
+        url: "/Orders/ConfirmOrderSend",
+        data: { "code": code },
+        success: function (data) {
+            if (data === "true") {
+                $('#sendOrder-succes').css('display', 'block');
+                $('#sendOrder-error').css('display', 'none');
+            } else {
+                if (data === "notAvailable") {
+                    $('#sendOrder-succes').css('display', 'none');
+                    $('#sendOrder-error').css('display', 'block');
+                    $('#sendOrder-error').html('موجودی یکی از محصولات این فاکتور در انبار فروشگاه وجود ندارد.');
+                } else {
+                    $('#sendOrder-succes').css('display', 'none');
+                    $('#sendOrder-error').css('display', 'block');
+                    $('#sendOrder-error').html('خطایی رخ داده است. لطفا دوباره تلاش کنید');
+                }
+            }
+        },
+        error: function () {
+            $('#sendOrder-succes').css('display', 'none');
+            $('#sendOrder-error').css('display', 'block');
+            $('#sendOrder-error').html('خطایی رخ داده است. لطفا دوباره تلاش کنید');
+        }
+    });
+}

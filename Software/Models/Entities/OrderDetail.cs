@@ -14,8 +14,11 @@ namespace Models
         public Guid ProductId { get; set; }
         public Guid OrderId { get; set; }
         public Guid? ProductColorId { get; set; }
+        [Display(Name="تعداد")]
         public int Quantity { get; set; }
+        [Display(Name="قیمت فی")]
         public decimal Amount { get; set; }
+        [Display(Name="جمع کل")]
         public decimal RowAmount { get; set; }
         [NotMapped]
         public string AmountStr

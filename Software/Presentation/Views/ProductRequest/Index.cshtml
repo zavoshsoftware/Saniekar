@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Models.ProductRequest>
 
 @{
-    ViewBag.Title = "فهرست " + Server.HtmlDecode(Html.DisplyModelPluralName(model => model).ToString());
+    ViewBag.Title = "فهرست درخواست مالا";
 }
 
 <h2>@ViewBag.Title</h2>
@@ -10,13 +10,20 @@
 				.Name("Grid")
 				.Columns(columns =>
 				{
+				columns.Bound(model => model.Code);
 				columns.Bound(model => model.RequestBranch.Title);
+				columns.Bound(model => model.ProductRequestStatus.Title);
 				//columns.Bound(model => model.TotalStr);
 				columns.Bound(model => model.CreationDateStr);
 				columns.Bound(item => @item.Id).Title("دستورات").Filterable(false).Groupable(false)
-											.Template(@<text>
-                @Html.ActionLink("ویرایش", "Edit", new { id = @item.Id }, new { @class = "k-button" })
-                    </text>).Width(200);
+					.Template(@<text>
+						          @if (item.ProductRequestStatus.Code == 1)
+						          {
+							          @Html.ActionLink("ویرایش", "Edit", new {id = @item.Id}, new {@class = "k-button"})
+						          }
+						          @Html.ActionLink("جزییات", "detail", new {id = @item.Id}, new {@class = "k-button"})
+
+					           </text>).Width(200);
         })
         .ToolBar(toolbar =>
         {

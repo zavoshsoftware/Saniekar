@@ -13,7 +13,6 @@ namespace Models
         public User()
         {
             Orders = new List<Order>();
-            BranchUsers = new List<BranchUser>();
         }
 
         [Display(Name = "Password", ResourceType = typeof(Resources.Models.User))]
@@ -35,20 +34,24 @@ namespace Models
         [Required(ErrorMessage = "لطفا {0} را وارد نمایید.")]
         public int Code { get; set; }
 
+        [Display(Name ="نقش کاربر")]
         public Guid RoleId { get; set; }
         public virtual Role Role { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
 
-        public virtual ICollection<BranchUser> BranchUsers { get; set; }
 
         internal class configuration : EntityTypeConfiguration<User>
         {
             public configuration()
             {
                 HasRequired(p => p.Role).WithMany(j => j.Users).HasForeignKey(p => p.RoleId);
+                HasOptional(p => p.Branch).WithMany(j => j.Users).HasForeignKey(p => p.BranchId);
             }
         }
+
+        public Guid? BranchId { get; set; }
+        public virtual Branch Branch { get; set; }
     }
 }
 

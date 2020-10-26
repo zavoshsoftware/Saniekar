@@ -18,7 +18,6 @@ namespace Models
         public DbSet<PaymentType> PaymentTypes { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Account> Accounts { get; set; }
-        public DbSet<BranchUser> BranchUsers { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<ProductRequest> ProductRequests { get; set; }

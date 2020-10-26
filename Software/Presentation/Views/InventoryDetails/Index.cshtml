@@ -51,9 +51,23 @@ ViewBag.Title = "فهرست " + Server.HtmlDecode(Html.DisplyModelPluralName(mod
         columns.Bound(model => model.Quantity);
         columns.Bound(model => model.Remain);
         columns.Bound(model => model.CreationDate);
-		})
+	                  @*columns.Bound(item => @item.Id).Title("دستورات").Filterable(false).Groupable(false)
+		                  .Template(@<text>
+							        @if (item.InventoryDetailType.Name == "start")
+							        {
+								        @Html.ActionLink("ویرایش", "edit", new {id = @item.Id}, new {@class = "k-button"})
+							        }
+						           </text>).Width(200);*@  
+									}).ToolBar(toolbar =>
+									{
+										if (ViewBag.roleName == "Administrator")
+										{
+											toolbar.Custom().Action("Create", "inventorydetails").Text("افزودن اختلاف حساب");
+										}
+									}
+	          )
 		.DataSource(dataSource => dataSource
 									.Server()
 									.Model(model => model.Id(item => item.Id))
-					)              
+					)
 	)

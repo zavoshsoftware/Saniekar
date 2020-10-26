@@ -6,13 +6,14 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Helpers;
 using Models;
+using ViewModels;
 
 namespace Presentation.Controllers
 {
     public class InventoryDetailsController : Infrastructure.BaseControllerWithUnitOfWork
     {
-        private DatabaseContext db = new DatabaseContext();
 
         public ActionResult Index(Guid id)
         {
@@ -38,6 +39,10 @@ namespace Presentation.Controllers
 
                 ViewBag.branch = inventory.Branch.Title;
             }
+
+            var identity = (System.Security.Claims.ClaimsIdentity)User.Identity;
+
+            ViewBag.roleName = identity.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
             return View(inventoryDetails);
         }
 
@@ -55,63 +60,122 @@ namespace Presentation.Controllers
         //         return View(inventoryDetail);
         //     }
 
-        //     public ActionResult Create()
-        //     {
-        //         ViewBag.InventoryId = new SelectList(db.Inventories, "Id", "Description");
-        //         ViewBag.InventoryDetailTypeId = new SelectList(db.InventoryDetailTypes, "Id", "Title");
-        //         return View();
-        //     }
+        public ActionResult Create(Guid id)
+        {
+            Inventory inventory = UnitOfWork.InventoryRepository.GetById(id);
 
-        //     [HttpPost]
-        //     [ValidateAntiForgeryToken]
-        //     public ActionResult Create(InventoryDetail inventoryDetail)
-        //     {
-        //         if (ModelState.IsValid)
-        //         {
-        //	inventoryDetail.IsDeleted=false;
-        //	inventoryDetail.CreationDate= DateTime.Now; 
-        //             inventoryDetail.Id = Guid.NewGuid();
-        //             db.InventoryDetails.Add(inventoryDetail);
-        //             db.SaveChanges();
-        //             return RedirectToAction("Index");
-        //         }
 
-        //         ViewBag.InventoryId = new SelectList(db.Inventories, "Id", "Description", inventoryDetail.InventoryId);
-        //         ViewBag.InventoryDetailTypeId = new SelectList(db.InventoryDetailTypes, "Id", "Title", inventoryDetail.InventoryDetailTypeId);
-        //         return View(inventoryDetail);
-        //     }
+            string color = "-";
+            if (inventory.ProductColorId != null)
+                color = " رنگ " + inventory.ProductColor.Title;
 
-        //     public ActionResult Edit(Guid? id)
-        //     {
-        //         if (id == null)
-        //         {
-        //             return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //         }
-        //         InventoryDetail inventoryDetail = db.InventoryDetails.Find(id);
-        //         if (inventoryDetail == null)
-        //         {
-        //             return HttpNotFound();
-        //         }
-        //         ViewBag.InventoryId = new SelectList(db.Inventories, "Id", "Description", inventoryDetail.InventoryId);
-        //         ViewBag.InventoryDetailTypeId = new SelectList(db.InventoryDetailTypes, "Id", "Title", inventoryDetail.InventoryDetailTypeId);
-        //         return View(inventoryDetail);
-        //     }
+            string mattress = "-";
+            if (inventory.MattressId != null)
+                mattress = inventory.Mattress.Title;
 
-        //     [HttpPost]
-        //     [ValidateAntiForgeryToken]
-        //     public ActionResult Edit(InventoryDetail inventoryDetail)
-        //     {
-        //         if (ModelState.IsValid)
-        //         {
-        //	inventoryDetail.IsDeleted=false;
-        //             db.Entry(inventoryDetail).State = EntityState.Modified;
-        //             db.SaveChanges();
-        //             return RedirectToAction("Index");
-        //         }
-        //         ViewBag.InventoryId = new SelectList(db.Inventories, "Id", "Description", inventoryDetail.InventoryId);
-        //         ViewBag.InventoryDetailTypeId = new SelectList(db.InventoryDetailTypes, "Id", "Title", inventoryDetail.InventoryDetailTypeId);
-        //         return View(inventoryDetail);
-        //     }
+            InventoryDetailEditViewModel item = new InventoryDetailEditViewModel()
+            {
+                Id = id,
+                Title = inventory.Product.Title,
+                ColorTitle = color,
+                MattressTitle = mattress,
+            };
+            ViewBag.inventoryId = id;
+
+            return View(item);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(InventoryDetailEditViewModel inventoryDetailViewModel, Guid id)
+        {
+            Inventory inventory = UnitOfWork.InventoryRepository.GetById(id);
+
+            if (ModelState.IsValid)
+            {
+                InventoryDetailHelper helper = new InventoryDetailHelper();
+
+                if (inventory.Stock + inventoryDetailViewModel.Quantity <= 0)
+                {
+                    ModelState.AddModelError("invalidQty",
+                        "مجموع موجودی وارد شده و موجودی فعلی این انبار منفی می باشد.");
+                }
+                else
+                {
+                    InventoryDetail inventoryDetail = helper.Insert(id, "diffrent", inventoryDetailViewModel.Quantity, inventory.Stock, null, null);
+                    inventory.Stock += inventoryDetailViewModel.Quantity;
+                    UnitOfWork.InventoryDetailRepository.Insert(inventoryDetail);
+
+                    UnitOfWork.Save();
+
+                    return RedirectToAction("Index",new{id=id});
+                }
+            }
+
+            InventoryDetailEditViewModel item = new InventoryDetailEditViewModel()
+            {
+                Id = id,
+                Title = inventory.Product.Title,
+                ColorTitle = inventory.ProductColor.Title,
+                MattressTitle = inventory.Mattress.Title,
+            };
+
+            ViewBag.inventoryId = id;
+            return View(item);
+        }
+
+        //public ActionResult Edit(Guid? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    InventoryDetail inventoryDetail = UnitOfWork.InventoryDetailRepository.GetById(id.Value);
+        //    if (inventoryDetail == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+
+        //    InventoryDetailEditViewModel inventoryDetailEdit=new InventoryDetailEditViewModel()
+        //    {
+        //        Id = inventoryDetail.Id,
+        //        Title = inventoryDetail.Inventory.Product.Title,
+        //        ColorTitle = inventoryDetail.Inventory.ProductColor.Title,
+        //        MattressTitle = inventoryDetail.Inventory.Mattress.Title,
+        //        Quantity = inventoryDetail.Quantity,
+        //        OrderPoint = inventoryDetail.Inventory.OrderPoint,
+        //        OldQuantity = inventoryDetail.Quantity,
+        //    };
+
+        //    return View(inventoryDetailEdit);
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit(InventoryDetailEditViewModel inventoryDetailEdit)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        InventoryDetail inventoryDetail = UnitOfWork.InventoryDetailRepository.GetById(inventoryDetailEdit.Id);
+
+        //        if (inventoryDetailEdit.OldQuantity != inventoryDetailEdit.Quantity)
+        //        {
+        //            inventoryDetail.Quantity = inventoryDetailEdit.Quantity;
+
+        //            int dif = inventoryDetailEdit.Quantity - inventoryDetailEdit.OldQuantity;
+
+        //            Inventory inventory = UnitOfWork.InventoryRepository.GetById(inventoryDetail.InventoryId);
+        //        }
+
+        //        inventoryDetail.IsDeleted = false;
+        //        db.Entry(inventoryDetail).State = EntityState.Modified;
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+        //    ViewBag.InventoryId = new SelectList(db.Inventories, "Id", "Description", inventoryDetail.InventoryId);
+        //    ViewBag.InventoryDetailTypeId = new SelectList(db.InventoryDetailTypes, "Id", "Title", inventoryDetail.InventoryDetailTypeId);
+        //    return View(inventoryDetail);
+        //}
 
         //     public ActionResult Delete(Guid? id)
         //     {

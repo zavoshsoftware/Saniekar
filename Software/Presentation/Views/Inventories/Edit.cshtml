@@ -15,6 +15,7 @@
         <hr />
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.IsActive)
         @Html.ValidationMessage("duplicate")
 	    @Html.HiddenFor(model => model.BranchId)
         <div class="form-group">

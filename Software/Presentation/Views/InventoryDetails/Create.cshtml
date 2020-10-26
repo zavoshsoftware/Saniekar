@@ -1,45 +1,57 @@
-﻿@model Models.InventoryDetail
+﻿@model ViewModels.InventoryDetailEditViewModel
 
 @{
-    ViewBag.Title = "افزودن " + Server.HtmlDecode(Html.DisplayNameFor(model => model).ToString());
+    ViewBag.Title = "افزودن اختلاف حساب" ;
     Layout = "~/Views/Shared/BackEndLayout/_BackEndLayout.cshtml";
 }
 
 <h2>افزودن @Html.DisplayNameFor(model => model)</h2>
 
+
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		مشخصات محصول
+	</div>
+	<div class="panel-body">
+		<div class="row">
+		
+			<div class="col-md-6">
+				<div class="row">
+					<label class="col-md-2">محصول</label>
+					<div class="col-md-10">@Model.Title</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<label class="col-md-2">رنگ</label>
+					<div class="col-md-10">@Model.ColorTitle</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<label class="col-md-2">تشک</label>
+					<div class="col-md-10">@Model.MattressTitle</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 @using (Html.BeginForm("Create", "InventoryDetails",FormMethod.Post, new { enctype = "multipart/form-data" })) 
 {
     @Html.AntiForgeryToken()
-    
+			@Html.ValidationMessage("invalidQty")
+	
+	
+
     <div class="form-horizontal">        
         @Html.ValidationSummary(true)
 
         <div class="form-group">
-        <div class="form-group">
-            @Html.LabelFor(model => model.InventoryId, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("InventoryId", String.Empty)
-                @Html.ValidationMessageFor(model => model.InventoryId)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.InventoryDetailTypeId, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("InventoryDetailTypeId", String.Empty)
-                @Html.ValidationMessageFor(model => model.InventoryDetailTypeId)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                    @Html.EditorFor(model => model.Title)
-
-                @Html.ValidationMessageFor(model => model.Title)
-            </div>
-        </div>
-
+        
         <div class="form-group">
             @Html.LabelFor(model => model.Quantity, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -49,48 +61,12 @@
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Remail, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                    @Html.EditorFor(model => model.Remail)
-
-                @Html.ValidationMessageFor(model => model.Remail)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.EntityId, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                    @Html.EditorFor(model => model.EntityId)
-
-                @Html.ValidationMessageFor(model => model.EntityId)
-            </div>
-        </div>
-
-        <div class="form-group">
-			<div class="col-md-2">
-            </div>
-            <div class="col-md-10">
-                    @Html.EditorFor(model => model.IsActive)
-
-				@Html.LabelFor(model => model.IsActive)
-                @Html.ValidationMessageFor(model => model.IsActive)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                    @Html.EditorFor(model => model.Description)
-
-                @Html.ValidationMessageFor(model => model.Description)
-            </div>
-        </div>
-
+        
+       
         <div class="form-group" id="buttons">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="ایجاد" class="btn btn-primary" />
-				@Html.ActionLink("بازگشت به فهرست", "Index")
+				@Html.ActionLink("بازگشت به فهرست", "Index",new{id= ViewBag.inventoryId })
             </div>
         </div>
         </div>

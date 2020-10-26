@@ -39,7 +39,7 @@ namespace Presentation.Controllers
 
                     if (user != null)
                     {
-                        branches = GetUserBranches(user.Id);
+                        branches = GetUserBranches(user);
 
                         ViewBag.BranchId = new SelectList(branches, "Id", "Title", branches.FirstOrDefault()?.Id);
                     }
@@ -232,7 +232,16 @@ namespace Presentation.Controllers
             if (!string.IsNullOrEmpty(shipmentTypeId))
                 shippmentTypeIdGuid = new Guid(shipmentTypeId);
 
-            bool shipmentFromFactory = sendFrom == "1";
+            bool shipmentFromFactory = false;
+
+            Guid orderStatusId = UnitOfWork.OrderStatusRepository.Get(current => current.Code == 0).FirstOrDefault().Id;
+
+            if (sendFrom == "1")
+            {
+                shipmentFromFactory = true;
+                orderStatusId = UnitOfWork.OrderStatusRepository.Get(current => current.Code == 2).FirstOrDefault().Id;
+            }
+
 
             Order order = new Order()
             {
@@ -254,7 +263,7 @@ namespace Presentation.Controllers
                 ShipmentTypeId = shippmentTypeIdGuid,
                 RegionId = GetGuidFromString(regionId),
                 RemainAmount = remainAmountDecimal,
-                OrderStatusId = UnitOfWork.OrderStatusRepository.Get(current => current.Code == 0).FirstOrDefault().Id,
+                OrderStatusId = orderStatusId,
                 Phone = phone,
                 ShipmentFromFactory = shipmentFromFactory,
                 FactoryShipmentDesc = factorydesc,
@@ -459,19 +468,16 @@ namespace Presentation.Controllers
         }
 
 
-        public List<Branch> GetUserBranches(Guid userId)
+        public List<Branch> GetUserBranches(User user)
         {
             List<Branch> branches = new List<Branch>();
-            List<BranchUser> branchUsers = UnitOfWork.BranchUserRepository
-                .Get(current => current.UserId == userId).ToList();
 
-            foreach (BranchUser branchUser in branchUsers)
+            if (user.BranchId != null)
             {
-                branches.Add(branchUser.Branch);
+                branches = UnitOfWork.BranchRepository.Get(c => c.Id == user.BranchId).ToList();
             }
 
             return branches;
-
         }
 
         public string GetUserRole()
@@ -529,7 +535,7 @@ namespace Presentation.Controllers
 
                     if (user != null)
                     {
-                        branches = GetUserBranches(user.Id);
+                        branches = GetUserBranches(user);
 
                         ViewBag.BranchId = new SelectList(branches, "Id", "Title", branches.FirstOrDefault()?.Id);
                     }
@@ -628,7 +634,7 @@ namespace Presentation.Controllers
 
                     if (user != null)
                     {
-                        branches = GetUserBranches(user.Id);
+                        branches = GetUserBranches(user);
 
                         ViewBag.BranchId = new SelectList(branches, "Id", "Title", order.BranchId);
                     }
@@ -800,7 +806,7 @@ namespace Presentation.Controllers
 
                     if (user != null)
                     {
-                        Branch branch = GetUserBranches(user.Id).FirstOrDefault();
+                        Branch branch = GetUserBranches(user).FirstOrDefault();
 
                         foreach (OrderDetail orderDetail in orderDetails)
                         {
@@ -874,7 +880,16 @@ namespace Presentation.Controllers
                 order.RegionId = GetGuidFromString(regionId);
             }
 
-            bool shipmentFromFactory = sendFrom == "1";
+            bool shipmentFromFactory = false;
+
+            Guid orderStatusId = UnitOfWork.OrderStatusRepository.Get(current => current.Code == 0).FirstOrDefault().Id;
+
+            if (sendFrom == "1")
+            {
+                shipmentFromFactory = true;
+                orderStatusId = UnitOfWork.OrderStatusRepository.Get(current => current.Code == 2).FirstOrDefault().Id;
+            }
+
 
             order.AdditiveAmount = additiveAmount;
             order.DiscountAmount = discountAmount;
@@ -883,6 +898,7 @@ namespace Presentation.Controllers
             if (!string.IsNullOrEmpty(shipmentTypeId))
                 order.ShipmentTypeId = new Guid(shipmentTypeId);
 
+            order.OrderStatusId = orderStatusId;
             order.PaymentAmount = paymentAmountDecimal;
             order.RemainAmount = remainAmountDecimal;
             order.IsPaid = isPaid;
@@ -952,7 +968,7 @@ namespace Presentation.Controllers
 
                     if (user != null)
                     {
-                        branches = GetUserBranches(user.Id);
+                        branches = GetUserBranches(user);
 
                         ViewBag.BranchId = new SelectList(branches, "Id", "Title", order.BranchId);
                     }
@@ -1062,29 +1078,29 @@ namespace Presentation.Controllers
         }
 
 
-        public ActionResult Sent(Guid id)
-        {
-            Order order = UnitOfWork.OrderRepository.GetById(id);
+        //public ActionResult Sent(Guid id)
+        //{
+        //    Order order = UnitOfWork.OrderRepository.GetById(id);
 
-            if (order == null)
-                return HttpNotFound();
+        //    if (order == null)
+        //        return HttpNotFound();
 
-            if (User.Identity.IsAuthenticated)
-            {
-                string role = GetUserRole();
+        //    if (User.Identity.IsAuthenticated)
+        //    {
+        //        string role = GetUserRole();
 
-                if (role.ToLower() == "factory")
-                {
-                    order.OrderStatusId = UnitOfWork.OrderStatusRepository.Get(c => c.Code == 4).FirstOrDefault().Id;
+        //        if (role.ToLower() == "factory")
+        //        {
+        //            order.OrderStatusId = UnitOfWork.OrderStatusRepository.Get(c => c.Code == 4).FirstOrDefault().Id;
 
-                    UnitOfWork.OrderRepository.Update(order);
-                    UnitOfWork.Save();
-                }
+        //            UnitOfWork.OrderRepository.Update(order);
+        //            UnitOfWork.Save();
+        //        }
 
-                return RedirectToAction("List");
-            }
-            return RedirectToAction("login", "Account");
-        }
+        //        return RedirectToAction("List");
+        //    }
+        //    return RedirectToAction("login", "Account");
+        //}
 
 
 
@@ -1103,5 +1119,120 @@ namespace Presentation.Controllers
 
             return Json("invalid", JsonRequestBehavior.AllowGet);
         }
+
+
+
+        public ActionResult ConfirmOrderSend(string code)
+        {
+            try
+            {
+                int orderCode = Convert.ToInt32(code);
+                Order order = UnitOfWork.OrderRepository.Get(c => c.Code == orderCode).FirstOrDefault();
+
+                if (order == null)
+                    return Json("error", JsonRequestBehavior.AllowGet);
+
+                order.OrderStatusId = UnitOfWork.OrderStatusRepository.Get(c => c.Code == 4).FirstOrDefault().Id;
+                UnitOfWork.OrderRepository.Update(order);
+
+                List<OrderDetail> orderDetails =
+                    UnitOfWork.OrderDetailRepository.Get(c => c.OrderId == order.Id).ToList();
+
+                bool isProductAvailable = true;
+
+                foreach (OrderDetail orderDetail in orderDetails)
+                {
+                    var identity = (System.Security.Claims.ClaimsIdentity)User.Identity;
+
+                    User user = UnitOfWork.UserRepository.Get(current => current.CellNum == identity.Name)
+                        .FirstOrDefault();
+
+                    if (user == null)
+                        return Json("error", JsonRequestBehavior.AllowGet);
+
+                    Inventory inventory = GetInventory(user, order, orderDetail);
+
+
+                    if (inventory == null)
+                    {
+                        isProductAvailable = false;
+                        break;
+                    }
+                    else
+                    {
+                        int remain = inventory.Stock;
+                        inventory.Stock -= orderDetail.Quantity;
+                        UnitOfWork.InventoryRepository.Update(inventory);
+
+                        InventoryDetail inventoryDetail = InsertToInventoryDetail(inventory,
+                           -(orderDetail.Quantity),
+                            order.Id,
+                            Convert.ToInt32(order.Code),
+                            orderDetail.ProductId,
+                            orderDetail.ProductColorId, orderDetail.MattressId, order.BranchId, remain);
+
+                        UnitOfWork.InventoryDetailRepository.Insert(inventoryDetail);
+                    }
+                }
+
+                if (isProductAvailable == false)
+                {
+                    return Json("notAvailable", JsonRequestBehavior.AllowGet);
+                }
+
+                UnitOfWork.Save();
+
+                return Json("true", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json("error", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        public Guid GetFactoryBranchId()
+        {
+            User user = UnitOfWork.UserRepository.Get(c => c.Role.Name == "Factory").FirstOrDefault();
+
+
+            return UnitOfWork.BranchRepository.GetById(user.BranchId.Value).Id;
+        }
+
+        #region InventoryUpdate
+
+        public InventoryDetail InsertToInventoryDetail(Inventory inventory, int quantity, Guid entityId, int code, Guid productId, Guid? productColorId, Guid? mattressId, Guid branchId, int remain)
+        {
+            InventoryDetailHelper helper = new InventoryDetailHelper();
+
+            InventoryDetail inventoryDetail = helper.Insert(inventory.Id, "sale", quantity, remain, code, entityId);
+
+            return inventoryDetail;
+        }
+
+        public Inventory GetInventory(User user, Order order, OrderDetail orderDetail)
+        {
+            Inventory inventory;
+
+            if (order.ShipmentFromFactory)
+            {
+                Guid factoryBranchId = GetFactoryBranchId();
+
+                inventory = UnitOfWork.InventoryRepository.Get(c =>
+                    c.ProductId == orderDetail.ProductId && c.ProductColorId == orderDetail.ProductColorId &&
+                    c.MattressId == orderDetail.MattressId && c.Stock >= orderDetail.Quantity &&
+                    c.BranchId == factoryBranchId).FirstOrDefault();
+            }
+            else
+            {
+                inventory = UnitOfWork.InventoryRepository.Get(c =>
+                    c.ProductId == orderDetail.ProductId && c.ProductColorId == orderDetail.ProductColorId &&
+                    c.MattressId == orderDetail.MattressId && c.Stock >= orderDetail.Quantity &&
+                    c.BranchId == user.BranchId).FirstOrDefault();
+            }
+
+            return inventory;
+        }
+        #endregion
     }
 }

@@ -164,8 +164,10 @@
 
                                     </tbody>
                                 </table>
-
-                                <input type="submit" value="ثبت" class="btn btn-success" />
+											@if (ViewBag.roleName == "Factory")
+											{
+												<input type="submit" value="ثبت" class="btn btn-success"/>
+											}
                             </div>
                         </div>
 

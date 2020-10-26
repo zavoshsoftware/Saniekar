@@ -12,7 +12,6 @@ namespace Models
     {
         public Branch()
         {
-            BranchUsers = new List<BranchUser>();
             Accounts = new List<Account>();
             BranchProductRequests = new List<ProductRequest>();
             SupplierProductRequests = new List<ProductRequest>();
@@ -22,11 +21,11 @@ namespace Models
             Inventories = new List<Inventory>();
             ProductRequestDetailSuppliers = new List<ProductRequestDetailSupplier>();
             Funds = new List<Fund>();
+            Users=new List<User>();
         }
         [Display(Name = "شعبه")]
         public string Title { get; set; }
 
-        public virtual ICollection<BranchUser> BranchUsers { get; set; }
         public virtual ICollection<Account> Accounts { get; set; }
         [InverseProperty("RequestBranch")]
         public virtual ICollection<ProductRequest> BranchProductRequests { get; set; }
@@ -38,5 +37,6 @@ namespace Models
         public virtual ICollection<BranchProduct> BranchProducts { get; set; }
         public virtual ICollection<ProductRequestDetailSupplier> ProductRequestDetailSuppliers { get; set; }
         public virtual ICollection<Fund> Funds { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

@@ -284,20 +284,6 @@ namespace DAL
             }
         }
 
-        private IBranchUserRepository _branchUserRepository;
-        public IBranchUserRepository BranchUserRepository
-        {
-            get
-            {
-                if (_branchUserRepository == null)
-                {
-                    _branchUserRepository =
-                        new BranchUserRepository(DatabaseContext);
-                }
-                return (_branchUserRepository);
-            }
-        }
-
         private IProductRequestRepository _productRequestRepository;
         public IProductRequestRepository ProductRequestRepository
         {

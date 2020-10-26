@@ -37,7 +37,7 @@ namespace Presentation.Controllers
 
                         if (user != null)
                         {
-                            branches = GetUserBranches(user.Id);
+                            branches = UnitOfWork.BranchRepository.Get(c => c.Id == user.BranchId).ToList();
 
                             ViewBag.BranchId = new SelectList(branches, "Id", "Title", branches.FirstOrDefault()?.Id);
                         }
@@ -87,36 +87,39 @@ namespace Presentation.Controllers
 
             foreach (User user in users)
             {
-                BranchUser branchUser = UnitOfWork.BranchUserRepository.Get(current => current.UserId == user.Id)
-                    .FirstOrDefault();
+                //BranchUser branchUser = UnitOfWork.BranchUserRepository.Get(current => current.UserId == user.Id)
+                //    .FirstOrDefault();
 
-                if (branchUser != null)
+                //if (branchUser != null)
+                //{
+                if (user.BranchId != null)
                 {
-                    Branch branch = UnitOfWork.BranchRepository.GetById(branchUser.BranchId);
+                    Branch branch = UnitOfWork.BranchRepository.GetById(user.BranchId.Value);
 
                     supplierBranches.Add(branch);
 
                     break;
+                    //}
                 }
             }
 
             return supplierBranches;
         }
 
-        public List<Branch> GetUserBranches(Guid userId)
-        {
-            List<Branch> branches = new List<Branch>();
-            List<BranchUser> branchUsers = UnitOfWork.BranchUserRepository
-                .Get(current => current.UserId == userId).ToList();
+        //public List<Branch> GetUserBranches(Guid userId)
+        //{
+        //    List<Branch> branches = new List<Branch>();
+        //    List<BranchUser> branchUsers = UnitOfWork.BranchUserRepository
+        //        .Get(current => current.UserId == userId).ToList();
 
-            foreach (BranchUser branchUser in branchUsers)
-            {
-                branches.Add(branchUser.Branch);
-            }
+        //    foreach (BranchUser branchUser in branchUsers)
+        //    {
+        //        branches.Add(branchUser.Branch);
+        //    }
 
-            return branches;
+        //    return branches;
 
-        }
+        //}
 
         public string GetUserRole()
         {
@@ -345,7 +348,8 @@ namespace Presentation.Controllers
                     .FirstOrDefault();
 
                 if (user != null)
-                    branches = GetUserBranches(user.Id);
+                    branches = UnitOfWork.BranchRepository.Get(c => c.Id == user.BranchId).ToList();
+
             }
 
             List<ProductRequest> productRequests = new List<ProductRequest>();
@@ -385,7 +389,8 @@ namespace Presentation.Controllers
 
                 if (user != null)
                 {
-                    branches = GetUserBranches(user.Id);
+                    branches = UnitOfWork.BranchRepository.Get(c => c.Id == user.BranchId).ToList();
+
 
                     ViewBag.BranchId = new SelectList(branches, "Id", "Title", productRequest.RequestBranchId);
                 }
@@ -503,7 +508,8 @@ namespace Presentation.Controllers
                     .FirstOrDefault();
 
                 if (user != null)
-                    branches = GetUserBranches(user.Id);
+                    branches = UnitOfWork.BranchRepository.Get(c => c.Id == user.BranchId).ToList();
+
             }
 
             List<ProductRequest> productRequests = new List<ProductRequest>();
@@ -531,6 +537,14 @@ namespace Presentation.Controllers
                 ProductRequest = productRequest,
                 ProductRequestDetails = GetProductRequestDetail(id)
             };
+
+            var identity = (System.Security.Claims.ClaimsIdentity)User.Identity;
+
+            User user = UnitOfWork.UserRepository.Get(current => current.CellNum == identity.Name)
+                .FirstOrDefault();
+
+            if (user != null)
+                ViewBag.roleName = user.Role.Name;
 
             return View(productRequestDetailViewModel);
         }
@@ -704,12 +718,8 @@ namespace Presentation.Controllers
 
             if (user != null)
             {
-                BranchUser branchUser = UnitOfWork.BranchUserRepository.Get(current => current.UserId == user.Id)
-                    .FirstOrDefault();
-
-                if (branchUser != null)
-                    factoryId = branchUser.BranchId;
-
+                if (user.BranchId != null)
+                    factoryId = user.BranchId;
             }
 
             return factoryId;

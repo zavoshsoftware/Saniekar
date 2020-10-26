@@ -37,7 +37,7 @@ namespace Presentation.Controllers
 
                     if (user != null)
                     {
-                        branches = GetUserBranches(user.Id);
+                        branches = UnitOfWork.BranchRepository.Get(c => c.Id == user.BranchId).ToList();
 
                         ViewBag.BranchId = new SelectList(branches, "Id", "Title", branches.FirstOrDefault()?.Id);
                     }
@@ -70,20 +70,20 @@ namespace Presentation.Controllers
 
         }
 
-        public List<Branch> GetUserBranches(Guid userId)
-        {
-            List<Branch> branches = new List<Branch>();
-            List<BranchUser> branchUsers = UnitOfWork.BranchUserRepository
-                .Get(current => current.UserId == userId).ToList();
+        //public List<Branch> GetUserBranches(Guid userId)
+        //{
+        //    List<Branch> branches = new List<Branch>();
+        //    List<BranchUser> branchUsers = UnitOfWork.BranchUserRepository
+        //        .Get(current => current.UserId == userId).ToList();
 
-            foreach (BranchUser branchUser in branchUsers)
-            {
-                branches.Add(branchUser.Branch);
-            }
+        //    foreach (BranchUser branchUser in branchUsers)
+        //    {
+        //        branches.Add(branchUser.Branch);
+        //    }
 
-            return branches;
+        //    return branches;
 
-        }
+        //}
 
         public string GetUserRole()
         {
@@ -602,7 +602,7 @@ namespace Presentation.Controllers
 
         public ActionResult Index()
         {
-            List<Branch> branches = new List<Branch>();
+           List<Branch> branches = new List<Branch>();
 
             string role = GetUserRole();
 
@@ -617,7 +617,7 @@ namespace Presentation.Controllers
                     .FirstOrDefault();
 
                 if (user != null)
-                    branches = GetUserBranches(user.Id);
+                    branches = UnitOfWork.BranchRepository.Get(c=>c.Id==user.BranchId).ToList();
             }
 
             List<InputDocument> inputDocuments = new List<InputDocument>();
@@ -657,8 +657,7 @@ namespace Presentation.Controllers
 
                 if (user != null)
                 {
-                    branches = GetUserBranches(user.Id);
-
+                    branches = UnitOfWork.BranchRepository.Get(c => c.Id == user.BranchId).ToList(); 
                     ViewBag.BranchId = new SelectList(branches, "Id", "Title", inputDocument.BranchId);
                 }
             }

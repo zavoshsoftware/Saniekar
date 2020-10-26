@@ -21,7 +21,6 @@ namespace DAL
         IProductGroupRepository ProductGroupRepository { get; }
         IPaymentTypeRepository PaymentTypeRepository { get; }
         IPaymentRepository PaymentRepository { get; }
-        IBranchUserRepository BranchUserRepository { get; }
         IProductRequestRepository ProductRequestRepository { get; }
         IProductRequestDetailRepository ProductRequestDetailRepository { get; }
         IBranchProductRepository BranchProductRepository { get; }

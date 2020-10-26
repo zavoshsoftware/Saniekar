@@ -3,137 +3,179 @@
 		ViewBag.Title = "لیست سفارشات";
 		Layout = "~/Views/Shared/BackEndLayout/_BackEndLayout.cshtml";
 }
+
 <h2>لیست سفارشات</h2>
 @(Html.Kendo().Grid(Model)
 		.Name("Grid")
 		.Columns(columns =>
 		{
-			columns.Bound(item => @item.Id).Title("کد سفارش")
-				.Template(@<text>
-					         @item.Code
-					          @{
-						          if (User.Identity.IsAuthenticated)
-						          {
-							          var identity = (System.Security.Claims.ClaimsIdentity) User.Identity;
-							          string role = identity.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
-							          if (role == "Factory")
-							          {
-								          if (item.CheckByFactory == false)
-								          {
-									          <i class="fa fa-exclamation-circle "></i>
-								          }
-							          }
-							          else if (role == "Branch")
-							          {
-								          if (item.CheckByStore == false)
-								          {
-									          <i class="fa fa-exclamation-circle "></i>
-								          }
-							          }
-						          }
-					          }
-										</text>).Width(100);
- 
-		columns.Bound(model => model.OrderDateStr);
-		columns.Bound(model => model.User.FullName);
-		columns.Bound(model => model.OrderStatus.Title);
-		columns.Bound(model => model.RecieveDateStr);
-		columns.Bound(model => model.TotalAmountStr);
-		columns.Bound(model => model.RemainAmountStr);
-		columns.Bound(model => model.ShipmentFromFactory);
-			columns.Bound(item => @item.Id).Title("پرداخت").Filterable(false).Groupable(false)
-				.Template(@<text>
+		columns.Bound(item => @item.Id).Title("کد سفارش")
+						.Template(@<text>
+							@item.Code
 							@{
-								if (item.IsPaid)
-								{ 
-								  <img src = "/Images/check.png" />
-						 	  }
-								else
-								{
-									<img src = "/Images/remove.png" />
-								}
-							}
-
-										</text>).Width(100);
-		columns.Bound(item => @item.Id).Title("دستورات").Filterable(false).Groupable(false)
-										.Template(@<text>
-
-							@{
-									var identity = (System.Security.Claims.ClaimsIdentity)User.Identity;
-									string role = identity.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
-
-									if (role.ToLower() != "factory")
+									if (User.Identity.IsAuthenticated)
 									{
-										if (item.OrderStatus.Code < 4)
+										var identity = (System.Security.Claims.ClaimsIdentity)User.Identity;
+										string role = identity.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+										if (role == "Factory")
 										{
-											@Html.ActionLink("ویرایش", "Edit", new {id = @item.Id}, new {@class = "k-button"})
-											@Html.ActionLink("لغو", "Cancele", new {id = @item.Id}, new {@class = "k-button"})
+											if (item.CheckByFactory == false)
+											{
+															<i class="fa fa-exclamation-circle "></i>
 }
-										else
-										{
-												 @Html.ActionLink("جزییات", "Details", new { id = @item.Id }, new { @class = "k-button" }) 
-
 										}
-											@*@Html.ActionLink("حذف", "Delete", new {id = @item.Id}, new {@class = "k-button"})*@
-											@Html.ActionLink("پرداخت", "index", "Payments", new { id = @item.Id }, new { @class = "k-button" })
-									}
-									else
-									{
-											@Html.ActionLink("جزییات", "Details", new { id = @item.Id }, new { @class = "k-button" })
-											@Html.ActionLink("ارسال شد", "Sent", new { id = @item.Id }, new { @class = "k-button" })
-
+										else if (role == "Branch")
+										{
+											if (item.CheckByStore == false)
+											{
+															<i class="fa fa-exclamation-circle "></i>
+}
+										}
 									}
 							}
+						</text>).Width(100);
 
-										</text>).Width(200);
+												columns.Bound(model => model.OrderDateStr);
+												columns.Bound(model => model.User.FullName);
+												columns.Bound(model => model.OrderStatus.Title);
+												columns.Bound(model => model.RecieveDateStr);
+												columns.Bound(model => model.TotalAmountStr);
+												columns.Bound(model => model.RemainAmountStr);
+												columns.Bound(model => model.ShipmentFromFactory);
+												columns.Bound(item => @item.Id).Title("پرداخت").Filterable(false).Groupable(false)
+											.Template(@<text>
+												@{		if (item.IsPaid)
+														{
+																<img src="/Images/check.png" />
+}
+														else
+														{
+																<img src="/Images/remove.png" />
+}
+												}
+
+											</text>).Width(100);
+																												columns.Bound(item => @item.Id).Title("دستورات").Filterable(false).Groupable(false)
+																				.Template(@<text>
+
+																	@{		var identity = (System.Security.Claims.ClaimsIdentity)User.Identity;
+																			string role = identity.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+
+																			if (role.ToLower() != "factory")
+																			{
+																				if (item.OrderStatus.Code < 4)
+																				{
+																							@Html.ActionLink("ویرایش", "Edit", new { id = @item.Id }, new { @class = "k-button" })
+																							@Html.ActionLink("لغو", "Cancele", new { id = @item.Id }, new { @class = "k-button" })
+																							@Html.ActionLink("جزییات", "Details", new { id = @item.Id }, new { @class = "k-button" })
+																				if (item.ShipmentFromFactory != true)
+																					{
+																									<button type="button" class="k-button identifyingClass" data-toggle="modal" data-target="#myModal" data-id="@item.Code">ارسال کالا</button>
+																								}
+																				}
+																				else
+																				{
+																							@Html.ActionLink("جزییات", "Details", new { id = @item.Id }, new { @class = "k-button" })
+
+																				}
+																					@*@Html.ActionLink("حذف", "Delete", new {id = @item.Id}, new {@class = "k-button"})*@
+																					@Html.ActionLink("پرداخت ها", "index", "Payments", new { id = @item.Id }, new { @class = "k-button" })
+}
+																			else
+																			{
+																					@Html.ActionLink("جزییات", "Details", new { id = @item.Id }, new { @class = "k-button" })
+																					@*@Html.ActionLink("ارسال شد", "Sent", new { id = @item.Id }, new { @class = "k-button" })*@
+																				if (item.ShipmentFromFactory == true)
+																				{
+																					<button type="button" class="k-button identifyingClass" data-toggle="modal" data-target="#myModal" data-id="@item.Code">ارسال کالا</button>
+																				}
+																			}
+																	}
+
+																				</text>).Width(200);
 
 
-			
+
 		}).Sortable()
-						.DataSource(dataSource => dataSource.Server()
-										.Model(model => model.Id(item => item.Id))
-						)
+												.DataSource(dataSource => dataSource.Server()
+																				.Model(model => model.Id(item => item.Id))
+												)
 )
 
-<script>
-	$(document).ready(function () {
-		var t = $("#Grid table tbody tr");
-		for (var i = 0; i < t.length; i++) {
-			var y = t[i].children[3].innerText;
-			var code = t[i].children[0].innerText;
-			if (y === "ارسال شد") {
-				//t[i].addClass("k-state-selected");
-				//t[i].bgColor="green";
-				t[i].className = t[i].className + ' k-selected';
+<div class="modal fade" id="myModal" role="dialog">
+	<div class="modal-dialog">
+
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">ارسال</h4>
+			</div>
+			<div class="modal-body">
+				<p>آیا از ارسال فاکتور شماره <span id="order-code"></span> اطمینان دارید؟</p>
+				<div class="alert alert-success" id="sendOrder-succes">ارسال با موفقیت انجام شد.</div>
+				<div class="alert alert-danger" id="sendOrder-error"></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModal">خیر</button>
+				<button type="button" class="btn btn-primary" onclick="sendOrder();">بلی ارسال شد.</button>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+@section scripts{
+	<script>
 
 
-				$.ajax({
-					type: "Post",
-					url: "/Orders/CheckInventoryByCode",
-					data: {
-						"code": code,
+		$(document).ready(function () {
 
-					},
-					success: function (data) {
-						if (!data.includes("error")) {
-							if (data === false) {
-								t[i].className = t[i].className + ' k-selected2';
+			$(function () {
+				$(".identifyingClass").click(function () {
+					var my_id_value = $(this).data('id');
+					$(".modal-body #order-code").html(my_id_value);
+				});
+			});
+
+			var t = $("#Grid table tbody tr");
+			for (var i = 0; i < t.length; i++) {
+				var y = t[i].children[3].innerText;
+				var code = t[i].children[0].innerText;
+				if (y === "ارسال شد") {
+					//t[i].addClass("k-state-selected");
+					//t[i].bgColor="green";
+					t[i].className = t[i].className + ' k-selected';
+
+
+					$.ajax({
+						type: "Post",
+						url: "/Orders/CheckInventoryByCode",
+						data: {
+							"code": code,
+
+						},
+						success: function (data) {
+							if (!data.includes("error")) {
+								if (data === false) {
+									t[i].className = t[i].className + ' k-selected2';
+								}
+							} else {
+								$('#submit-succes').css('display', 'none');
+								$('#submit-error').css('display', 'block');
+								$('#submit-error').html('خطایی رخ داده است. لطفا دوباره تلاش کنید');
 							}
-						} else {
+						},
+						error: function () {
 							$('#submit-succes').css('display', 'none');
 							$('#submit-error').css('display', 'block');
 							$('#submit-error').html('خطایی رخ داده است. لطفا دوباره تلاش کنید');
 						}
-					},
-					error: function () {
-						$('#submit-succes').css('display', 'none');
-						$('#submit-error').css('display', 'block');
-						$('#submit-error').html('خطایی رخ داده است. لطفا دوباره تلاش کنید');
-					}
-				});
+					});
 
+				}
 			}
-		}
-	});
+		});
 
-</script>
+	</script>
+
+}
