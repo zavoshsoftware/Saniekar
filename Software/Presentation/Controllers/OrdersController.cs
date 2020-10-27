@@ -522,7 +522,7 @@ namespace Presentation.Controllers
                     branches = UnitOfWork.BranchRepository.Get().ToList();
                     ViewBag.BranchId = new SelectList(branches, "Id", "Title");
                 }
-                if (role == "Factory")
+               else if (role == "Factory")
                 {
                     branches = UnitOfWork.BranchRepository.Get().ToList();
                 }
@@ -535,9 +535,12 @@ namespace Presentation.Controllers
 
                     if (user != null)
                     {
-                        branches = GetUserBranches(user);
+                        if (user.BranchId != null)
+                        {
+                            branches = GetUserBranches(user);
 
-                        ViewBag.BranchId = new SelectList(branches, "Id", "Title", branches.FirstOrDefault()?.Id);
+                            ViewBag.BranchId = new SelectList(branches, "Id", "Title", branches.FirstOrDefault()?.Id);
+                        }
                     }
                 }
 
