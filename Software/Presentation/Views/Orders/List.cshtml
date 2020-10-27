@@ -68,6 +68,7 @@
 																							@Html.ActionLink("ویرایش", "Edit", new { id = @item.Id }, new { @class = "k-button" })
 																							@Html.ActionLink("لغو", "Cancele", new { id = @item.Id }, new { @class = "k-button" })
 																							@Html.ActionLink("جزییات", "Details", new { id = @item.Id }, new { @class = "k-button" })
+																						 
 																				if (item.ShipmentFromFactory != true)
 																					{
 																									<button type="button" class="k-button identifyingClass" data-toggle="modal" data-target="#myModal" data-id="@item.Code">ارسال کالا</button>
@@ -80,7 +81,7 @@
 																				}
 																					@*@Html.ActionLink("حذف", "Delete", new {id = @item.Id}, new {@class = "k-button"})*@
 																					@Html.ActionLink("پرداخت ها", "index", "Payments", new { id = @item.Id }, new { @class = "k-button" })
-}
+																			}
 																			else
 																			{
 																					@Html.ActionLink("جزییات", "Details", new { id = @item.Id }, new { @class = "k-button" })
@@ -90,6 +91,8 @@
 																					<button type="button" class="k-button identifyingClass" data-toggle="modal" data-target="#myModal" data-id="@item.Code">ارسال کالا</button>
 																				}
 																			}
+																		@Html.ActionLink("پرینت", "Index","Reports", new { id = @item.Id }, new { @class = "k-button",target="_blank" })
+
 																	}
 
 																				</text>).Width(200);

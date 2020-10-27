@@ -1,0 +1,26 @@
+﻿@using Stimulsoft.Report.Mvc
+<style>
+	.stiMvcViewerReportPanel table{
+		direction:ltr !important;
+	}
+</style>
+ @{
+	 Layout = null;
+ }
+@Html.Stimulsoft().StiMvcViewer(new StiMvcViewerOptions()
+{
+
+	Localization = "~/Localization/fa.xml",
+	Actions =
+	{
+		GetReport =  "LoadReportSnapshot",
+		ViewerEvent = "ViewerEvent",
+		ExportReport = "ExportReport",
+		PrintReport = "PrintReport",
+	},
+	Server =
+	{
+		UseLocalizedCache = false
+	}
+})
+ 
