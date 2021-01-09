@@ -978,8 +978,8 @@ function postEditOrder() {
 
     if (cookie) {
         var branchId = $('#BranchId').val();
-        var orderDate = $('#Order_OrderDate').val();
-        var recieveDate = $('#Order_RecieveDate').val();
+        var orderDate = $('#OrderDate').val();
+        var recieveDate = $('#RecieveDate').val();
         var cellNumber = $('#CellNumber').val();
         var fullName = $('#fullName').val();
         var phone = $('#Phone').val();

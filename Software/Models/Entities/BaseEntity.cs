@@ -21,6 +21,7 @@ namespace Models
         public bool IsActive { get; set; }
 
         [Display(Name = "CreationDate", ResourceType = typeof(Resources.Models.BaseEntity))]
+        [UIHint("PersianDatePicker")]
         public System.DateTime CreationDate { get; set; }
      
         [Display(Name = "LastModifiedDate", ResourceType = typeof(Resources.Models.BaseEntity))]

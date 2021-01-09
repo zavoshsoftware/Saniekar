@@ -23,7 +23,9 @@
 			<div class="col-md-6">
 				<label class="col-md-3">تاریخ فاکتور:</label>
 				<div class="col-md-9 ">
-					@(Html.Kendo().DatePickerFor(m => m.Order.OrderDate))
+					@*@(Html.Kendo().DatePickerFor(m => m.Order.OrderDate))*@
+					@Html.EditorFor(model => model.Order.OrderDate)
+
 				</div>
 			</div>
 		</div>
@@ -38,7 +40,10 @@
 			<div class="col-md-6">
 				<label class="col-md-3">تاریخ تحویل:</label>
 				<div class="col-md-9 ">
-					@(Html.Kendo().DatePickerFor(m => m.Order.RecieveDate))
+					@Html.EditorFor(model => model.Order.RecieveDate)
+
+					
+					@*@(Html.Kendo().DatePickerFor(m => m.Order.RecieveDate))*@
 				</div>
 			</div>
 		</div>

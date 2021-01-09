@@ -56,9 +56,11 @@ namespace Models
         public string PostalCode { get; set; }
 
         [Display(Name = "OrderDate", ResourceType = typeof(Resources.Models.Order))]
+        [UIHint("PersianDatePicker")]
         public DateTime OrderDate { get; set; }
 
         [Display(Name = "RecieveDate", ResourceType = typeof(Resources.Models.Order))]
+        [UIHint("PersianDatePicker")]
         public DateTime RecieveDate { get; set; }
 
         [Display(Name = "IsPaid", ResourceType = typeof(Resources.Models.Order))]

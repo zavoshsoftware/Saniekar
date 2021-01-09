@@ -429,7 +429,7 @@ namespace Presentation.Controllers
         {
             try
             {
-                DateTime grDate = GetGrDate(Convert.ToDateTime(inputDate));
+                DateTime grDate = DateTimeHelper.PostPersianDate(inputDate);
 
                 InputDocument inputDocument = InsertInputDoc(branchId, supplierId, orderId, grDate, addedAmount, decreasedAmount, desc);
 
@@ -746,7 +746,7 @@ namespace Presentation.Controllers
             inputDocument.BranchId = new Guid(branchId);
             inputDocument.SupplierId = new Guid(supplierId);
             inputDocument.Code = orderId;
-            inputDocument.InputDate = Convert.ToDateTime(inputDate);
+            inputDocument.InputDate = DateTimeHelper.PostPersianDate(inputDate);
             inputDocument.AddedAmount = Convert.ToDecimal(addedAmount);
             inputDocument.DecreaseAmount = Convert.ToDecimal(decreasedAmount);
             inputDocument.Description = desc;

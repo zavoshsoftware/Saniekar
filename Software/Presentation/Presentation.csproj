@@ -603,6 +603,8 @@
     <Content Include="Content\kendo\2017.3.913\Uniform\sprite_2x.png" />
     <Content Include="Content\kendo\2017.3.913\Uniform\sprite_kpi.png" />
     <Content Include="Content\kendo\2017.3.913\Uniform\sprite_kpi_2x.png" />
+    <Content Include="Content\PersianDatePicker\PersianDatePicker.css" />
+    <Content Include="Content\PersianDatePicker\PersianDatePicker.min.css" />
     <Content Include="error.html" />
     <Content Include="fonts\fontAwesome\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -778,6 +780,7 @@
     <Content Include="fonts\IranSans\IRANSansWebFaNum.ttf" />
     <Content Include="fonts\IranSans\IRANSansWebFaNum.woff" />
     <Content Include="fonts\IranSans\IRANSansWebFaNum.woff2" />
+    <Content Include="Content\license.key" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Reports\MRT\OrderListReport.mrt" />
     <None Include="Scripts\kendo\2017.3.913\kendo.all-vsdoc.js" />
@@ -911,6 +914,8 @@
     <Content Include="Scripts\kendo\2017.3.913\kendo.webcomponents.js" />
     <Content Include="Scripts\kendo\2017.3.913\kendo.window.min.js" />
     <Content Include="Scripts\kendo\2017.3.913\pako_deflate.min.js" />
+    <Content Include="Scripts\PersianDatePicker\PersianDatePicker.js" />
+    <Content Include="Scripts\PersianDatePicker\PersianDatePicker.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -949,10 +954,12 @@
     <Compile Include="Helpers\AmountCalculator.cs" />
     <Compile Include="Helpers\CodeGenerator.cs" />
     <Compile Include="Helpers\DataAnnotations.cs" />
+    <Compile Include="Helpers\DateTimeHelper.cs" />
     <Compile Include="Helpers\GetUserInfo.cs" />
     <Compile Include="Helpers\HtmlHelpers.cs" />
     <Compile Include="Helpers\InventoryDetailHelper.cs" />
     <Compile Include="Helpers\PersianCulture.cs" />
+    <Compile Include="Helpers\PersianDateModelBinder .cs" />
     <Compile Include="Infrastructure\BaseController.cs" />
     <Compile Include="Infrastructure\BaseControllerWithUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1232,6 +1239,7 @@
     <Content Include="Views\InventoryDetails\Edit.cshtml" />
     <Content Include="Views\InventoryDetails\Index.cshtml" />
     <Content Include="Views\Reports\Index.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\PersianDatePicker.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

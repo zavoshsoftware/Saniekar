@@ -22,6 +22,7 @@ namespace Models
         public decimal Amount { get; set; }
 
         [Display(Name = "زمان پرداخت")]
+        [UIHint("PersianDatePicker")]
         public DateTime PaymentDate { get; set; }
 
         [Display(Name = "مبلغ باقی مانده تنخواه")]

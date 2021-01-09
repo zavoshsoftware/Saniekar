@@ -6,7 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Models;
+ using Helpers;
+ using Models;
 
 namespace Presentation.Controllers
 {
@@ -24,23 +25,20 @@ namespace Presentation.Controllers
             ViewBag.branchTitle = branch.Title;
             return View(funds.ToList());
         }
-        public DateTime GetGrDate(DateTime datetime)
-        {
-            System.Globalization.PersianCalendar c = new System.Globalization.PersianCalendar();
+        //public DateTime GetGrDate(DateTime datetime)
+        //{
+        //    System.Globalization.PersianCalendar c = new System.Globalization.PersianCalendar();
 
-            DateTime date = c.ToDateTime(datetime.Year, datetime.Month, datetime.Day, 0, 0, 0, 0);
+        //    DateTime date = c.ToDateTime(datetime.Year, datetime.Month, datetime.Day, 0, 0, 0, 0);
 
-            return date;
-        }
+        //    return date;
+        //}
         public ActionResult Create(Guid id)
         {
             ViewBag.BranchId = id;
             return View();
         }
 
-        // POST: Funds/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Fund fund, Guid id)
@@ -49,7 +47,7 @@ namespace Presentation.Controllers
             {
                 fund.FinishDate = null;
                 fund.RemainAmount = fund.Amount;
-                fund.ReceiveDate = GetGrDate(fund.ReceiveDate);
+             
                 fund.BranchId = id;
 				fund.IsDeleted=false;
 				fund.CreationDate= DateTime.Now; 
@@ -87,7 +85,8 @@ namespace Presentation.Controllers
         {
             if (ModelState.IsValid)
             {
-				fund.IsDeleted=false;
+                //fund.ReceiveDate = DateTimeHelper.PostPersianDate(fund.ReceiveDate.ToShortDateString());
+                fund.IsDeleted=false;
                 db.Entry(fund).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index",new {id=fund.BranchId});

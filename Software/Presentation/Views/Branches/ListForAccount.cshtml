@@ -16,16 +16,16 @@ ViewBag.Title = "فهرست " + Server.HtmlDecode(Html.DisplyModelPluralName(mod
 					columns.Bound(item => @item.Id).Title("دستورات").Filterable(false).Groupable(false)
 							.Template(@<text>
 									@Html.ActionLink("مشاهده حساب", "index", "Accounts", new {id = @item.Id}, new {@class = "k-button"})
-									</text>).Width(200);  
-		})
+									</text>).Width(200);
+									})
 		.ToolBar(toolbar =>
-					{				
-						toolbar.Custom().Action("Create","Branches").Text("افزودن");                          
-					}
-		)         
+		{
+			//toolbar.Custom().Action("Create","Branches").Text("افزودن");                          
+		}
+		)
 		.DataSource(dataSource => dataSource
 									.Server()
-							
+
 									.Model(model => model.Id(item => item.Id))
-					)              
+					)
 	)

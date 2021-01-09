@@ -11,10 +11,10 @@ using ViewModels;
 
 namespace Presentation.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : Infrastructure.BaseControllerWithUnitOfWork
     {
 
-        private DatabaseContext db = new DatabaseContext();
+        //private DatabaseContext db = new DatabaseContext();
         public ActionResult Login(string ReturnUrl = "")
         {
             ViewBag.Message = "";
@@ -31,11 +31,13 @@ namespace Presentation.Controllers
         {
             if (ModelState.IsValid)
             {
-                User oUser = db.Users.Where(a => a.CellNum == model.Username && a.Password == model.Password).FirstOrDefault();
+                User oUser = UnitOfWork.UserRepository
+                    .Get(a => a.CellNum == model.Username && a.Password == model.Password).FirstOrDefault();
+
 
                 if (oUser != null)
                 {
-                    Role role = db.Roles.Find(oUser.RoleId);
+                    Role role =UnitOfWork.RoleRepository.GetById(oUser.RoleId);
 
                     var ident = new ClaimsIdentity(
                       new[] { 

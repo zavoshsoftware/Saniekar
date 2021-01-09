@@ -18,6 +18,7 @@ namespace ViewModels
         public decimal Amount { get; set; }
 
         [Display(Name = "تاریخ انتقال")]
+        [UIHint("PersianDatePicker")]
         public DateTime TransferDate { get; set; }
 
         [Display(Name = "شرح")]

@@ -27,16 +27,17 @@
         
         <div class="row">
             <div class="col-md-6">
-                <label class="col-md-3">شماره فاکتور:</label>
+                <label class="col-md-3">شماره ورود:</label>
                 <div class="col-md-9 ">
                 
                     <input type="text" id="orderId" class="form-control" placeholder="شماره فاکتور"/>
                 </div>
             </div>
             <div class="col-md-6">
-                <label class="col-md-3">تاریخ فاکتور:</label>
+                <label class="col-md-3">تاریخ ورود:</label>
                 <div class="col-md-9 ">
-                    @(Html.Kendo().DatePickerFor(m=>m.InputDate))
+	                @Html.EditorFor(model => model.InputDate)
+
                 </div>
             </div>
         </div>

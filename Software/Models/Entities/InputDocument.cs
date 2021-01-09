@@ -16,6 +16,7 @@ namespace Models
         public string Code { get; set; }
 
         [Display(Name = "InputDate", ResourceType = typeof(Resources.Models.InputDocument))]
+        [UIHint("PersianDatePicker")]
         public DateTime InputDate { get; set; }
 
 

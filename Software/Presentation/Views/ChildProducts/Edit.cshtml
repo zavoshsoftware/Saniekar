@@ -16,7 +16,7 @@
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.ProductGroupId)
         @Html.HiddenFor(model=>model.ParentId)
-        @Html.HiddenFor(model => model.CreationDate)
+        <div style="display: none;">@Html.EditorFor(model => model.CreationDate)</div>
         @Html.HiddenFor(model => model.Code)
 
     

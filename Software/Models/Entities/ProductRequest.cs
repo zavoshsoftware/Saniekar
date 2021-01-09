@@ -20,6 +20,7 @@ namespace Models
         [Display(Name = "کد درخواست")]
         public int Code { get; set; }
         [Display(Name = "تاریخ درخواست")]
+        [UIHint("PersianDatePicker")]
         public DateTime RequestDate { get; set; }
 
         [ForeignKey("RequestBranch")]

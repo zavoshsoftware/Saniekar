@@ -17,7 +17,9 @@ namespace Models
         [Column(TypeName = "Money")]
         public decimal Amount { get; set; }
         [Display(Name = "زمان دریافت")]
+        [UIHint("PersianDatePicker")]
         public DateTime ReceiveDate { get; set; }
+        [UIHint("PersianDatePicker")]
         [Display(Name = "زمان بستن تنخواه")]
         public DateTime? FinishDate { get; set; }
         [Display(Name = "مبلغ باقی مانده")]

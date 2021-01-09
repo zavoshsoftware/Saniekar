@@ -37,9 +37,9 @@
                 </div>
             </div>*@
             <div class="col-md-6">
-                <label class="col-md-3">تاریخ فاکتور:</label>
+                <label class="col-md-3">تاریخ درخواست:</label>
                 <div class="col-md-9 ">
-                    @(Html.Kendo().DatePickerFor(m=>m.InputDate))
+									@Html.EditorFor(model => model.InputDate)
                 </div>
             </div>
         </div>

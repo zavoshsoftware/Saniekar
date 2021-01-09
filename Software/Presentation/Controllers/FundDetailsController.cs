@@ -53,7 +53,6 @@ namespace Presentation.Controllers
                 fund.RemainAmount = remain;
                 fundDetail.IsActive = true;
 
-                fundDetail.PaymentDate = GetGrDate(fundDetail.PaymentDate);
                 fundDetail.FundId = id;
 				fundDetail.IsDeleted=false;
 				fundDetail.CreationDate= DateTime.Now; 

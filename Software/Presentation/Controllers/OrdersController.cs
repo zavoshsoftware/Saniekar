@@ -11,6 +11,7 @@ using System.Data;
 using System.IO;
 using System.Net;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using Helpers;
 
 namespace Presentation.Controllers
 {
@@ -52,7 +53,7 @@ namespace Presentation.Controllers
 
                 ViewBag.PaymentTypeId = new SelectList(UnitOfWork.PaymentTypeRepository.Get(), "Id", "Title");
 
-                Order order = new Order() { OrderDate = GetPersianDateTime(DateTime.Now), RecieveDate = GetPersianDateTime(DateTime.Now.AddDays(14)) };
+                Order order = new Order() { OrderDate = (DateTime.Now), RecieveDate = (DateTime.Now.AddDays(14)) };
 
                 Deletecookie();
 
@@ -63,21 +64,21 @@ namespace Presentation.Controllers
 
         }
 
-        public DateTime GetPersianDateTime(DateTime date)
-        {
-            System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
-            string year = pc.GetYear(date).ToString().PadLeft(4, '0');
-            string month = pc.GetMonth(date).ToString().PadLeft(2, '0');
-            string day = pc.GetDayOfMonth(date).ToString().PadLeft(2, '0');
-            string stringDate = String.Format("{2}/{1}/{0}", year, month, day) + " " + date.ToString("HH:mm:ss");
+        //public DateTime GetPersianDateTime(DateTime date)
+        //{
+        //    System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
+        //    string year = pc.GetYear(date).ToString().PadLeft(4, '0');
+        //    string month = pc.GetMonth(date).ToString().PadLeft(2, '0');
+        //    string day = pc.GetDayOfMonth(date).ToString().PadLeft(2, '0');
+        //    string stringDate = String.Format("{2}/{1}/{0}", year, month, day) + " " + date.ToString("HH:mm:ss");
 
-            //  var value = "1396/11/27";
-            // Convert to Miladi
-            DateTime dt = DateTime.Parse(stringDate, new System.Globalization.CultureInfo("fa-IR"));
-            // Get Utc Date
-            return dt.ToUniversalTime();
+        //    //  var value = "1396/11/27";
+        //    // Convert to Miladi
+        //    DateTime dt = DateTime.Parse(stringDate, new System.Globalization.CultureInfo("fa-IR"));
+        //    // Get Utc Date
+        //    return dt.ToUniversalTime();
 
-        }
+        //}
         [AllowAnonymous]
         [HttpPost]
         public ActionResult PostFinalize(string branchId, string orderDate, string recieveDate, string cellNumber, string fullName, string phone, string address, string cityId, string regionId, string addedAmount,
@@ -89,8 +90,8 @@ namespace Presentation.Controllers
 
                 User user = GetCurrentUser(cellNumber, fullName);
 
-                DateTime dtOrderDete = GetGrDate(Convert.ToDateTime(orderDate));
-                DateTime dtRecieveDete = GetGrDate(Convert.ToDateTime(recieveDate));
+                DateTime dtOrderDete = DateTimeHelper.PostPersianDate(orderDate);
+                DateTime dtRecieveDete = DateTimeHelper.PostPersianDate(recieveDate);
 
                 Order order = InsertOrder(user, branchId, dtOrderDete, dtRecieveDete, phone, address, cityId, regionId,
                     addedAmount, decreasedAmount, desc, shipmentTypeId, paymentAmount, paymentTypeId,
@@ -522,7 +523,7 @@ namespace Presentation.Controllers
                     branches = UnitOfWork.BranchRepository.Get().ToList();
                     ViewBag.BranchId = new SelectList(branches, "Id", "Title");
                 }
-               else if (role == "Factory")
+                else if (role == "Factory")
                 {
                     branches = UnitOfWork.BranchRepository.Get().ToList();
                 }
@@ -849,6 +850,17 @@ namespace Presentation.Controllers
 
         }
 
+        //public DateTime DateTimeModelBinder(string currentDate)
+        //{
+        //    var valueResult = currentDate;
+        //    var parts = valueResult.Split('/'); //ex. 1391/1/19
+        //    if (parts.Length != 3) return DateTime.Now;
+        //    int year = int.Parse(parts[0]);
+        //    int month = int.Parse(parts[1]);
+        //    int day = int.Parse(parts[2]);
+        //   return new DateTime(year, month, day, new PersianCalendar());
+        //}
+
         public void EditOrder(Order order, string branchId, string orderDate, string recieveDate, string cellNumber,
             string fullName, string phone, string address, string cityId, string regionId, string addedAmount,
             string decreasedAmount, string desc, string shipmentTypeId, string paymentAmount, string paymentTypeId, decimal subTotal, string sendFrom, string factorydesc, string file)
@@ -870,9 +882,11 @@ namespace Presentation.Controllers
             order.BranchId = new Guid(branchId);
 
             if (orderDate != null)
-                order.OrderDate = Convert.ToDateTime(orderDate);
+                order.OrderDate = DateTimeHelper.PostPersianDate(orderDate);
+
             if (recieveDate != null)
-                order.RecieveDate = Convert.ToDateTime(recieveDate);
+                order.RecieveDate = DateTimeHelper.PostPersianDate(recieveDate);
+
 
             order.UserId = user.Id;
             order.Phone = phone;
@@ -1035,7 +1049,6 @@ namespace Presentation.Controllers
 
                     basket.Add(orderDetail.ProductId.ToString() + "^" + orderDetail.Quantity + "^" + color + "^" +
                                mattress);
-
                 }
 
                 SetCookie(basket.ToArray());
